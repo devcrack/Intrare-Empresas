@@ -11,7 +11,6 @@ from random import randint, uniform,random
 
 obj = Faker()
 
-
 def fill_table_user(N=10):
     for i in range(N):
         full_name = obj.name()
@@ -46,6 +45,7 @@ def fill_table_user(N=10):
             is_superuser=is_superuser,
             last_login=last_login,
             password=password)[0]
+        return user
 
 if __name__ == '__main__':
     print('Filling random data')
