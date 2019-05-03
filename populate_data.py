@@ -1,21 +1,7 @@
-from faker import Faker
-import os
-import django
-import random
-from Empresas.models import Empresa
-from Usuarios.models import CustomUser
+import populate_scripts.fill_table_user as populate_user
 
+def create_users():
+    populate_user.fill_table_user()
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
-django.setup()
-
-fake_generator = Faker()
-CustomUser.objects.cr
-
-""" Generamos una lista de empresas X """
-empresas = ['Red Sparrow', 'Tecnopal', 'Imparable', 'Nearsfot', 'Lanimfe', 'Softek']
-
-""" Funcion que nos genera una Empresa X """
-#def add_Empresa():
-#    fake
-#    _E = Empresa.objects.get_or_create(name=random.choice(empresas))
+if __name__ == '__main__':
+    create_users()

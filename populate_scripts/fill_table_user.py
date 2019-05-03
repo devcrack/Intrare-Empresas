@@ -1,6 +1,5 @@
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
-
 import django
 django.setup()
 
