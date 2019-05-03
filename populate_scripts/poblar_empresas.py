@@ -2,6 +2,7 @@ import os
 import django
 import random
 from faker import Faker
+from Empresas.models import *
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
 django.setup()
@@ -24,6 +25,9 @@ def add_Empresas(N=10, a_user):
         fake_longitude = faker.longitude()
         fake_url_map = faker.uri()
         fake_validity = faker.date()
+        fake_empresa = Empresa.objects.get_or_create(
+            custom_user=fake_user,
+        )
 
 
 
