@@ -1,15 +1,17 @@
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
 import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
 django.setup()
 
 from Usuarios.models import CustomUser
 from faker import Faker
+#from random import randint, uniform,random
+import random
 
-from random import randint, uniform,random
 
 
 obj = Faker()
+
 
 def fill_table_user(N=5):
     for i in range(N):
@@ -21,7 +23,7 @@ def fill_table_user(N=5):
         username_pre = email.split("@")
         username = username_pre[0]
         password = obj.password()
-        num_random = randint(0,1)
+        num_random = random.randint(0,1)
         if num_random == 0:
             is_staff = False
         else:
