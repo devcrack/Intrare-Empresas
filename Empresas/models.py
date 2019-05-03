@@ -18,9 +18,10 @@ class Empresa(models.Model):
         blank=False,
         name='address'
     )
-    telephone = models.IntegerField(
+    telephone = models.PositiveIntegerField(
         unique=True,
         null=False, blank=False,
+        max_length=13,
         name='telephone'
     )
     email = models.EmailField(
