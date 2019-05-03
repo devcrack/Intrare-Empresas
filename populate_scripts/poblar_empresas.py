@@ -16,7 +16,7 @@ def add_Empresas(n, a_user):
         print(fake_user)
         fake_empresa = faker.company()
         fake_address = faker.street_address()
-        fake_numer_phone = faker.phone_number()
+        fake_numer_phone = faker.msisdn()
         fake_mail = faker.email()
         fake_logo = faker.company_suffix()
         fake_web_page = faker.domain_name()
@@ -25,7 +25,7 @@ def add_Empresas(n, a_user):
         fake_latitude = faker.latitude()
         fake_longitude = faker.longitude()
         fake_url_map = faker.uri()
-        fake_validity = faker.date()
+        fake_validity = faker.date(end_datetime=None)
         fake_empresa = Empresa.objects.get_or_create(
             custom_user=fake_user,
             name=fake_empresa,
