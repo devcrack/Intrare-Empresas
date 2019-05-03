@@ -7,7 +7,7 @@ from Usuarios.models import CustomUser
 
 def agregar_empresas():
     user = populate_user.fill_table_user()
-    a_user = CustomUser.objects.first()
+    a_user = CustomUser.objects.last()
     populate_companies.add_Empresas(15, a_user)
 
 
