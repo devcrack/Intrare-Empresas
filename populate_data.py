@@ -6,9 +6,9 @@ from Usuarios.models import CustomUser
 #     populate_user.fill_table_user()
 
 def agregar_empresas():
-    user = populate_user.fill_table_user()
+    # user = populate_user.fill_table_user()
     a_user = CustomUser.objects.first()
-    populate_companies.add_Empresas(15, user)
+    populate_companies.add_Empresas(15, a_user)
 
 
 if __name__ == '__main__':
