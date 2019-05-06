@@ -20,6 +20,7 @@ def main():
         'add_company':add_companies,
         'add_users':add_users
     }
+
     option = sys.argv[1]
     hw_many = sys.argv[2]
     print(sys.argv)
