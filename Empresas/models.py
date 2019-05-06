@@ -232,7 +232,7 @@ class Caseta(models.Model):
         Método qwe retorna el nombre de la Caseta.
         :return:
         """
-        return self.nombre
+        return self.nombre+ " - " +  self.id_empresa.name
 
 
 class Veto(models.Model):

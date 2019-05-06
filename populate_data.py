@@ -2,6 +2,7 @@ import sys
 import populate_scripts.poblar_empresas as populate_companies
 import populate_scripts.fill_table_user as populate_user
 import populate_scripts.fill_area_table as populate_area
+import populate_scripts.fill_caseta_table as populate_caseta
 
 # def create_users():
 #     populate_user.fill_table_user()
@@ -19,14 +20,17 @@ def add_area(how_many):
     print('Adding areas....\n')
     populate_area.fill_area_table(how_many)
 
-
+def add_caseta(how_many):
+    print('Adding casetas....\n')
+    populate_caseta.fill_caseta_table(how_many)
 
 
 def main():
     jobs = {
         'add_company':add_companies,
         'add_users':add_users,
-        'add_areas':add_area
+        'add_areas':add_area,
+        'add_casetas':add_caseta
     }
     option = sys.argv[1]
     hw_many = sys.argv[2]
