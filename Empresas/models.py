@@ -3,6 +3,25 @@ from django.conf import settings
 
 
 class Empresa(models.Model):
+    """Modelo Empresa
+
+       Representa la tabla Empresa en la Base de Datos.
+
+       Attributes:
+            name(str): Nombre de la Empresa.
+            address(str): Dirección de la Empresa.
+            telephone(str): Teléfono de la Empresa.
+            email(email): Dirección de Correo Electrónico de la Empresa.
+            logo(str): Ubicación del archivo logo de la Empresa.
+            web_page(str): Direccón de la Página Web de la Empresa.
+            scian(int): Código Sistema de Clasificación
+                        Industrial de América del Norte de la Empresa.
+            classification(str): Clasificación de la Empresa.
+            latitude(float): Latitud de la Empresa.
+            longitude(float): Longitud de la Empresa.
+            url_map(str): Dirección web del mapa de la Empresa.
+            validity(Date): Vigencia de la Empresa.
+    """
     custom_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
@@ -63,14 +82,32 @@ class Empresa(models.Model):
     validity = models.DateField(null=False, blank=False, name='validity')
 
     def __str__(self):
+        """
+        Método que devuelve el nombre de la Empresa
+        :return: name
+        """
         return self.name
 
-
 class Administrador(models.Model):
+    """
+        Modelo Administrador
+
+        Represnta la Tabla Administrador
+        en la Base de Datos.
+
+        Attributes:
+            id_empresa(int): ID de la Empresa en la cual está registrado
+                             el Administrador.
+            id_usuario(int): ID del Usuario del Administrador.
+    """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
+        """
+        Método que devuelve en nombre de usuario del Administrador
+        :return: id_usuario.username
+        """
         return self.id_usuario.username
 
     class Meta:
@@ -78,6 +115,28 @@ class Administrador(models.Model):
 
 
 class Empleado(models.Model):
+    """
+    Modelo Empleado
+
+    Represnta la Tabla Empleado
+    en la Base de Datos.
+
+    Attributes:
+        id_empresa(int): ID de la Empresa al cual pertenece al Empleado,
+        id_usuario(int):ID del Usaurio del Empĺeado.
+        id_area(int): ID del Area al cual pertenece el Empleado.
+        extension(str): Extensión del Usuario
+        puede_enviar(bool): Bandera para saber si el Empleado puede eviar invitaciones:
+                        True: Puede enviar invitaciones.
+                        False:NO puede enviar invitaciones.
+        id_notificaciones(): Identificador de la Notificación.
+        codigo(): Código QR.
+
+    Todo:
+        * para que se ocupa el atributo extension?
+
+
+    """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     id_area = models.ForeignKey('Area', on_delete=models.CASCADE)
@@ -87,6 +146,11 @@ class Empleado(models.Model):
     codigo = models.CharField(max_length=20, null=False, blank=False)
 
     def __str__(self):
+        """
+        Método que devuelve el nombre de usuario
+        del Empleado
+        :return: id_usuario.username
+        """
         return self.id_usuario.username
 
     class Meta:
@@ -94,10 +158,26 @@ class Empleado(models.Model):
 
 
 class Vigilante(models.Model):
+    """
+    Modelo Vigilante
+
+    Representa la Tabla Vigilante en la Base de Datos.
+
+
+    Attributes:
+        id_empresa(int): ID de la Empresa en la cual está registrado
+                         el Vigilante.
+        id_usuario(int): ID del Usuario del Vigilante.
+
+    """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
+        """
+        Método que devuelve el nombre de usuario del Vigilante
+        :return:id_usuario.username
+        """
         return self.id_usuario.username
 
     class Meta:
@@ -105,24 +185,73 @@ class Vigilante(models.Model):
 
 
 class Area(models.Model):
+    """
+    Modelo Area
+
+    Representa la Tabla Area en la Base de Datos.
+
+    Attributes:
+        id_empresa(int): ID de la Empresa en la cual está registrado
+                         el Área.
+        name(str): Nombre del Área.
+        color(str): Color para identificar el Área.
+    """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100, null=False, blank=False)
     color = models.CharField(max_length=7, null=False, blank=False)
 
     def __str__(self):
+        """
+        Método que devuelve el nombre de la Empresa y su Área
+        :return: id_empresa.name + nombre
+        """
         return self.id_empresa.name + " - " + self.nombre
 
 
 class Caseta(models.Model):
+    """
+    Modelo Caseta
+
+    Represnta la Tabla Caseta en la Base de Datos.
+
+    Attributes:
+        id_empresa(int): ID de la Empresa en la cual está registrado
+                         la Caseta.
+         nombre(str): Nombre de la Caseta.
+         activa(bool): Bandera para saber si la Caseta está vigente:
+                        True: Aún sigue vigente.
+                        False: Esta desactivada.
+
+    """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100, null=False, blank=False)
     activa = models.BooleanField(null=False, blank=False)
 
     def __str__(self):
+        """
+        Método qwe retorna el nombre de la Caseta.
+        :return:
+        """
         return self.nombre
 
 
 class Veto(models.Model):
+    """
+    Modelo Veto.
+
+    Representa la Tabla Veto en la Base de Datos.
+
+    Attributes:
+        id_empresa(int): ID de la Empresa en la cual está registrado
+                         el Usuario .
+        id_usuario(int): ID del Usuario al cual se va vetar.
+        fecha_hora_veto(DateTime): Fecha y Hora en el que se vetó al Usuario.
+        motivo(str): Motivo por el cual se vetó al Usuario.
+        tipo(str):
+
+        Todo:
+            * que tipos de Vetos hay?
+    """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     fecha_hora_veto = models.DateTimeField(auto_now=False, auto_now_add=True, null=False)
@@ -130,10 +259,40 @@ class Veto(models.Model):
     tipo = models.CharField(max_length=45, null=False, blank=False)
 
     def __str__(self):
+        """
+        Método que retorna el nombre del usuario.
+        :return: id_usuario.username.
+        """
         return self.id_usuario.username
 
 
 class Acceso(models.Model):
+    """
+    Modelo Acceso.
+
+    Representa la Tabla Acceso en la Base de Datos.
+
+    Attributes:
+        id_empresa(int): ID de la Empresa el cual registra el Acceso.
+        id_empleado(int): ID  del Empleado al cual se dá Acceso.
+        id_invitacion(int): ID Invitación
+        id_vigilante_ent(int): ID del vigilante que registró la entrada.
+        id_vigilante_sal(int): ID del vigilante que registró la salida.
+        estado(str):
+        pase_salida(str)
+        motivo_no_firma(str): Motivo por el cuál no firmó el Acceso.
+        comentarios_VE(str): Comentarios adicionales del Vigilante.
+        datos_coche(str): Datos adicionales del Coche.
+        equipo(str): Equipo necesario para el Acceso:
+                        Zapatos Especilaes
+                        Casco
+                        etc.
+
+        Todo:
+            * para que se emplea el atributo pase_salida???
+            * para que se emplea el atributo estado???
+
+    """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     id_empleado = models.ForeignKey('Empleado', on_delete=models.CASCADE)
     id_invitacion = models.ForeignKey('Invitaciones.Invitacion', on_delete=models.CASCADE)
@@ -150,4 +309,8 @@ class Acceso(models.Model):
     equipo = models.TextField(null=False, blank=False)
 
     def __str__(self):
+        """
+        Método que retorna el nombre de usuario.
+        :return: id_empleado.id_usuario.username
+        """
         return self.id_empleado.id_usuario.username
