@@ -1,9 +1,32 @@
+# -*- coding: utf-8 -*-
+"""Modelos para las invitaciones.
+
+
+Aqui creamos los modelos correspondientes para cada una de las tablas que comprende esta aplicacion
+"""
 from django.db import models
 
 from django.conf import settings
 
 
 class Invitacion(models.Model):
+    """Clase en la que se apoya el modelo para la creacion de la tabla invitacion.
+
+
+        Attributes:
+             id_empresa(int): Identificador unico de la empresa, llave foranea.
+             id_area(int): Identificador unico del area, llave foranea.
+             id_empleado(int): Identificador unico del usuario, llave foranea.
+             id_usuario(int): Identificador unico del area, llave foranea.
+             fecha_hora_envio(DateTimeField): Fechar hora de envio de la invitacion.
+             asunto(str): Argumento que justifica la visita.
+             automovil(bool): Indica si el vistante, tiene o no un automovil.
+             notas(str): Notas y comentario extras acerca de la visita.
+             empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
+             leida(bool): Bandera que indica si la invitacion ha sido leida o no, pero porquien(La empresa o el invitado)?.
+
+
+    """
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE)
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
     id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
@@ -24,6 +47,22 @@ class Invitacion(models.Model):
         verbose_name_plural = "Invitaciones"
 
 class InvitacionTemporal(models.Model):
+    """Clase en la que se apoya el modelo para la creacion de la tabla invitacion temporal.
+    ¿Porque aqui no es importante que el invitado temporal no se le marque como leida la invitacion?
+
+
+        Attributes:
+             id_empresa(int): Identificador unico de la empresa, llave foranea.
+             id_area(int): Identificador unico del area, llave foranea.
+             id_empleado(int): Identificador unico del usuario, llave foranea.
+             celular_invitado(str): Numero de telefono del invitado temporal.
+             fecha_hora_envio(DateTimeField): Fechar hora de envio de la invitacion.
+             asunto(str): Argumento que justifica la visita.
+             automovil(bool): Indica si el vistante, tiene o no un automovil.
+             notas(str): Notas y comentario extras acerca de la visita.
+             empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
+
+    """
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE)
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
     id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
@@ -37,6 +76,31 @@ class InvitacionTemporal(models.Model):
 
  
 class InvitacionEmpresarial(models.Model):
+    """Clase en la que se apoya el modelo para la creacion de la tabla invitacion temporal.
+    ¿Porque aqui no es importante que el invitado temporal no se le marque como leida la invitacion?
+
+
+        Attributes:
+            id_empresa(int): Identificador unico de la empresa, llave foranea.
+            id_area(int): Identificador unico del area, llave foranea.
+            id_empleado(int): Identificador unico del usuario, llave foranea.
+            id_usuario(int): Identificador unico del area, llave foranea.
+            id_invitacion_temporal(int): Identificador unico de la invitacion temporal, llave foranea.
+            email(str):email del invitado empresarial.
+            fecha_hora_envio(DateTimeField): Fecha y hora de envio de la invitacion.
+            fecha_hora_invitacion(DateTimeField): Fecha y hora a suscitar  la invitacion.
+            asunto(str): Argumento que justifica la visita.
+            automovil(bool): Indica si el vistante, tiene o no un automovil.
+            notas(str): Notas y comentario extras acerca de la visita.
+            empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
+            asignada(bool):Este campo no lo entiendo del todo?.
+            cod_seguridad(str): Constraseña especial?
+        Todo:
+            * Aque se refiere el campo asignada?
+            * ¿cod_seguridad es una especie de contraseña?
+    """
+
+
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE)
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
     id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
@@ -49,7 +113,7 @@ class InvitacionEmpresarial(models.Model):
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
     notas = models.CharField(max_length=12)
-    """ Esto esta pendejo me lo puedo traer desde la consulta con el id_empresa"""
+    """ Esto esta me lo puedo traer desde la consulta con el id_empresa??"""
     empresa = models.CharField(max_length=254, null=False, blank=False)
     asignada = models.BooleanField(null=False, blank=False)
     """ Necesita un validador para contraseñas """
@@ -62,6 +126,12 @@ class InvitacionEmpresarial(models.Model):
 
 
 class EquipoSeguridad(models.Model):
+    """Se refiere al equipo de seguridad que cada invitado pudiese llevar.
+
+
+    Attributes:
+        nombre(str): Nombre del equipo de seguridad.
+    """
     nombre = models.CharField(max_length=254, null=False, blank=False)
 
 
@@ -71,7 +141,14 @@ class EquipoSeguridad(models.Model):
     class Meta:
         verbose_name_plural = "Equipos de Seguridad"
 
-class EquiposporInvitacion(models.Model):    
+class EquiposporInvitacion(models.Model):
+    """Se refiere a los equipo de seguridad que cada invitado pudiese llevar.
+
+
+    Attributes:
+        id_equipo_seguridad(int): Clave foranea, que vincula con la tabla equipo seguridad.
+        id_invitacion(int):
+    """
     id_equipo_seguridad = models.ForeignKey('EquipoSeguridad', on_delete=models.CASCADE)
     id_invitacion = models.ForeignKey('Invitacion', on_delete=models.CASCADE)
     
@@ -84,6 +161,14 @@ class EquiposporInvitacion(models.Model):
 
 
 class EquipoporInvitacionesEmpresariales(models.Model):
+    """Equipo de seguridad por cada invitacion empresarial.
+
+    Attributes:
+        id_equipo_seguridad(int): Clave foranea para hacer la vinculacion con la tabla equipo de seguridad.
+        id_invitacion_empresarial: Clave foranea para hacer la vinculacion con la tabla de Invitacion Empresarial.
+    """
+
+
     id_equipo_seguridad = models.ForeignKey('EquipoSeguridad', on_delete=models.CASCADE)
     id_invitacion_empresarial = models.ForeignKey('InvitacionEmpresarial', on_delete=models.CASCADE)
 
@@ -96,6 +181,13 @@ class EquipoporInvitacionesEmpresariales(models.Model):
 
 
 class EquipoporInvitacionTemporal(models.Model):
+    """Equipo por asignado por cada invitacion temporal.
+
+
+    Attributes:
+        id_equipo_seguridad(int): Clave foranea para hacer la vinculacion con la tabla equipo de seguridad.
+        id_invitacion_temporal: Clave foranea para hacer la vinculacion con la tabla de Invitacion Temporal.
+    """
     id_equipo_seguridad = models.ForeignKey('EquipoSeguridad', on_delete=models.CASCADE)
     id_invitacion_temporal = models.ForeignKey('InvitacionTemporal', on_delete=models.CASCADE)
 
