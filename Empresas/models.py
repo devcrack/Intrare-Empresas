@@ -106,11 +106,11 @@ class Vigilante(models.Model):
 
 class Area(models.Model):
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=100, unique=True, null=False, blank=False)
-    color = models.CharField(max_length=7, unique=True, null=False, blank=False)
+    nombre = models.CharField(max_length=100, null=False, blank=False)
+    color = models.CharField(max_length=7, null=False, blank=False)
 
     def __str__(self):
-        return self.nombre
+        return self.id_empresa.name + " - " + self.nombre
 
 
 class Caseta(models.Model):
