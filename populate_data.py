@@ -46,12 +46,29 @@ def add_area(how_many):
 
 
 def main():
+    """Entrada principal para llevar a cabo la ejecucion de este script
+
+    Las funciones se llaman mediante un diccionario simple para hacer uso de
+    la linea de comandos a un nivel muy simple y basico
+
+
+    Attributes:
+        jobs(dict): Diccionaro que relaciona el argumento con la funcion que tiene que ser ejecutada.
+        option(strin):Cadena que se recibio como argumento y que es la clave para nuestro diccionario(jobs)
+        hw_many(int): La cantidad de registro que se van a generar.
+
+
+    Examples:
+        Ejecucion del script para generar 200 registros a la tabla Empresa.
+        >>python populate_data.py add_company 200
+    """
+
+
     jobs = {
         'add_company':add_companies,
         'add_users':add_users,
         'add_areas':add_area
     }
-
     option = sys.argv[1]
     hw_many = sys.argv[2]
     print(sys.argv)
