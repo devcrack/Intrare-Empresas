@@ -14,6 +14,7 @@ from Usuarios.models import CustomUser
 
 faker = Faker()
 
+
 def add_Invitaciones(N=10):
     """Se agrega un determinado numero de registros a la tabla Invitaciones.
 
@@ -29,18 +30,18 @@ def add_Invitaciones(N=10):
         # Obtenemos un registro de la tabla empresa para vincularla con las invitaciones a generar.
         _empresa = Empresa.objects.all()[random.randint(1, a_length - 1)]
 
-        id_empresa = _empresa.id
+        _id_empresa = _empresa.id
         # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
         try:
-            _area_empresa = Area.objects.get(id=id_empresa)
+            _area_empresa = Area.objects.get(id=_id_empresa)
         except ObjectDoesNotExist:
-            print("Agrega Areas vinculadas a la empresa con este Id" + str(id_empresa) + "\n")
+            print("Agrega Areas vinculadas a la empresa con este Id" + str(_id_empresa) + "\n")
             return 0
         # Obtenemos el empleado que pertenece a esta empresa, es decir quien genero la invitacion
         try:
-            _empleado = Empleado.objects.get(id_empresa)
+            _empleado = Empleado.objects.get(_id_empresa)
         except ObjectDoesNotExist:
-            print("Agrega Areas empleados a la empresa con este Id" + str(id_empresa) + "\n")
+            print("Agrega Areas empleados a la empresa con este Id" + str(_id_empresa) + "\n")
             return 0
         length_user_records = len (CustomUser.objects.all())
         if length_user_records > 1:
@@ -66,10 +67,48 @@ def add_Invitaciones(N=10):
                 invitacion.save()
 
         else:
-            print("Agrega usuarios no administradores " + str(id_empresa) + "\n")
+            print("Agrega usuarios no administradores a esta empresa" + str(_id_empresa) + "\n")
             return 0
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
 
 
+def add_InvitacionTemporal(N=10):
+    a_length = len(Empresa.objects.all())
+    if a_length > 1:
+        # Obtenemos un registro de la tabla empresa para vincularla con las invitaciones a generar.
+        _empresa = Empresa.objects.all()[random.randint(1, a_length - 1)]
+        _id_empresa = _empresa.id
+        # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
+        try:
+            _area_empresa = Area.objects.get(id=_id_empresa)
+        except ObjectDoesNotExist:
+            print("Agrega Areas vinculadas a la empresa con este Id" + str(_id_empresa) + "\n")
+            return 0
+            # Obtenemos el empleado que pertenece a esta empresa, es decir quien genero la invitacion
+        try:
+            _empleado = Empleado.objects.get(_id_empresa)
+        except ObjectDoesNotExist:
+            print("Agrega Areas empleados a la empresa con este Id" + str(_id_empresa) + "\n")
+            return 0
+        for entry in range(N):
+            # Obtenemos un usuario random al que le asignaremos una invitacion creada.
+            _celular_invitado = faker().msisdn()
+            _fecha_hora_envio = faker.date_time()
+            _fecha_hora_invitacion = faker.date_time()
+            _asunto = faker.paragraph(max_nb_chars=250, ext_word_list=None)
+            _automovil = bool(random.getrandbits(1))
+            _notas = faker.paragraph(max_nb_chars=150, ext_word_list=None)
+            _empresa = faker.company()
+            invitacion_temp = InvitacionTemporal.objects.get_or_create(
+                id_empresa=_id_empresa, id_area=_area_empresa,
+                id_empleado=_empleado, celular_invitado=_celular_invitado,
+                fecha_hora_envio=_fecha_hora_envio, fecha_hora_invitacion=_fecha_hora_invitacion,
+                asunto=_asunto, automovil=_automovil,
+                notas=_notas, empresa=_empresa
+            )[0]
+            invitacion_temp.save()
+    else:
+        print('Agrega registro a la tabla empresas\nNANI\n')
+        return 0
