@@ -62,6 +62,7 @@ class InvitacionTemporal(models.Model):
              empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
 
     """
+
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE)
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
     id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
