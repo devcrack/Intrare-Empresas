@@ -122,7 +122,7 @@ class Empleado(models.Model):
     en la Base de Datos.
 
     Attributes:
-        id_empresa(int): ID de la Empresa al cual pertenece al Empleado,
+        id_empresa(int): ID de la Empresa al cual pertenece el Empleado,
         id_usuario(int):ID del Usaurio del Empĺeado.
         id_area(int): ID del Area al cual pertenece el Empleado.
         extension(str): Extensión del Usuario

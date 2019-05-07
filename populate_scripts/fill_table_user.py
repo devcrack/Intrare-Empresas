@@ -5,9 +5,7 @@ django.setup()
 
 from Usuarios.models import CustomUser
 from faker import Faker
-#from random import randint, uniform,random
 import random
-
 
 
 obj = Faker()
@@ -23,15 +21,17 @@ def fill_table_user(N=5):
         username_pre = email.split("@")
         username = username_pre[0]
         password = obj.password()
-        num_random = random.randint(0,1)
+        num_random = random.randint(0, 1)
         if num_random == 0:
             is_staff = False
         else:
             is_staff = True
+        num_random = random.randint(0, 1)
         if num_random == 0:
             is_active = False
         else:
             is_active = True
+        num_random = random.randint(0, 1)
         if num_random == 0:
             is_superuser = False
         else:
@@ -48,7 +48,6 @@ def fill_table_user(N=5):
             last_login=last_login,
             password=password)[0]
         user.save()
-
 
 
 if __name__ == '__main__':
