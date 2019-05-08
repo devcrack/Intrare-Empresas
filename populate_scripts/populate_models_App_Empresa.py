@@ -40,8 +40,9 @@ def add_vigilante():
         #Se tiene que cargar el numero telefonico del Guardia en Perfil.
         _perfil.celular = faker().msisdn()
         _perfil.save()
-        _vigilante = Vigilante.objects.get_or_create(id_empresa=_empresa)
-
+        # Generar el nuevo Vigilante
+        _vigilante = Vigilante.objects.get_or_create(id_empresa=_empresa, id_usuario=_user)[0]
+        _vigilante.save()
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
