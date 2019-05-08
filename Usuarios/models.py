@@ -35,7 +35,7 @@ class Perfil(models.Model):
     ine_frente = models.CharField(max_length=25, null=False, blank=False, name='ine_frente')
     ine_atras = models.CharField(max_length=25, null=False, blank=False, name='ine_atras')
     es_empleado = models.BooleanField(name='es_empleado')
-    plataforma = models.CharField(max_length=25, name='plataforma')
+    plataforma = models.CharField(max_length=25, name='plataforma') #Tipo de aplicacion que es el sistema(Web, Android, iOs)
 
     def __str__(self):
         return self.celular
