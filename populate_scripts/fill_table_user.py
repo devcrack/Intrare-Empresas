@@ -6,7 +6,7 @@ django.setup()
 from Usuarios.models import CustomUser
 from faker import Faker
 import random
-
+import pytz
 
 obj = Faker()
 
@@ -36,7 +36,7 @@ def fill_table_user(N=5):
             is_superuser = False
         else:
             is_superuser = True
-        last_login = obj.date_time()
+        last_login = obj.date_time_between(start_date="+3d", end_date="+30d", tzinfo=pytz.timezone('America/Mexico_City'))
         user = CustomUser.objects.get_or_create(
             first_name=name,
             last_name=last_name,
