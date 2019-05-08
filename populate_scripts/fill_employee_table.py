@@ -38,11 +38,7 @@ def fill_employee_table(N=5):
                         print(a_user.is_superuser)
                         print(a_user.user_perfil.es_empleado)
                         if a_user.is_active and not a_user.is_staff and not a_user.is_superuser and not a_user.user_perfil.es_empleado:
-                            num = random.randint(0, 1)
-                            if num == 0:
-                                puede_enviar = False
-                            else:
-                                puede_enviar = True
+                            puede_enviar = bool(random.getrandbits(1))
                             employee = Empleado.objects.get_or_create(
                                         id_empresa=a_company,
                                         id_usuario=a_user,
