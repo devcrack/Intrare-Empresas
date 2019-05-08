@@ -11,6 +11,7 @@ import populate_scripts.fill_table_user as populate_user
 import populate_scripts.fill_area_table as populate_area
 import populate_scripts.fill_caseta_table as populate_caseta
 import populate_scripts.fill_employee_table as populate_employee
+import populate_scripts.fill_manager_table as populate_manager
 
 # def create_users():
 #     populate_user.fill_table_user()
@@ -54,6 +55,9 @@ def add_employees(how_mamy):
     print('Add employees...\n')
     populate_employee.fill_employee_table(how_mamy)
 
+def add_managers(how_many):
+    print('Adding mangers')
+    populate_manager.fill_manager_table(how_many)
 
 
 def main():
@@ -80,7 +84,8 @@ def main():
         'add_users':add_users,
         'add_areas':add_area,
         'add_casetas':add_caseta,
-        'add_employees':add_employees
+        'add_employees':add_employees,
+        'add_managers':add_managers
     }
     option = sys.argv[1]
     hw_many = sys.argv[2]
