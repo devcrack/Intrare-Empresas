@@ -22,10 +22,10 @@ def fill_employee_table(N=5):
             if num_empresas > 1:
                 try:
                     a_company = Empresa.objects.all()[random.randint(1, num_empresas - 1)]
-                    print('EMPRESAAA')
+                    print('EMPRESA')
                     print(a_company)
                     area_empresa = Area.objects.all().filter(id_empresa=a_company.id)[random.randint(1, 5)]
-                    print('AREASSSS')
+                    print('AREA')
                     print(area_empresa)
                     # print(areas_empresa)
                     if area_empresa:
@@ -47,10 +47,10 @@ def fill_employee_table(N=5):
                                         id_empresa=a_company,
                                         id_usuario=a_user,
                                         id_area=area_empresa,
-                                        extension=646436,
-                                        puede_enviar= puede_enviar,
-                                        id_notificaciones=324234,
-                                        codigo=423432
+                                        extension=obj.msisdn(),
+                                        puede_enviar=puede_enviar,
+                                        id_notificaciones=obj.msisdn(),
+                                        codigo=obj.msisdn()
 
                                     )[0]
                             employee.save()
@@ -69,8 +69,3 @@ def fill_employee_table(N=5):
         else:
             print("You must to add some Users first!!!")
     print('Se Agregaron ' + str(count) + ' Empleados')
-
-# if __name__ == '__main__':
-#     print('Filling random data')
-#     fill_table_area()
-#     print('Filling Done!!!')
