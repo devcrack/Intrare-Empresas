@@ -1,6 +1,7 @@
 import os
 import django
 import random
+from django.core.exceptions import ObjectDoesNotExist
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
 django.setup()
@@ -28,7 +29,7 @@ def add_vigilante():
           o en caso de ser vigilantes de la empresa, PASAN A ser EMPLEADOS????.
     """
     a_length = len(Empresa.objects.all())
-    if a_length > 1:
+    if a_length > 0:
         # Obtenemos un registro de la tabla empresa para vincularla con el vigilante  a generar.
         _empresa = Empresa.objects.all()[random.randint(1, a_length - 1)]
         _id_empresa = _empresa.id
@@ -43,6 +44,7 @@ def add_vigilante():
         # Generar el nuevo Vigilante
         _vigilante = Vigilante.objects.get_or_create(id_empresa=_empresa, id_usuario=_user)[0]
         _vigilante.save()
+        return _vigilante
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
@@ -73,4 +75,30 @@ def add_user(_is_superuser):
     user.save()
 
     return user
+
+def add_acceso():
+    #Obtenemos la empresa en la que se concedera el acceso.
+    num_company = len (Empresa.objects.all())
+    if num_company > 0:
+        # Obtenemos un registro de la tabla empresa para vincularla con el vigilante  a generar.
+        _empresa = Empresa.objects.all()[random.randint(1, num_company - 1)]
+        _id_empresa = _empresa.id
+
+        # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
+        try:
+            _area_empresa = Area.objects.get(id=_id_empresa)
+        except ObjectDoesNotExist:
+            print("Agrega Areas vinculadas a la empresa con este Id" + str(_id_empresa) + "\n")
+            return 0
+        # Obtenemos el empleado que pertenece a esta empresa, es decir quien concedio el acceso
+        try:
+            _empleado = Empleado.objects.get(_id_empresa)
+        except ObjectDoesNotExist:
+            print("Agrega Areas empleados a la empresa con este Id" + str(_id_empresa) + "\n")
+            return 0
+
+
+    else:
+        print("Add some companies first of all, please \n")
+
 
