@@ -23,6 +23,12 @@ def add_Invitaciones(N=10):
 
     Attributes:
 
+    Todo:
+        * Se tiene que obtener la empresa con la que se tiene que vincular, la invitacion.
+        * Obtener el area vinculada con la empresa y la invitacion.
+        * Obtenemos el empleado vinculado con la empresa que es quien genera la invitacion.
+        * Generamos el usuario al que le esta asiganda la invitacion.
+        * Finalmente se genera la invitacion.
     """
 
     a_length = len(Empresa.objects.all())
@@ -75,10 +81,24 @@ def add_Invitaciones(N=10):
 
 
 def add_InvitacionTemporal(N=10):
+    """Se agrega un determinado numero de registros a la tabla InvitacionTemporal.
+
+        Args:
+            N(int):Por default son 10 registro pero en realidad puede tomar un valor que le sea proporcionado.
+
+        Attributes:
+
+        Todo:
+            * Se tiene que obtener la empresa con la que se tiene que vincular, la invitacion.
+            * Obtener el area vinculada con la empresa y la invitacion.
+            * Obtener el empleado vinculado con la empresa que es quien genera la invitacion.
+            * Generamos el usuario al que le esta asiganda la invitacion.
+            * Finalmente se genera la invitacion.
+        """
     a_length = len(Empresa.objects.all())
     if a_length > 1:
         # Obtenemos un registro de la tabla empresa para vincularla con las invitaciones a generar.
-        _empresa = Empresa.objects.all()[random.randint(1, a_length - 1)]
+        _empresa = Empresa.objects.all()[random.randi>nt(1, a_length - 1)]
         _id_empresa = _empresa.id
         # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
         try:

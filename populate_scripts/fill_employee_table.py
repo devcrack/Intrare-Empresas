@@ -43,7 +43,6 @@ def fill_employee_table(N=5):
                                                 puede_enviar=puede_enviar,
                                                 id_notificaciones=obj.msisdn(),
                                                 codigo=obj.msisdn()
-
                                             )[0]
                                     employee.save()
                                     count = count + 1
