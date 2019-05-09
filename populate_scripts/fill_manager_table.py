@@ -28,7 +28,7 @@ def fill_manager_table(N=5):
                                 a_user.is_superuser = True
                                 a_user.save()
                                 manager.save()
-                                count += count
+                                count += 1
         else:
             print('You must to add Companies first!!!\n')
     else:
