@@ -20,52 +20,40 @@ def fill_employee_table(N=5):
         if num_usuarios > 1:
             num_empresas = len(Empresa.objects.all())
             if num_empresas > 1:
-                try:
-                    a_company = Empresa.objects.all()[random.randint(1, num_empresas - 1)]
-                    print('EMPRESA')
-                    print(a_company)
-                    area_empresa = Area.objects.all().filter(id_empresa=a_company.id)[random.randint(1, 5)]
+                a_company = Empresa.objects.all()[random.randint(1, num_empresas - 1)]
+                if len(Area.objects.all().filter(id_empresa=a_company.id)):
+                    area_empresa = Area.objects.all().filter(id_empresa=a_company.id)[random.randint(1, 4)]
                     print('AREA')
                     print(area_empresa)
-                    # print(areas_empresa)
-                    if area_empresa:
-                        a_user = CustomUser.objects.all()[random.randint(1, num_usuarios - 1)]
-                        print('USUARIO')
-                        print(a_user)
-                        print(a_user.id)
-                        print(a_user.is_active)
-                        print(a_user.is_staff)
-                        print(a_user.is_superuser)
-                        print(a_user.user_perfil.es_empleado)
-                        if a_user.is_active and not a_user.is_staff and not a_user.is_superuser and not a_user.user_perfil.es_empleado:
-                            num = random.randint(0, 1)
-                            if num == 0:
-                                puede_enviar = False
-                            else:
-                                puede_enviar = True
-                            employee = Empleado.objects.get_or_create(
-                                        id_empresa=a_company,
-                                        id_usuario=a_user,
-                                        id_area=area_empresa,
-                                        extension=obj.msisdn(),
-                                        puede_enviar=puede_enviar,
-                                        id_notificaciones=obj.msisdn(),
-                                        codigo=obj.msisdn()
+                    a_user = CustomUser.objects.all()[random.randint(1, num_usuarios - 1)]
+                    if a_user.is_active:
+                        if not a_user.is_staff:
+                            if not a_user.is_superuser:
+                                if not a_user.user_perfil.es_empleado:
+                                    num = random.randint(0, 1)
+                                    if num == 0:
+                                        puede_enviar = False
+                                    else:
+                                        puede_enviar = True
+                                    employee = Empleado.objects.get_or_create(
+                                                id_empresa=a_company,
+                                                id_usuario=a_user,
+                                                id_area=area_empresa,
+                                                extension=obj.msisdn(),
+                                                puede_enviar=puede_enviar,
+                                                id_notificaciones=obj.msisdn(),
+                                                codigo=obj.msisdn()
 
-                                    )[0]
-                            employee.save()
-                            count = count + 1
-                            perfil = Perfil.objects.get(id=a_user.user_perfil.id)
-                            perfil.es_empleado = True
-                            perfil.save()
-                        else:
-                            print('Usuario sin permisos')
-                    else:
-                        print('Aún no hay Áreas dadas de alta en la Empresa')
-                except:
-                    print("Error")
+                                            )[0]
+                                    employee.save()
+                                    count = count + 1
+                                    perfil = Perfil.objects.get(id=a_user.user_perfil.id)
+                                    perfil.es_empleado = True
+                                    perfil.save()
+                else:
+                    print('You must to add some Areas first!!!')
             else:
                 print("You must to add some campanies first!!!")
         else:
             print("You must to add some Users first!!!")
-    print('Se Agregaron ' + str(count) + ' Empleados')
+    print(str(count) + ' were added employees!!!')
