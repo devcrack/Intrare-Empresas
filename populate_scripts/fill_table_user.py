@@ -21,22 +21,13 @@ def fill_table_user(N=5):
         username_pre = email.split("@")
         username = username_pre[0]
         password = obj.password()
-        num_random = random.randint(0, 1)
-        if num_random == 0:
-            is_staff = False
-        else:
-            is_staff = True
-        num_random = random.randint(0, 1)
-        if num_random == 0:
-            is_active = False
-        else:
-            is_active = True
-        num_random = random.randint(0, 1)
-        if num_random == 0:
-            is_superuser = False
-        else:
-            is_superuser = True
-        last_login = obj.date_time_between(start_date="+3d", end_date="+30d", tzinfo=pytz.timezone('America/Mexico_City'))
+        is_staff = False
+        is_active = True
+        is_superuser = False
+        last_login = obj.date_time_between(
+            start_date="+3d", 
+            end_date="+30d", 
+            tzinfo=pytz.timezone('America/Mexico_City'))
         user = CustomUser.objects.get_or_create(
             first_name=name,
             last_name=last_name,
