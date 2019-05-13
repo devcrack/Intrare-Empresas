@@ -7,7 +7,6 @@ import sys
 from builtins import print
 
 import populate_scripts.fill_table_user as populate_user
-import populate_scripts.fill_caseta_table as populate_caseta
 import populate_scripts.populate_models_App_Empresa as populate_company
 
 # def create_users():
