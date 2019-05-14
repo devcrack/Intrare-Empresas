@@ -6,12 +6,8 @@
 import sys
 from builtins import print
 
-import populate_scripts.poblar_empresas as populate_companies
 import populate_scripts.fill_table_user as populate_user
-import populate_scripts.fill_area_table as populate_area
-import populate_scripts.fill_caseta_table as populate_caseta
-import populate_scripts.fill_employee_table as populate_employee
-import populate_scripts.fill_manager_table as populate_manager
+import populate_scripts.populate_models_App_Empresa as populate_company
 
 # def create_users():
 #     populate_user.fill_table_user()
@@ -39,25 +35,25 @@ def add_companies(how_many):
 
 
     print('Adding companies....\n')
-    populate_companies.add_Empresas(how_many)
+    populate_company.add_companies(how_many)
 
 
 
 def add_area(how_many):
     print('Adding areas....\n')
-    populate_area.fill_area_table(how_many)
+    populate_company.add_areas(how_many)
 
-def add_caseta(how_many):
+def add_casetas(how_many):
     print('Adding casetas....\n')
-    populate_caseta.fill_caseta_table(how_many)
+    populate_company.add_casetas(how_many)
 
 def add_employees(how_mamy):
     print('Add employees...\n')
-    populate_employee.fill_employee_table(how_mamy)
+    populate_company.add_employees(how_mamy)
 
 def add_managers(how_many):
     print('Adding mangers')
-    populate_manager.fill_manager_table(how_many)
+    populate_company.add_managers(how_many)
 
 
 def main():
@@ -83,7 +79,7 @@ def main():
         'add_company':add_companies,
         'add_users':add_users,
         'add_areas':add_area,
-        'add_casetas':add_caseta,
+        'add_casetas':add_casetas,
         'add_employees':add_employees,
         'add_managers':add_managers
     }

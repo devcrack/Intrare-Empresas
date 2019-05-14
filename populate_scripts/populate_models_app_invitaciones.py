@@ -98,7 +98,7 @@ def add_InvitacionTemporal(N=10):
     a_length = len(Empresa.objects.all())
     if a_length > 1:
         # Obtenemos un registro de la tabla empresa para vincularla con las invitaciones a generar.
-        _empresa = Empresa.objects.all()[random.randi>nt(1, a_length - 1)]
+        _empresa = Empresa.objects.all()[random.randint(1, a_length - 1)]
         _id_empresa = _empresa.id
         # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
         try:

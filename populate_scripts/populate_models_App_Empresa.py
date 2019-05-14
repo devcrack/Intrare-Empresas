@@ -11,6 +11,29 @@ from Usuarios.models import CustomUser, Perfil
 from faker import Faker
 
 
+#Posibles Áreas de una  Empresa
+AREAS = [
+    'Gerencia',
+    'Recursos Humanos',
+    'Administración',
+    'Sistemas',
+    'Compras',
+    'Producción',
+    'Marketing',
+    'Finanzas',
+    'Matenimiento',
+    'Laboratorio'
+]
+
+#Posibles Nombres de Casetas
+CASETAS = [
+    'Norte',
+    'Sur',
+    'Este',
+    'Oeste'
+]
+
+
 faker = Faker()
 
 def add_vigilante():
@@ -101,4 +124,151 @@ def add_acceso():
     else:
         print("Add some companies first of all, please \n")
 
+def add_companies(N=5):
+    a_length = len(CustomUser.objects.all())
+    if a_length > 1:
+        print('Num Users :' + str(a_length))
+        for entry in range(N):
+            a_user = CustomUser.objects.all()[random.randint(1, a_length - 1)]
+            if not a_user.is_superuser:
+                a_user.is_superuser = True
+                a_user.save()
+                fake_user = a_user
+                print(fake_user)
+                fake_empresa = faker.company()
+                fake_address = faker.street_address()
+                fake_numer_phone = faker.msisdn()
+                fake_mail = faker.email()
+                fake_logo = faker.company_suffix()
+                fake_web_page = faker.domain_name()
+                fake_scian = random.randint(1, 30)
+                fake_classification = faker.job()
+                fake_latitude = faker.latitude()
+                fake_longitude = faker.longitude()
+                fake_url_map = faker.uri()
+                fake_validity = faker.date(end_datetime=None)
+                fake_empresa = Empresa.objects.get_or_create(
+                    custom_user=fake_user,
+                    name=fake_empresa,
+                    address=fake_address,
+                    telephone=fake_numer_phone,
+                    email=fake_mail,
+                    logo=fake_logo,
+                    web_page=fake_web_page,
+                    scian = fake_scian,
+                    classification=fake_classification,
+                    latitude=fake_latitude,
+                    longitude=fake_longitude,
+                    url_map=fake_url_map,
+                    validity=fake_validity
+                )[0]
+                fake_empresa.save()
+            else:
+                print('Only one Administrator per Company can be assigned.')
+    else:
+        print('You must to add some users first!!!')
 
+def add_managers(N=5):
+    count_users = len(CustomUser.objects.all())
+    count_companies = len(Empresa.objects.all())
+    count = 0
+    if count_users > 1:
+        if count_companies > 0:
+            for i in range(0, count_companies):
+                a_company = Empresa.objects.all()[i]
+                a_user = CustomUser.objects.get(id=a_company.custom_user.id)
+                print(a_user)
+                manager = Administrador.objects.get_or_create(
+                    id_empresa=a_company,
+                    id_usuario=a_user
+                )[0]
+                count += 1
+        else:
+            print('You must to add Companies first!!!\n')
+    else:
+        print('You must to add some Users first!!!\n')
+
+    print(str(count) + " Managers Added")
+
+def add_areas(N=5):
+    count_companies = len(Empresa.objects.all())
+    if count_companies > 0:
+        for i in range(0, count_companies):
+            a_company = Empresa.objects.all()[i]
+            for j in range(0, 5):
+                nombre = AREAS[j]
+                color = faker.hex_color()
+                area = Area.objects.get_or_create(
+                    id_empresa=a_company,
+                    nombre=nombre,
+                    color=color
+                )[0]
+                area.save()
+    else:
+        print('You must to add some Companies first\n')
+
+def add_casetas(N=5):
+    count_companies = len(Empresa.objects.all())
+    if count_companies > 1:
+        for i in range(count_companies):
+            a_company = Empresa.objects.all()[i]
+            for j in range(0, 3):
+                nombre = CASETAS[j]
+                num_random = random.randint(0, 1)
+                if num_random == 0:
+                    activa = False
+                else:
+                    activa = True
+                caseta = Caseta.objects.get_or_create(
+                    id_empresa=a_company,
+                    nombre=nombre,
+                    activa=activa
+                )[0]
+                caseta.save()
+    else:
+        print('You must to add some Companies first\n')
+
+def add_employees(N=5):
+    count = 0
+    for i in range(N):
+        num_usuarios = len(CustomUser.objects.all())
+        #Verificamos que no solamente haya sido dado de alta el Superusuario
+        if num_usuarios > 1:
+            num_empresas = len(Empresa.objects.all())
+            if num_empresas > 1:
+                a_company = Empresa.objects.all()[random.randint(1, num_empresas - 1)]
+                if len(Area.objects.all().filter(id_empresa=a_company.id)):
+                    area_empresa = Area.objects.all().filter(id_empresa=a_company.id)[random.randint(1, 4)]
+                    print('AREA')
+                    print(area_empresa)
+                    a_user = CustomUser.objects.all()[random.randint(1, num_usuarios - 1)]
+                    if a_user.is_active:
+                        if not a_user.is_staff:
+                            if not a_user.is_superuser:
+                                if not a_user.user_perfil.es_empleado:
+                                    num = random.randint(0, 1)
+                                    if num == 0:
+                                        puede_enviar = False
+                                    else:
+                                        puede_enviar = True
+                                    employee = Empleado.objects.get_or_create(
+                                                id_empresa=a_company,
+                                                id_usuario=a_user,
+                                                id_area=area_empresa,
+                                                extension=faker.msisdn(),
+                                                puede_enviar=puede_enviar,
+                                                id_notificaciones=faker.msisdn(),
+                                                codigo=faker.msisdn()
+                                            )[0]
+                                    employee.save()
+                                    count = count + 1
+                                    perfil = Perfil.objects.get(id=a_user.user_perfil.id)
+                                    perfil.es_empleado = True
+                                    perfil.save()
+                else:
+                    print('You must to add some Areas first!!!')
+            else:
+                print("You must to add some campanies first!!!")
+        else:
+            print("You must to add some Users first!!!")
+    print(str(count) + ' employees were added!!!')
