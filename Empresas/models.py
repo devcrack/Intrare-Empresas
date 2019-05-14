@@ -289,8 +289,9 @@ class Acceso(models.Model):
                         etc.
 
         Todo:
-            * para que se emplea el atributo pase_salida???
-            * para que se emplea el atributo estado???
+            * para que se emplea el atributo pase_salida??? R:
+            * para que se emplea el atributo estado??? R:
+            * El empleado es quien genera el acceso??? R:
 
     """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
