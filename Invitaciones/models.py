@@ -98,6 +98,12 @@ class InvitacionEmpresarial(models.Model):
         Todo:
             * Aque se refiere el campo asignada?
             * ¿cod_seguridad es una especie de contraseña?
+            * El campo email, no se puede cubrir con el cambio email, del usuario???
+            * El campo empresa, ¿No lo puedo obtener mediante la interseccion de ID_Empresa?
+            * Estos campos que a primera vista parecieran reduntantes, es para agilizar el proceso
+              con la obtencion de datos?.
+            * Los campos id_empresa., id_area, id_empleado,  en que difieren con los
+              campos de la tabla INVITACION_TEMPORAL, ya que al parecer tienen los mismo campos?.
     """
 
 
@@ -107,6 +113,7 @@ class InvitacionEmpresarial(models.Model):
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     id_invitacion_temporal = models.ForeignKey('InvitacionTemporal', on_delete=models.CASCADE)    
     """ Necesita un validador para email """
+
     email = models.EmailField(max_length=100, unique=True, null=False, blank=False,name='email')
     fecha_hora_envio = models.DateTimeField(null=False, blank=False)
     fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)    
