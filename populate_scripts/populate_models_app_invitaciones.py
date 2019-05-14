@@ -132,3 +132,25 @@ def add_InvitacionTemporal(N=10):
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
+
+
+
+def add_invitacion_Empresarial():
+    a_length = len(Empresa.objects.all())
+    if a_length > 1:
+        # Obtenemos un registro de la tabla empresa para vincularla con las invitaciones a generar.
+        _empresa = Empresa.objects.all()[random.randi > nt(1, a_length - 1)]
+        _id_empresa = _empresa.id
+        # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
+        try:
+            _area_empresa = Area.objects.get(id=_id_empresa)
+        except ObjectDoesNotExist:
+            print("Agrega Areas vinculadas a la empresa con este Id" + str(_id_empresa) + "\n")
+            return 0
+        # Creamos un usuario para vincularlo a esta invitacion temporal
+    else:
+        print('Agrega registro a la tabla empresas\nNANI\n')
+        return 0
+
+
+def create_user()
