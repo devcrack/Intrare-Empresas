@@ -9,7 +9,7 @@ django.setup()
 
 from Invitaciones.models import *
 from Empresas.models import Empresa, Area, Empleado
-from Usuarios.models import CustomUser
+from Usuarios.models import CustomUser,Perfil
 
 
 faker = Faker()
@@ -136,10 +136,24 @@ def add_InvitacionTemporal(N=10):
 
 
 def add_invitacion_Empresarial():
+    """Se agrega un registro a la tabla usuarios.
+
+            Args:
+                N(int):Por default son 10 registro pero en realidad puede tomar un valor que le sea proporcionado.
+
+            Attributes:
+
+            Todo:
+                * Se tiene que obtener la empresa con la que se tiene que vincular, la invitacion.
+                * Obtener el area vinculada con la empresa y la invitacion.
+                * Obtener el empleado vinculado con la empresa que es quien genera la invitacion.
+                * Generamos el usuario al que le esta asiganda la invitacion.
+                * Finalmente se genera la invitacion.
+            """
     a_length = len(Empresa.objects.all())
     if a_length > 1:
         # Obtenemos un registro de la tabla empresa para vincularla con las invitaciones a generar.
-        _empresa = Empresa.objects.all()[random.randi > nt(1, a_length - 1)]
+        _empresa = Empresa.objects.all()[random.randi(1, a_length - 1)]
         _id_empresa = _empresa.id
         # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
         try:
@@ -147,10 +161,57 @@ def add_invitacion_Empresarial():
         except ObjectDoesNotExist:
             print("Agrega Areas vinculadas a la empresa con este Id" + str(_id_empresa) + "\n")
             return 0
+        # Obtenemos el empleado que pertenece a esta empresa, es decir quien genero la invitacion
+        try:
+            _empleado = Empleado.objects.get(_id_empresa)
+        except ObjectDoesNotExist:
+            print("Agrega Areas empleados a la empresa con este Id" + str(_id_empresa) + "\n")
+            return 0
         # Creamos un usuario para vincularlo a esta invitacion temporal
+        _user = add_user(False)
+        _perfil = Perfil.objects.get_or_create(id=_user.user_perfil.id)
+        _perfil.es_empleado = False
+        _perfil.celular = faker().msisdn()
+        _perfil.save()
+        invitacion_Empresarial = InvitacionEmpresarial(
+            id_empresa=_empresa, id_area=_area_empresa,
+            id_empleado=_empleado, id_usuario=_user,
+
+        )
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
 
 
-def create_user()
+def add_user(_is_superuser):
+    full_name = faker.name()
+    list = full_name.split()
+    name = list[0]  # Requiere: Vigalante,
+    last_name = list[1]  # Requiere: Vigiliante
+    email = faker.email()
+    username_pre = email.split("@")
+    username = username_pre[0]
+    password = faker.password()
+    is_staff = False
+    is_active = True
+    is_superuser = _is_superuser
+    last_login = faker.date_time()
+    user = CustomUser.objects.get_or_create(
+        first_name=name,
+        last_name=last_name,
+        username=username,
+        email=email,
+        is_staff=is_staff,
+        is_active=is_active,
+        is_superuser=is_superuser,
+        last_login=last_login,
+        password=password)[0]
+    user.save()
+
+    return user
+
+def add_equipo_seguridad():
+    fake_name = faker.job()
+    equipo_seguridad = EquipoSeguridad(nombre=fake_name)
+
+
