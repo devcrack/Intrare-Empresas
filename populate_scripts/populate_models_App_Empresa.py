@@ -122,13 +122,13 @@ def add_acceso():
         _id_area  = _invitacion.id_area
         #¿¿¿Empleado que esta dando el Acceso??, o ¿Que genero al invitacion?
         employee_or_guard = bool(random.getrandbits(1))
+        #Eligimos quien da el acceso a esta invitacion.
         if employee_or_guard: #El acceso se lo concedera un empleado,
             #Si el acceso se lo concedio un empleado entonces tenenmos que obtener el
             #Identificador del Empleado.
-            _empleado_acceso =
+            #_empleado_acceso =
         else : #El acceso se lo concedera un guardia
-
-        _id_empleado = _invitacion.id_empleado
+            _id_empleado = _invitacion.id_empleado
 
 
     else:
