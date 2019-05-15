@@ -116,7 +116,19 @@ class Administrador(models.Model):
 
 class Empleado(models.Model):
     """
-    Modelo Empleado
+    Modelo Empleado  name(str): Nombre de la Empresa.
+            address(str): Dirección de la Empresa.
+            telephone(str): Teléfono de la Empresa.
+            email(email): Dirección de Correo Electrónico de la Empresa.
+            logo(str): Ubicación del archivo logo de la Empresa.
+            web_page(str): Direccón de la Página Web de la Empresa.
+            scian(int): Código Sistema de Clasificación
+                        Industrial de América del Norte de la Empresa.
+            classification(str): Clasificación de la Empresa.
+            latitude(float): Latitud de la Empresa.
+            longitude(float): Longitud de la Empresa.
+            url_map(str): Dirección web del mapa de la Empresa.
+            validity(Date): Vigencia de la Empresa.
 
     Represnta la Tabla Empleado
     en la Base de Datos.
@@ -292,6 +304,12 @@ class Acceso(models.Model):
             * para que se emplea el atributo pase_salida??? R:
             * para que se emplea el atributo estado??? R:
             * El empleado es quien genera el acceso??? R:
+            * Acceso esta vinculada con una invitacion, cuando se le concede acceso el campo de
+              leida  a esa invitacion se pone en TRUE?, y eso indica que el acceso ya ha sido concedido?
+            * El acceso lo puede conceder el empleado y/o el vigilante? EL ACCESO SIEMRE LO TIENE DAR EL VIGILANTE.
+            * ¿A que se refiere con vigilante Entrada, Vigilante Salida?, ¿Puede ser alguno de estos campos
+                                                                           Nulo, si es que el acceso se lo concedio
+                                                                           un empleado? NO.
 
     """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
@@ -303,7 +321,7 @@ class Acceso(models.Model):
     fecha_hora_acceso = models.DateTimeField(null=False, blank=False)
     fecha_hora_salida = models.DateTimeField(null=False, blank=False)
     estado = models.CharField(max_length=45, null=False, blank=False)
-    pase_salida = models.CharField(max_length=50, null=False, blank=False)
+    pase_salida = models.CharField(max_length=50, null=False, blank=False)# Check que valida que se ha efectuado la visita, ya se con el empleado o con el amdinistrador.
     motivo_no_firma = models.TextField(null=False, blank=False)
     comentarios_VE = models.TextField(null=False, blank=False)
     datos_coche = models.TextField(null=False, blank=False)
