@@ -118,7 +118,7 @@ def add_InvitacionTemporal(N=10):
             _fecha_hora_envio = faker.date_time()
             _fecha_hora_invitacion = faker.date_time()
             _asunto = faker.paragraph(max_nb_chars=250, ext_word_list=None)
-            _automovil = bool(random.getrandbits(1))
+            _automovil = -
             _notas = faker.paragraph(max_nb_chars=150, ext_word_list=None)
             _empresa = faker.company()
             invitacion_temp = InvitacionTemporal.objects.get_or_create(
@@ -144,9 +144,9 @@ def add_invitacion_Empresarial():
             Attributes:
 
             Todo:
-                * Se tiene que obtener la empresa con la que se tiene que vincular, la invitacion.
-                * Obtener el area vinculada con la empresa y la invitacion.
-                * Obtener el empleado vinculado con la empresa que es quien genera la invitacion.
+                * Se tiene que obtener la empresa en la que se esta haciendo la invitacion.
+                * Obtener el area vinculada con la empresa en la que se esta haciendo la invitacion.
+                * Obtener el empleado vinculado con la empresa, es decir quien genera la invitacion.
                 * Generamos el usuario al que le esta asiganda la invitacion.
                 * Finalmente se genera la invitacion.
             """
