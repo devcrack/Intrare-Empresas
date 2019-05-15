@@ -17,16 +17,23 @@ class Parque(models.Model):
         verbose_name_plural = 'Parques'
 
 
-class VigilanteParque(models.Model):
+class AdministradorParque(models.Model):
     id_parque = models.ForeignKey('Parque', on_delete=models.CASCADE)
-    nombre_completo = models.CharField(max_length=200, blank=False, null=False,
-                                       name='nombre_completo')
-    celular = models.CharField(max_length=30, blank=False, null=False, name='celular')
-    password = models.CharField(max_length=128, blank=False, null=False, name='password')
-    activo = models.BooleanField()
+    id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nombre_completo
+        return self.id_usuario.name + " - " + self.id_parque.nombre
+
+    class Meta:
+        verbose_name_plural = 'Administradores del Parque'
+
+
+class VigilanteParque(models.Model):
+    id_parque = models.ForeignKey('Parque', on_delete=models.CASCADE)
+    id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.id_usuario.name + " - " + self.id_parque.nombre
 
     class Meta:
         verbose_name_plural = 'Vigilantes del Parque'
