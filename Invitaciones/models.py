@@ -25,6 +25,12 @@ class Invitacion(models.Model):
              empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
              leida(bool): Bandera que indica si la invitacion ha sido leida o no, pero porquien(La empresa o el invitado)?.
 
+
+    Todo:
+         *Siempre el empleado genera la invitaciones
+         * El campo empresa(STRING) que es el nombre de la empresa en la que se
+           esta generando la invitacion?, o es la empresa de la que proviene el invitado?
+           R: Es la empresa de donde viene el invitado, y puede estar vacio.
     """
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE)
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
@@ -37,7 +43,7 @@ class Invitacion(models.Model):
     notas = models.CharField(max_length=12)
     """ Esto  me lo puedo traer desde la consulta con el id_empresa"""
     empresa = models.CharField(max_length=254, null=False, blank=False)
-    leida =models.BooleanField(null=False, blank=False)
+    leida =models.BooleanField(null=False, blank=False) #  Se activa cuando el invitado revisa la invitacion y asi el empleado se de cuenta de que se ha leido.
 
     def __str__(self):
         return "%s %s" % (str(self.id), self.id_usuario.email)
@@ -47,7 +53,6 @@ class Invitacion(models.Model):
 
 class InvitacionTemporal(models.Model):
     """Clase en la que se apoya el modelo para la creacion de la tabla invitacion temporal.
-    ¿Porque aqui no es importante que el invitado temporal no se le marque como leida la invitacion?
 
 
         Attributes:
@@ -61,6 +66,11 @@ class InvitacionTemporal(models.Model):
              notas(str): Notas y comentario extras acerca de la visita.
              empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
 
+
+    Todo:
+        * ¿Exactamente que es una invitacion temporal? R: Es para aquellos que no estan registrados,
+          posteriormente cuando se registren se cargara la informacion de la invitacion temporal, al usuario que se esta registrando  haciendo
+          match mediante el numero de telefono.
     """
 
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE)
@@ -76,16 +86,19 @@ class InvitacionTemporal(models.Model):
 
  
 class InvitacionEmpresarial(models.Model):
-    """Clase en la que se apoya el modelo para la creacion de la tabla invitacion temporal.
+    """Este tipo de invitacion es para aquellas entidades que tienen una invitacion a la empresa
+    pero que se desconoce el usuario, es decir que el usuario no ha sido registrado, pero que mas
+    sin embargo una empresa tiene asignada una invitacion.
+    Clase en la que se apoya el modelo para la creacion de la tabla invitacion temporal.
     ¿Porque aqui no es importante que el invitado temporal no se le marque como leida la invitacion?
 
 
         Attributes:
-            id_empresa(int): Identificador unico de la empresa, llave foranea.
-            id_area(int): Identificador unico del area, llave foranea.
-            id_empleado(int): Identificador unico del usuario, llave foranea.
-            id_usuario(int): Identificador unico del area, llave foranea.
-            id_invitacion_temporal(int): Identificador unico de la invitacion temporal, llave foranea.
+            id_empresa(int): Id de la empresa a la que se va a visitar.
+            id_area(int): Id del area de la empresa a la que se va a visitar.
+            id_empleado(int): Id del empleado que genera la visita a la empresa.
+            id_usuario(int): iD del usuario que va a visitar la empresa, PUEDE SER NULO.
+            id_invitacion_temporal(int): ??????????
             email(str):email del invitado empresarial.
             fecha_hora_envio(DateTimeField): Fecha y hora de envio de la invitacion.
             fecha_hora_invitacion(DateTimeField): Fecha y hora a suscitar  la invitacion.
@@ -94,24 +107,45 @@ class InvitacionEmpresarial(models.Model):
             notas(str): Notas y comentario extras acerca de la visita.
             empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
             asignada(bool):Este campo no lo entiendo del todo?.
-            cod_seguridad(str): Constraseña especial?
+            cod_seguridad(str): Constraseña especial,
         Todo:
-            * Aque se refiere el campo asignada?
-            * ¿cod_seguridad es una especie de contraseña?
-            * El campo email, no se puede cubrir con el cambio email, del usuario???
-            * El campo empresa, ¿No lo puedo obtener mediante la interseccion de ID_Empresa?
+            * INVITACION EMPRESARIAL es para aquellas entidades que tienen invitacion a la empresa
+              pero no se conoce el usuario que viene a la visita.
+            * Aque se refiere el campo asignada? R: Si esta asignada a un visitante???
+            * ¿cod_seguridad es una especie de contraseña? R:truco para proteger la URL
+            * El campo email, no se puede cubrir con el cambio email, del usuario??? R: EMAIL del usuario que se desconoce
+            * El campo empresa, ¿No lo puedo obtener mediante la interseccion de ID_Empresa? R: EMPRESIA DE DONDE PROVIENE EL VISITANTE
             * Estos campos que a primera vista parecieran reduntantes, es para agilizar el proceso
-              con la obtencion de datos?.
+              con la obtencion de datos?. R:
             * Los campos id_empresa., id_area, id_empleado,  en que difieren con los
               campos de la tabla INVITACION_TEMPORAL, ya que al parecer tienen los mismo campos?.
+            R:
+            DUDAS:
+            - id_invitacion_temporal ????? para que se usa esto aqui??.
+
     """
 
 
-    id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE)
-    id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
-    id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
-    id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    id_invitacion_temporal = models.ForeignKey('InvitacionTemporal', on_delete=models.CASCADE)    
+    id_empresa = models.ForeignKey(
+        'Empresas.Empresa',
+        on_delete=models.CASCADE,
+        blank=False)
+    id_area = models.ForeignKey(
+        'Empresas.Area',
+        on_delete=models.CASCADE,
+        blank=False)
+    id_empleado = models.ForeignKey(
+        'Empresas.Empleado',
+        on_delete=models.CASCADE,
+        blank=False)
+    id_usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        default=None) # ESTO PUEDE SER NULL
+    id_invitacion_temporal = models.ForeignKey(
+        'InvitacionTemporal',
+        on_delete=models.CASCADE,
+    default=None)
     """ Necesita un validador para email """
 
     email = models.EmailField(max_length=100, unique=True, null=False, blank=False,name='email')
@@ -124,7 +158,7 @@ class InvitacionEmpresarial(models.Model):
     empresa = models.CharField(max_length=254, null=False, blank=False)
     asignada = models.BooleanField(null=False, blank=False)
     """ Necesita un validador para contraseñas """
-    cod_seguridad = models.CharField(max_length=254, null=False, blank=False)
+    cod_seguridad = models.CharField(max_length=254, null=False, blank=False) #Truco para proteger la url
     def __str__(self):
         return f"{self.id}-{self.email}"
         #return "%s %s" % (str(self.id), self.email)
