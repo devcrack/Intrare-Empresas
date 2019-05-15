@@ -8,6 +8,7 @@ django.setup()
 
 from Empresas.models import  *
 from Usuarios.models import CustomUser, Perfil
+from Invitaciones.models import Invitacion
 from faker import Faker
 
 
@@ -99,8 +100,45 @@ def add_user(_is_superuser):
 
     return user
 
+
 def add_acceso():
+    """
+    Aqui al seleccionar la empresa puede ser random,
+    el area debera estar vinculado a esta empresa pero tambien puede ser random,
+    el empleado tendra que estar vinculado a esta empresa pero tambien puede ser random.
+    El usuario se toma de la invitacion, para esto se tiene que hacer la interseccion
+    con la empresa, el area y el empleado.
+
+    Obtener una invitacion random y concederle acceso
+    :return:
+    """
     #Obtenemos la empresa en la que se concedera el acceso.
+    num_inv = len(Invitacion.objects.all())
+    if num_inv > 1:
+        _invitacion = Invitacion.objects.all()[random.randint(1, num_inv - 1)]
+        #Empresa donde se la esta dando acceso
+        _id_empresa = _invitacion.id_empresa
+        #Area de la empresa donde se esta dando el acceso.
+        _id_area  = _invitacion.id_area
+        #¿¿¿Empleado que esta dando el Acceso??, o ¿Que genero al invitacion?
+        employee_or_guard = bool(random.getrandbits(1))
+        if employee_or_guard: #El acceso se lo concedera un empleado,
+            #Si el acceso se lo concedio un empleado entonces tenenmos que obtener el
+            #Identificador del Empleado.
+            _empleado_acceso =
+        else : #El acceso se lo concedera un guardia
+
+        _id_empleado = _invitacion.id_empleado
+
+
+    else:
+        print("Add some invitations first of all, please \n")
+
+
+
+
+
+
     num_company = len (Empresa.objects.all())
     if num_company > 0:
         # Obtenemos un registro de la tabla empresa para vincularla con el vigilante  a generar.
