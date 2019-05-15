@@ -173,7 +173,7 @@ def add_invitacion_Empresarial():
         _perfil.es_empleado = False
         _perfil.celular = faker().msisdn()
         _perfil.save()
-        invitacion_Empresarial = InvitacionEmpresarial(
+        invitacion_Empresarial = InvitacionEmpresarial.objects.get_or_create(
             id_empresa=_empresa, id_area=_area_empresa,
             id_empleado=_empleado, id_usuario=_user,
 
@@ -212,6 +212,8 @@ def add_user(_is_superuser):
 
 def add_equipo_seguridad():
     fake_name = faker.job()
-    equipo_seguridad = EquipoSeguridad(nombre=fake_name)
+    equipo_seguridad = EquipoSeguridad.objects.get_or_create(nombre=fake_name)[0]
+    equipo_seguridad.save( )
+
 
 
