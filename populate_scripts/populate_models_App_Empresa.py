@@ -178,7 +178,7 @@ def add_companies(N=5):
         * Generar un Administrador del sistema para cada Compañia/Empresa.
     """
     for entry in range(N):
-        sys_admin = add_user(False, 2)
+        sys_admin = add_user(True, 2)
         fake_empresa = faker.company()
         fake_address = faker.street_address()
         fake_numer_phone = phn()
@@ -314,6 +314,7 @@ def add_employees(N=5):
         else:
             print("You must to add some Users first!!!")
     print(str(count) + ' employees were added!!!')
+
 
 
 def add_user(_is_superuser, type_rol):
