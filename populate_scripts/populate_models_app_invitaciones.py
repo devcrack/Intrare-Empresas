@@ -66,7 +66,7 @@ def add_Invitaciones(N=10):
                 asunto=_asunto, automovil=_automovil,
                 notas=_notas, empresa=_empresa,
                 leida=_leida
-            )
+            )[0]
             invitacion.save()
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')

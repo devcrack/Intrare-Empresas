@@ -184,7 +184,7 @@ def add_companies(N=5):
     else:
         parque = None
         for entry in range(N):
-            sys_admin = add_user(True, 0)
+            sys_admin = add_user(False, 5)
             fake_empresa = faker.company()
             fake_address = faker.street_address()
             fake_numer_phone = phn()
