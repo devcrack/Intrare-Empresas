@@ -60,9 +60,9 @@ def add_casetas(how_many):
     print('Adding casetas....\n')
     populate_company.add_casetas(how_many)
 
-def add_employees(how_mamy):
+def add_employees(how_many):
     print('Add employees...\n')
-    populate_company.add_employees(how_mamy)
+    populate_company.add_employees(how_many)
 
 def add_managers(how_many):
     print('Adding mangers')
