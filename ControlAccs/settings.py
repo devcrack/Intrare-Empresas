@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import enum
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,6 +30,14 @@ ALLOWED_HOSTS = []
 
 # Aquí le decimos a django que utilice nuestra clase de user tuneada xD
 AUTH_USER_MODEL = 'Usuarios.CustomUser'
+
+
+NONE = 0
+EMPLEADO = 1
+VIGILANTE = 2
+PAR_VIGILANTE = 3
+ADMIN_PARQUE = 4
+ADMIN = 5
 
 # Application definition
 
