@@ -111,6 +111,11 @@ def add_acceso():
 
     Obtener una invitacion random y concederle acceso
     :return:
+    Todo:
+        * La seleccion de la empresa es random.
+        * Area vinculada a la empresa seleccionada.
+        * Empleado vinculado a la empresa.
+        * Obtener la invitacion relacionada a esta area.
     """
     #Obtenemos la empresa en la que se concedera el acceso.
     num_inv = len(Invitacion.objects.all())
@@ -120,15 +125,8 @@ def add_acceso():
         _id_empresa = _invitacion.id_empresa
         #Area de la empresa donde se esta dando el acceso.
         _id_area  = _invitacion.id_area
-        #¿¿¿Empleado que esta dando el Acceso??, o ¿Que genero al invitacion?
-        employee_or_guard = bool(random.getrandbits(1))
-        #Eligimos quien da el acceso a esta invitacion.
-        if employee_or_guard: #El acceso se lo concedera un empleado,
-            #Si el acceso se lo concedio un empleado entonces tenenmos que obtener el
-            #Identificador del Empleado.
-            #_empleado_acceso =
-        else : #El acceso se lo concedera un guardia
-            _id_empleado = _invitacion.id_empleado
+
+
 
 
     else:
