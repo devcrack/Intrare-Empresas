@@ -10,7 +10,7 @@ from Empresas.models import  *
 from Usuarios.models import CustomUser
 from Invitaciones.models import Invitacion
 from faker import Faker
-
+from .random_number_phone import phn
 
 #Posibles Áreas de una  Empresa
 AREAS = [
@@ -60,11 +60,11 @@ def add_vigilante():
         #Generemos un usuario que sera el vigilante, NO ES SUPER USARIO
         _user = add_user(False)
         #Se tiene que cargar que el perfil del usuario recien creado es un empleado.
-        _perfil = Perfil.objects.get_or_create(id=_user.user_perfil.id)
-        _perfil.es_empleado = True
+        #ERROR_perfil = Perfil.objects.get_or_create(id=_user.user_perfil.id)
+        #ERROR_perfil.es_empleado = True
         #Se tiene que cargar el numero telefonico del Guardia en Perfil.
-        _perfil.celular = faker().msisdn()
-        _perfil.save()
+        #ERROR_perfil.celular = faker().msisdn()
+        #ERROR_perfil.save()
         # Generar el nuevo Vigilante
         _vigilante = Vigilante.objects.get_or_create(id_empresa=_empresa, id_usuario=_user)[0]
         _vigilante.save()
@@ -112,6 +112,11 @@ def add_acceso():
 
     Obtener una invitacion random y concederle acceso
     :return:
+    Todo:
+        * La seleccion de la empresa es random.
+        * Area vinculada a la empresa seleccionada.
+        * Empleado vinculado a la empresa.
+        * Obtener la invitacion relacionada a esta area.
     """
     #Obtenemos la empresa en la que se concedera el acceso.
     num_inv = len(Invitacion.objects.all())
@@ -165,48 +170,45 @@ def add_acceso():
         print("Add some companies first of all, please \n")
 
 def add_companies(N=5):
-    a_length = len(CustomUser.objects.all())
-    if a_length > 1:
-        print('Num Users :' + str(a_length))
-        for entry in range(N):
-            a_user = CustomUser.objects.all()[random.randint(1, a_length - 1)]
-            if not a_user.is_superuser:
-                a_user.is_superuser = True
-                a_user.save()
-                fake_user = a_user
-                print(fake_user)
-                fake_empresa = faker.company()
-                fake_address = faker.street_address()
-                fake_numer_phone = faker.msisdn()
-                fake_mail = faker.email()
-                fake_logo = faker.company_suffix()
-                fake_web_page = faker.domain_name()
-                fake_scian = random.randint(1, 30)
-                fake_classification = faker.job()
-                fake_latitude = faker.latitude()
-                fake_longitude = faker.longitude()
-                fake_url_map = faker.uri()
-                fake_validity = faker.date(end_datetime=None)
-                fake_empresa = Empresa.objects.get_or_create(
-                    custom_user=fake_user,
-                    name=fake_empresa,
-                    address=fake_address,
-                    telephone=fake_numer_phone,
-                    email=fake_mail,
-                    logo=fake_logo,
-                    web_page=fake_web_page,
-                    scian = fake_scian,
-                    classification=fake_classification,
-                    latitude=fake_latitude,
-                    longitude=fake_longitude,
-                    url_map=fake_url_map,
-                    validity=fake_validity
-                )[0]
-                fake_empresa.save()
-            else:
-                print('Only one Administrator per Company can be assigned.')
-    else:
-        print('You must to add some users first!!!')
+    """
+
+    :param N:
+    :return:
+    Todo:
+        * Generar un Administrador del sistema para cada Compañia/Empresa.
+    """
+    for entry in range(N):
+        sys_admin = add_user(False, 2)
+        fake_empresa = faker.company()
+        fake_address = faker.street_address()
+        fake_numer_phone = phn()
+        fake_mail = faker.email()
+        fake_logo = faker.company_suffix()
+        fake_web_page = faker.domain_name()
+        fake_scian = random.randint(1, 30)
+        fake_classification = faker.job()
+        fake_latitude = faker.latitude()
+        fake_longitude = faker.longitude()
+        fake_url_map = faker.uri()
+        fake_validity = faker.date_time()
+        fake_empresa = Empresa.objects.get_or_create(
+            custom_user=sys_admin,
+            name=fake_empresa,
+            address=fake_address,
+            telephone=fake_numer_phone,
+            email=fake_mail,
+            logo=fake_logo,
+            web_page=fake_web_page,
+            scian=fake_scian,
+            classification=fake_classification,
+            latitude=fake_latitude,
+            longitude=fake_longitude,
+            url_map=fake_url_map,
+            validity=fake_validity
+        )[0]
+        fake_empresa.save()
+
+
 
 def add_managers(N=5):
     count_users = len(CustomUser.objects.all())
@@ -302,9 +304,9 @@ def add_employees(N=5):
                                             )[0]
                                     employee.save()
                                     count = count + 1
-                                    perfil = Perfil.objects.get(id=a_user.user_perfil.id)
-                                    perfil.es_empleado = True
-                                    perfil.save()
+                                    #perfil = Perfil.objects.get(id=a_user.user_perfil.id)
+                                    #perfil.es_empleado = True
+                                    #perfil.save()
                 else:
                     print('You must to add some Areas first!!!')
             else:
@@ -312,3 +314,51 @@ def add_employees(N=5):
         else:
             print("You must to add some Users first!!!")
     print(str(count) + ' employees were added!!!')
+
+
+def add_user(_is_superuser, type_rol):
+    """Crea un usuario.
+
+    Args:
+        _is_superuser : Bandera que determina si es un super usuario, Solamente el STAFF es super Usuario.
+                        Tipos de Rol:
+                            0: Usuario de App,
+                            1 Staff,
+                            2: Administrador de Sistema,
+                            3: Vigilante Parque,
+                            4: Administrador Parque,
+
+
+        type_rol: Tipo de rol que tiene el usuario.
+    """
+    full_name = faker.name()
+    list = full_name.split()
+    name = list[0]  # Requiere: Vigalante,
+    last_name = list[1]  # Requiere: Vigiliante
+    email = faker.email()
+    username_pre = email.split("@")
+    username = username_pre[0]
+    password = faker.password()
+    is_staff = False
+    is_active = True
+    is_superuser = _is_superuser
+    _celular = phn()
+    _rol = type_rol
+    last_login = faker.date_time()
+    user = CustomUser.objects.get_or_create(
+        first_name=name,
+        last_name=last_name,
+        username=username,
+        email=email,
+        is_staff=is_staff,
+        is_active=is_active,
+        is_superuser=is_superuser,
+        last_login=last_login,
+        password=password,
+        celular=_celular,
+        roll=_rol
+        )[0]
+    user.save()
+    print('si sale??????????'
+          '')
+    return user

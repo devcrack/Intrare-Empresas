@@ -8,7 +8,9 @@ from builtins import print
 
 import populate_scripts.fill_table_user as populate_user
 import populate_scripts.populate_models_App_Empresa as populate_company
+import populate_scripts.populate_models_app_invitaciones as populate_inv
 import populate_scripts.pupulate_models_app_Parques as populate_parks
+
 
 # def create_users():
 #     populate_user.fill_table_user()
@@ -22,7 +24,8 @@ def add_users(how_many):
 
     """
     print('Adding users....\n')
-    populate_user.fill_table_user(how_many)
+    for entry in range(how_many):
+        populate_company.add_user(False, 2)
 
 
 def add_companies(how_many):
@@ -37,6 +40,15 @@ def add_companies(how_many):
 
     print('Adding companies....\n')
     populate_company.add_companies(how_many)
+
+def agrega_invitaciones(how_many):
+    """Agrega un determinado numero de invitaciones
+
+     Args:
+         how_many(int):Numero de invitaciones que se desea dar de alta.
+    """
+    print("Agregando Invitaciones")
+    populate_inv.add_Invitaciones(how_many)
 
 
 
@@ -87,6 +99,7 @@ def main():
         'add_casetas':add_casetas,
         'add_employees':add_employees,
         'add_managers':add_managers,
+        'add_inv': agrega_invitaciones,
         'add_parques': add_parks
     }
     option = sys.argv[1]
