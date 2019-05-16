@@ -6,9 +6,6 @@ from django.utils import timezone
 class Parque(models.Model):
     nombre = models.CharField(max_length=150, blank=False, null=False, name='nombre')
     direccion = models.CharField(max_length=150, blank=False, null=False, name='direccion')
-    telefono = models.CharField(max_length=15, blank=False, null=False, name='telefono')
-    email = models.EmailField(blank=False, null=False)
-    password = models.CharField(max_length=150, blank=False, null=False, name='password')
 
     def __str__(self):
         return self.nombre

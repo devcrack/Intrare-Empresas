@@ -7,7 +7,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
 django.setup()
 
 from Empresas.models import  *
-from Usuarios.models import CustomUser, Perfil
+from Usuarios.models import CustomUser
 from Invitaciones.models import Invitacion
 from faker import Faker
 
@@ -73,6 +73,7 @@ def add_vigilante():
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
 
+
 def add_user(_is_superuser):
     full_name = faker.name()
     list = full_name.split()
@@ -127,6 +128,7 @@ def add_acceso():
             #Si el acceso se lo concedio un empleado entonces tenenmos que obtener el
             #Identificador del Empleado.
             #_empleado_acceso =
+            pass
         else : #El acceso se lo concedera un guardia
             _id_empleado = _invitacion.id_empleado
 

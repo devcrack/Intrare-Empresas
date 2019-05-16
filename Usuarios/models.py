@@ -15,8 +15,8 @@ class CustomUser(AbstractUser):
     Perfil
     """
     celular = models.CharField(max_length=30, unique=True, null=False, blank=True, name='celular')
-    ine_frente = models.CharField(max_length=25, null=False, blank=True, name='ine_frente')
-    ine_atras = models.CharField(max_length=25, null=False, blank=True, name='ine_atras')
+    ine_frente = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_frente')
+    ine_atras = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_atras')
     roll = models.IntegerField(null=False, default=0, blank=True, name='roll')
     plataforma = models.CharField(max_length=25, default='', name='plataforma')  # Tipo de aplicacion que es el sistema(Web, Android, iOs)
     """
@@ -35,19 +35,19 @@ class CustomUser(AbstractUser):
     #     super().save(*args, **kwargs)
 
 
-class Perfil(models.Model):
-    """
-    Clase que define el modelo perfil
-    """
-    celular = models.CharField(max_length=30, unique=True, null=False, blank=False, name='celular')
-    ine_frente = models.CharField(max_length=25, null=False, blank=False, name='ine_frente')
-    ine_atras = models.CharField(max_length=25, null=False, blank=False, name='ine_atras')
-    es_empleado = models.BooleanField(name='es_empleado')
-    plataforma = models.CharField(max_length=25, name='plataforma') #Tipo de aplicacion que es el sistema(Web, Android, iOs)
-
-    def __str__(self):
-        return self.celular
-
-    class Meta:
-        verbose_name_plural = "Perfiles"
+# class Perfil(models.Model):
+#     """
+#     Clase que define el modelo perfil
+#     """
+#     celular = models.CharField(max_length=30, unique=True, null=False, blank=False, name='celular')
+#     ine_frente = models.CharField(max_length=25, null=False, blank=False, name='ine_frente')
+#     ine_atras = models.CharField(max_length=25, null=False, blank=False, name='ine_atras')
+#     es_empleado = models.BooleanField(name='es_empleado')
+#     plataforma = models.CharField(max_length=25, name='plataforma') #Tipo de aplicacion que es el sistema(Web, Android, iOs)
+#
+#     def __str__(self):
+#         return self.celular
+#
+#     class Meta:
+#         verbose_name_plural = "Perfiles"
 
