@@ -260,7 +260,7 @@ def add_areas(N=5):
 
 def add_casetas(N=5):
     count_companies = len(Empresa.objects.all())
-    if count_companies > 1:
+    if count_companies > 0:
         for i in range(count_companies):
             a_company = Empresa.objects.all()[i]
             for j in range(0, 3):
@@ -280,50 +280,42 @@ def add_casetas(N=5):
         print('You must to add some Companies first\n')
 
 def add_employees(N=5):
-    count = 0
-    for i in range(N):
-        num_usuarios = len(CustomUser.objects.all())
-        #Verificamos que no solamente haya sido dado de alta el Superusuario
-        if num_usuarios > 1:
-            num_empresas = len(Empresa.objects.all())
-            if num_empresas > 1:
-                a_company = Empresa.objects.all()[random.randint(1, num_empresas - 1)]
-                if len(Area.objects.all().filter(id_empresa=a_company.id)):
-                    area_empresa = Area.objects.all().filter(id_empresa=a_company.id)[random.randint(1, 4)]
-                    print('AREA')
-                    print(area_empresa)
-                    a_user = CustomUser.objects.all()[random.randint(1, num_usuarios - 1)]
-                    if a_user.is_active:
-                        if not a_user.is_staff:
-                            if not a_user.is_superuser:
-                                if not a_user.user_perfil.es_empleado:
-                                    num = random.randint(0, 1)
-                                    if num == 0:
-                                        puede_enviar = False
-                                    else:
-                                        puede_enviar = True
-                                    employee = Empleado.objects.get_or_create(
-                                                id_empresa=a_company,
-                                                id_usuario=a_user,
-                                                id_area=area_empresa,
-                                                extension=faker.msisdn(),
-                                                puede_enviar=puede_enviar,
-                                                id_notificaciones=faker.msisdn(),
-                                                codigo=faker.msisdn()
-                                            )[0]
-                                    employee.save()
-                                    count = count + 1
-                                    #perfil = Perfil.objects.get(id=a_user.user_perfil.id)
-                                    #perfil.es_empleado = True
-                                    #perfil.save()
-                else:
-                    print('You must to add some Areas first!!!')
-            else:
-                print("You must to add some campanies first!!!")
-        else:
-            print("You must to add some Users first!!!")
-    print(str(count) + ' employees were added!!!')
+    """
 
+    :param N:
+    :return:
+    Todo:
+        *
+    """
+
+    num_companies = len(Empresa.objects.all())
+    if num_companies > 0 :
+        for i in range(0, num_companies):
+            #Seleccionamos la empresa para agregar el empleado
+            _empresa = Empresa.objects.all()[i]
+            try:
+                _areas = Area.objects.filter(id_empresa=_empresa.id)
+                num_areas = len(_areas)
+                _area = _areas[random.randint(0, num_areas - 1)]
+                _id_area = _area.id
+            except ObjectDoesNotExist:
+                print('You must to add some Areas first to this ID' + str(_empresa.id) + '\n')
+            for j in range(N):
+                _id_usuario = add_user(False, 1)
+                _extension = phn()
+                _puede_enviar = bool(random.getrandbits(1))
+                _id_notifiaciones = phn()
+                _codigo = phn()
+                _empleado = Empleado.objects.get_or_create(
+                    id_empresa=_empresa,
+                    id_usuario=_id_usuario,
+                    id_area=_area,
+                    extension=_extension,
+                    puede_enviar=_puede_enviar,
+                    id_notificaciones=_id_notifiaciones,
+                    codigo=_codigo
+                )[0]
+                _empleado.save()
 
 
 def add_user(_is_superuser, type_rol):
