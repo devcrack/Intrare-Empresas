@@ -24,7 +24,8 @@ def add_users(how_many):
 
     """
     print('Adding users....\n')
-    populate_user.fill_table_user(how_many)
+    for entry in range(how_many):
+        populate_company.add_user(False, 2)
 
 
 def add_companies(how_many):
