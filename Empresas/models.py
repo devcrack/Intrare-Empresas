@@ -26,6 +26,13 @@ class Empresa(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
+    id_parque = models.ForeignKey(
+    'Parques.Parque',
+    on_delete=models.CASCADE,
+    default=None,
+    null=True
+
+    )
     name = models.CharField(
         max_length=100,
         unique=True, null=False,
