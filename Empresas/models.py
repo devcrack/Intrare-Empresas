@@ -42,7 +42,7 @@ class Empresa(models.Model):
         unique=True,
         null=False,
         blank=True,
-        name='celular')
+        name='telephone')
     email = models.EmailField(
         max_length=100, unique=True,
         null=False, blank=False,
