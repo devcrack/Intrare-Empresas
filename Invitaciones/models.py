@@ -23,7 +23,7 @@ class Invitacion(models.Model):
              automovil(bool): Indica si el vistante, tiene o no un automovil.
              notas(str): Notas y comentario extras acerca de la visita.
              empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
-             leida(bool): Bandera que indica si la invitacion ha sido leida o no, pero porquien(La empresa o el invitado)?.
+             leida(bool): Bandera que indica si la invitacion ha sido leida por el invitado.
 
 
     Todo:
@@ -35,7 +35,7 @@ class Invitacion(models.Model):
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE)
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
     id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
-    id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=None)
     fecha_hora_envio = models.DateTimeField(null=False, blank=False)
     fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
     asunto = models.CharField(max_length=254, null=False, blank=False)
@@ -108,20 +108,24 @@ class InvitacionEmpresarial(models.Model):
             empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
             asignada(bool):Este campo no lo entiendo del todo?.
             cod_seguridad(str): Constraseña especial,
+
+
         Todo:
-            * INVITACION EMPRESARIAL es para aquellas entidades que tienen invitacion a la empresa
-              pero no se conoce el usuario que viene a la visita.
             * Aque se refiere el campo asignada? R: Si esta asignada a un visitante???
             * ¿cod_seguridad es una especie de contraseña? R:truco para proteger la URL
-            * El campo email, no se puede cubrir con el cambio email, del usuario??? R: EMAIL del usuario que se desconoce
+            * El campo email, no se puede cubrir con el campo email, del usuario??? R: EMAIL del usuario que se desconoce
             * El campo empresa, ¿No lo puedo obtener mediante la interseccion de ID_Empresa? R: EMPRESIA DE DONDE PROVIENE EL VISITANTE
-            * Estos campos que a primera vista parecieran reduntantes, es para agilizar el proceso
-              con la obtencion de datos?. R:
             * Los campos id_empresa., id_area, id_empleado,  en que difieren con los
               campos de la tabla INVITACION_TEMPORAL, ya que al parecer tienen los mismo campos?.
             R:
-            DUDAS:
-            - id_invitacion_temporal ????? para que se usa esto aqui??.
+            * Que pasa con la invitacion Empresarial cuando si se conoce el usuario(Cuando se conoce
+                                                                                   es porque esta dado de alta?)
+              pasa a ser una invitacion normal?, ya que en un determinado momento la invitaicon  es una invitacion empresarial, pero si
+              el usuario se da de alta o se vincula a esta invitacion empresarial, daria lugar a una invitacion normal?
+            * id_invitacion_temporal ????? para que se usa esto aqui??.
+            * email(str):email del invitado empresarial, Que pasa con este campo cuando si se conoce
+                         cuando si hay un usuario registrado para vincularlo con esta invitacion.
+
 
     """
 
@@ -159,9 +163,13 @@ class InvitacionEmpresarial(models.Model):
     asignada = models.BooleanField(null=False, blank=False)
     """ Necesita un validador para contraseñas """
     cod_seguridad = models.CharField(max_length=254, null=False, blank=False) #Truco para proteger la url
+
+
     def __str__(self):
         return f"{self.id}-{self.email}"
         #return "%s %s" % (str(self.id), self.email)
+
+
     class Meta:
         verbose_name_plural = "Invitaciones Empresariales"
 

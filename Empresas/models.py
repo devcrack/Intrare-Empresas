@@ -37,12 +37,12 @@ class Empresa(models.Model):
         blank=False,
         name='address'
     )
-    telephone = models.PositiveIntegerField(
+    telephone = models.CharField(
+        max_length=30,
         unique=True,
-        null=False, blank=False,
-        max_length=13,
-        name='telephone'
-    )
+        null=False,
+        blank=True,
+        name='celular')
     email = models.EmailField(
         max_length=100, unique=True,
         null=False, blank=False,

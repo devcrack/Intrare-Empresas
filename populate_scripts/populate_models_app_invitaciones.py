@@ -9,7 +9,7 @@ django.setup()
 
 from Invitaciones.models import *
 from Empresas.models import Empresa, Area, Empleado
-from Usuarios.models import CustomUser,Perfil
+from Usuarios.models import CustomUser
 
 
 faker = Faker()

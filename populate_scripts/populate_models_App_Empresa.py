@@ -7,10 +7,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
 django.setup()
 
 from Empresas.models import  *
-from Usuarios.models import CustomUser, Perfil
+from Usuarios.models import CustomUser
 from Invitaciones.models import Invitacion
 from faker import Faker
-
+from .random_number_phone import phn
 
 #Posibles Áreas de una  Empresa
 AREAS = [
@@ -60,11 +60,11 @@ def add_vigilante():
         #Generemos un usuario que sera el vigilante, NO ES SUPER USARIO
         _user = add_user(False)
         #Se tiene que cargar que el perfil del usuario recien creado es un empleado.
-        _perfil = Perfil.objects.get_or_create(id=_user.user_perfil.id)
-        _perfil.es_empleado = True
+        #ERROR_perfil = Perfil.objects.get_or_create(id=_user.user_perfil.id)
+        #ERROR_perfil.es_empleado = True
         #Se tiene que cargar el numero telefonico del Guardia en Perfil.
-        _perfil.celular = faker().msisdn()
-        _perfil.save()
+        #ERROR_perfil.celular = faker().msisdn()
+        #ERROR_perfil.save()
         # Generar el nuevo Vigilante
         _vigilante = Vigilante.objects.get_or_create(id_empresa=_empresa, id_usuario=_user)[0]
         _vigilante.save()
@@ -72,6 +72,7 @@ def add_vigilante():
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
+
 
 def add_user(_is_superuser):
     full_name = faker.name()
@@ -125,8 +126,16 @@ def add_acceso():
         _id_empresa = _invitacion.id_empresa
         #Area de la empresa donde se esta dando el acceso.
         _id_area  = _invitacion.id_area
-
-
+        #¿¿¿Empleado que esta dando el Acceso??, o ¿Que genero al invitacion?
+        employee_or_guard = bool(random.getrandbits(1))
+        #Eligimos quien da el acceso a esta invitacion.
+        if employee_or_guard: #El acceso se lo concedera un empleado,
+            #Si el acceso se lo concedio un empleado entonces tenenmos que obtener el
+            #Identificador del Empleado.
+            #_empleado_acceso =
+            pass
+        else : #El acceso se lo concedera un guardia
+            _id_empleado = _invitacion.id_empleado
 
 
     else:
@@ -172,7 +181,7 @@ def add_companies(N=5):
         sys_admin = add_user(False, 2)
         fake_empresa = faker.company()
         fake_address = faker.street_address()
-        fake_numer_phone = faker.msisdn()
+        fake_numer_phone = phn()
         fake_mail = faker.email()
         fake_logo = faker.company_suffix()
         fake_web_page = faker.domain_name()
@@ -181,7 +190,7 @@ def add_companies(N=5):
         fake_latitude = faker.latitude()
         fake_longitude = faker.longitude()
         fake_url_map = faker.uri()
-        fake_validity = faker.date(end_datetime=None)
+        fake_validity = faker.date_time()
         fake_empresa = Empresa.objects.get_or_create(
             custom_user=sys_admin,
             name=fake_empresa,
@@ -190,7 +199,7 @@ def add_companies(N=5):
             email=fake_mail,
             logo=fake_logo,
             web_page=fake_web_page,
-            scian = fake_scian,
+            scian=fake_scian,
             classification=fake_classification,
             latitude=fake_latitude,
             longitude=fake_longitude,
@@ -295,9 +304,9 @@ def add_employees(N=5):
                                             )[0]
                                     employee.save()
                                     count = count + 1
-                                    perfil = Perfil.objects.get(id=a_user.user_perfil.id)
-                                    perfil.es_empleado = True
-                                    perfil.save()
+                                    #perfil = Perfil.objects.get(id=a_user.user_perfil.id)
+                                    #perfil.es_empleado = True
+                                    #perfil.save()
                 else:
                     print('You must to add some Areas first!!!')
             else:
@@ -333,7 +342,7 @@ def add_user(_is_superuser, type_rol):
     is_staff = False
     is_active = True
     is_superuser = _is_superuser
-    _celular = str(faker.msisdn())
+    _celular = phn()
     _rol = type_rol
     last_login = faker.date_time()
     user = CustomUser.objects.get_or_create(
@@ -350,5 +359,6 @@ def add_user(_is_superuser, type_rol):
         roll=_rol
         )[0]
     user.save()
-
+    print('si sale??????????'
+          '')
     return user

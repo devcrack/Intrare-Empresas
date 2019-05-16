@@ -9,6 +9,8 @@ from builtins import print
 import populate_scripts.fill_table_user as populate_user
 import populate_scripts.populate_models_App_Empresa as populate_company
 import populate_scripts.populate_models_app_invitaciones as populate_inv
+import populate_scripts.pupulate_models_app_Parques as populate_parks
+
 
 # def create_users():
 #     populate_user.fill_table_user()
@@ -65,6 +67,10 @@ def add_managers(how_many):
     print('Adding mangers')
     populate_company.add_managers(how_many)
 
+def add_parks(how_many):
+    print('Adding parks')
+    populate_parks.add_Parques(how_many)
+
 
 def main():
     """Entrada principal para llevar a cabo la ejecucion de este script
@@ -93,6 +99,7 @@ def main():
         'add_employees':add_employees,
         'add_managers':add_managers,
         'add_inv': agrega_invitaciones,
+        'add_parques': add_parks
     }
     option = sys.argv[1]
     hw_many = sys.argv[2]
