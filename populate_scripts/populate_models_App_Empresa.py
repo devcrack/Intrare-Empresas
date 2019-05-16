@@ -359,6 +359,5 @@ def add_user(_is_superuser, type_rol):
         roll=_rol
         )[0]
     user.save()
-    print('si sale??????????'
-          '')
+    print('si sale??????????')
     return user
