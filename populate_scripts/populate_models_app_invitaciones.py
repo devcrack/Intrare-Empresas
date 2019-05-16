@@ -35,7 +35,6 @@ def add_Invitaciones(N=10):
     if a_length > 1:
         # Obtenemos un registro de la tabla empresa para vincularla con las invitaciones a generar.
         _empresa = Empresa.objects.all()[random.randint(1, a_length - 1)]
-
         _id_empresa = _empresa.id
         # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
         try:
@@ -47,34 +46,28 @@ def add_Invitaciones(N=10):
         try:
             _empleado = Empleado.objects.get(_id_empresa)
         except ObjectDoesNotExist:
-            print("Agrega Areas empleados a la empresa con este Id" + str(_id_empresa) + "\n")
+            print("Agrega Empleados a la empresa con este Id" + str(_id_empresa) + "\n")
             return 0
-        length_user_records = len (CustomUser.objects.all())
-        if length_user_records > 1:
-            for entry in range(N):
-                # Obtenemos un usuario random al que le asignaremos una invitacion creada.
-                _usuario = CustomUser.objects.all()[random.randint(1, length_user_records)]
-                _fecha_hora_envio = faker.date_time()
-                _fecha_hora_invitacion = faker.date_time()
-                _asunto = faker.paragraph(max_nb_chars=250, ext_word_list=None)
-                _automovil = bool(random.getrandbits(1))
-                _notas = faker.paragraph(max_nb_chars=150, ext_word_list=None)
-                _Empresa = faker.company()
-                _leida = bool(random.getrandbits(1))
-                invitacion = Invitacion.objects.get_or_create(
-                    id_empresa=_empresa, id_area=_area_empresa,
-                    id_empleado=_empleado, id_usuario=_usuario,
-                    fecha_hora_envio=_fecha_hora_envio,
-                    fecha_hora_invitacion=_fecha_hora_invitacion,
-                    asunto=_asunto, automovil=_automovil,
-                    notas=_notas, empresa=_empresa,
-                    leida=_leida
-                )
-                invitacion.save()
-
-        else:
-            print("Agrega usuarios no administradores a esta empresa" + str(_id_empresa) + "\n")
-            return 0
+        for entry in range(N):
+            # Creamo un usuario Tipo 0 para generar la invitacion
+            _usuario = add_user(False, 0)
+            _fecha_hora_envio = faker.date_time()
+            _fecha_hora_invitacion = faker.date_time()
+            _asunto = faker.paragraph(max_nb_chars=250, ext_word_list=None)
+            _automovil = bool(random.getrandbits(1))
+            _notas = faker.paragraph(max_nb_chars=150, ext_word_list=None)
+            _Empresa = faker.company()
+            _leida = bool(random.getrandbits(1))
+            invitacion = Invitacion.objects.get_or_create(
+                id_empresa=_empresa, id_area=_area_empresa,
+                id_empleado=_empleado, id_usuario=_usuario,
+                fecha_hora_envio=_fecha_hora_envio,
+                fecha_hora_invitacion=_fecha_hora_invitacion,
+                asunto=_asunto, automovil=_automovil,
+                notas=_notas, empresa=_empresa,
+                leida=_leida
+            )
+            invitacion.save()
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
@@ -118,7 +111,7 @@ def add_InvitacionTemporal(N=10):
             _fecha_hora_envio = faker.date_time()
             _fecha_hora_invitacion = faker.date_time()
             _asunto = faker.paragraph(max_nb_chars=250, ext_word_list=None)
-            _automovil = -
+            _automovil = bool(random.getrandbits(1))
             _notas = faker.paragraph(max_nb_chars=150, ext_word_list=None)
             _empresa = faker.company()
             invitacion_temp = InvitacionTemporal.objects.get_or_create(
@@ -168,22 +161,34 @@ def add_invitacion_Empresarial():
             print("Agrega Areas empleados a la empresa con este Id" + str(_id_empresa) + "\n")
             return 0
         # Creamos un usuario para vincularlo a esta invitacion temporal
-        _user = add_user(False)
-        _perfil = Perfil.objects.get_or_create(id=_user.user_perfil.id)
-        _perfil.es_empleado = False
-        _perfil.celular = faker().msisdn()
-        _perfil.save()
+        _user = add_user(False,2)
+        _email = faker.email()
+        _fecha_hora_envio = faker.date_time()
+        _fecha_hora_invitacion = faker.date_time()
+        _asunto = faker.paragraph(max_nb_chars=250, ext_word_list=None)
+        _automovil = bool(random.getrandbits(1))
+        _notas = faker.paragraph(max_nb_chars=150, ext_word_list=None)
+        _empresa = faker.company()
+        _leida = False
         invitacion_Empresarial = InvitacionEmpresarial.objects.get_or_create(
             id_empresa=_empresa, id_area=_area_empresa,
-            id_empleado=_empleado, id_usuario=_user,
-
+            id_empleado=_empleado,email=_email, fecha_hora_envio=_fecha_hora_envio,
+            fecha_hora_invitacion=_fecha_hora_invitacion, asunto=_asunto,
+            automovil=_automovil, notas=_notas, empresa=_empresa, asignada=False,
+            cod_seguridad= '"#$"#$"!"#!"#"#$"#$46486548'
         )
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
 
 
-def add_user(_is_superuser):
+def add_user(_is_superuser, type_rol):
+    """Crea un usuario.
+
+    Args:
+        _is_superuser : Bandera que determina si es un super usuario o no.
+        type_rol: Tipo de rol que tiene el usuario.
+    """
     full_name = faker.name()
     list = full_name.split()
     name = list[0]  # Requiere: Vigalante,
@@ -195,6 +200,8 @@ def add_user(_is_superuser):
     is_staff = False
     is_active = True
     is_superuser = _is_superuser
+    _celular = faker.msisdn()
+    _rol = type_rol
     last_login = faker.date_time()
     user = CustomUser.objects.get_or_create(
         first_name=name,
@@ -205,15 +212,19 @@ def add_user(_is_superuser):
         is_active=is_active,
         is_superuser=is_superuser,
         last_login=last_login,
-        password=password)[0]
+        password=password,
+        celular=_celular,
+        roll=_rol
+        )[0]
     user.save()
 
     return user
 
+
 def add_equipo_seguridad():
     fake_name = faker.job()
     equipo_seguridad = EquipoSeguridad.objects.get_or_create(nombre=fake_name)[0]
-    equipo_seguridad.save( )
+    equipo_seguridad.save()
 
 
 
