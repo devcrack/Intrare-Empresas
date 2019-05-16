@@ -11,6 +11,7 @@ from Usuarios.models import CustomUser
 from Invitaciones.models import Invitacion
 from faker import Faker
 from .random_number_phone import phn
+from Parques.models import Parque
 
 #Posibles Áreas de una  Empresa
 AREAS = [
@@ -177,36 +178,44 @@ def add_companies(N=5):
     Todo:
         * Generar un Administrador del sistema para cada Compañia/Empresa.
     """
-    for entry in range(N):
-        sys_admin = add_user(True, 2)
-        fake_empresa = faker.company()
-        fake_address = faker.street_address()
-        fake_numer_phone = phn()
-        fake_mail = faker.email()
-        fake_logo = faker.company_suffix()
-        fake_web_page = faker.domain_name()
-        fake_scian = random.randint(1, 30)
-        fake_classification = faker.job()
-        fake_latitude = faker.latitude()
-        fake_longitude = faker.longitude()
-        fake_url_map = faker.uri()
-        fake_validity = faker.date_time()
-        fake_empresa = Empresa.objects.get_or_create(
-            custom_user=sys_admin,
-            name=fake_empresa,
-            address=fake_address,
-            telephone=fake_numer_phone,
-            email=fake_mail,
-            logo=fake_logo,
-            web_page=fake_web_page,
-            scian=fake_scian,
-            classification=fake_classification,
-            latitude=fake_latitude,
-            longitude=fake_longitude,
-            url_map=fake_url_map,
-            validity=fake_validity
-        )[0]
-        fake_empresa.save()
+    num_parques = len(Parque.objects.all())
+    if num_parques > 0:
+        parque = Parque.objects.all()[random.randint(1, num_parques - 1)]
+    else:
+        parque = None
+        for entry in range(N):
+            sys_admin = add_user(True, 0)
+            fake_empresa = faker.company()
+            fake_address = faker.street_address()
+            fake_numer_phone = phn()
+            fake_mail = faker.email()
+            fake_logo = faker.company_suffix()
+            fake_web_page = faker.domain_name()
+            fake_scian = random.randint(1, 30)
+            fake_classification = faker.job()
+            fake_latitude = faker.latitude()
+            fake_longitude = faker.longitude()
+            fake_url_map = faker.uri()
+            fake_validity = faker.date_time()
+            fake_empresa = Empresa.objects.get_or_create(
+                custom_user=sys_admin,
+                id_parque=parque,
+                name=fake_empresa,
+                address=fake_address,
+                telephone=fake_numer_phone,
+                email=fake_mail,
+                logo=fake_logo,
+                web_page=fake_web_page,
+                scian=fake_scian,
+                classification=fake_classification,
+                latitude=fake_latitude,
+                longitude=fake_longitude,
+                url_map=fake_url_map,
+                validity=fake_validity
+            )[0]
+            fake_empresa.save()
+        else:
+            print("Agrega uno o mas parques \n")
 
 
 
@@ -237,7 +246,7 @@ def add_areas(N=5):
     if count_companies > 0:
         for i in range(0, count_companies):
             a_company = Empresa.objects.all()[i]
-            for j in range(0, 5):
+            for j in range(N):
                 nombre = AREAS[j]
                 color = faker.hex_color()
                 area = Area.objects.get_or_create(
