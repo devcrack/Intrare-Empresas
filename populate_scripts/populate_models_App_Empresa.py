@@ -26,7 +26,6 @@ AREAS = [
     'Matenimiento',
     'Laboratorio'
 ]
-
 #Posibles Nombres de Casetas
 CASETAS = [
     'Norte',
@@ -34,45 +33,9 @@ CASETAS = [
     'Este',
     'Oeste'
 ]
-
-
 faker = Faker()
 
-def add_vigilante():
-    """Se agrega un determinado numero de registros a la tabla Vigilante.
 
-    Args:
-        N(int):Por default son 10 registro pero en realidad puede tomar el valor que le sea proporcionado.
-
-
-    Todo:
-        * Primero que nada se tiene que dar de alta un usuario.
-        * Al dar de alta un usario como vigilante hay que tener especial cuidado de los campos
-          que vamos a dar de alta para dicho registro.
-        * Una vez que se haya creado el usuario hay que vincularlo con el vigilante.
-        * Los vigilantes siempre se consideran como agentes externos a la empresa(Empresa de seguridad) ??,
-          o en caso de ser vigilantes de la empresa, PASAN A ser EMPLEADOS????.
-    """
-    a_length = len(Empresa.objects.all())
-    if a_length > 0:
-        # Obtenemos un registro de la tabla empresa para vincularla con el vigilante  a generar.
-        _empresa = Empresa.objects.all()[random.randint(1, a_length - 1)]
-        _id_empresa = _empresa.id
-        #Generemos un usuario que sera el vigilante, NO ES SUPER USARIO
-        _user = add_user(False)
-        #Se tiene que cargar que el perfil del usuario recien creado es un empleado.
-        #ERROR_perfil = Perfil.objects.get_or_create(id=_user.user_perfil.id)
-        #ERROR_perfil.es_empleado = True
-        #Se tiene que cargar el numero telefonico del Guardia en Perfil.
-        #ERROR_perfil.celular = faker().msisdn()
-        #ERROR_perfil.save()
-        # Generar el nuevo Vigilante
-        _vigilante = Vigilante.objects.get_or_create(id_empresa=_empresa, id_usuario=_user)[0]
-        _vigilante.save()
-        return _vigilante
-    else:
-        print('Agrega registro a la tabla empresas\nNANI\n')
-        return 0
 
 
 def add_user(_is_superuser):
@@ -279,19 +242,18 @@ def add_casetas(N=5):
     else:
         print('You must to add some Companies first\n')
 
-def add_employees(N=5):
-    """
 
-    :param N:
-    :return:
+def add_employees(N=5):
+    """Add a set of employees to employees table of App Company.
+    Args:
+        N(int): Number of employees that you want add to data base table.
     Todo:
         *
     """
-
     num_companies = len(Empresa.objects.all())
     if num_companies > 0 :
         for i in range(0, num_companies):
-            #Seleccionamos la empresa para agregar el empleado
+            # Seleccionamos la empresa para agregar el empleado
             _empresa = Empresa.objects.all()[i]
             try:
                 _areas = Area.objects.filter(id_empresa=_empresa.id)
@@ -318,6 +280,32 @@ def add_employees(N=5):
                 _empleado.save()
 
 
+def add_guard(N=1):
+    """Se agrega un determinado numero de registros a la tabla Vigilante.
+
+    Args:
+        N(int):Por default son 10 registro pero en realidad puede tomar el valor que le sea proporcionado.
+
+
+    Todo:
+        * Primero que nada se tiene que dar de alta un usuario.
+        * Al dar de alta un usario como vigilante hay que tener especial cuidado de los campos
+          que vamos a dar de alta para dicho registro.
+        * Una vez que se haya creado el usuario hay que vincularlo con el vigilante.
+
+    """
+    num_companies = len(Empresa.objects.all())
+    if num_companies:
+        for i in range(0, num_companies):
+            _company = Empresa.objects.all()[i]
+            for j in range(N):
+                _user = add_user(False,settings.VIGILANTE)
+                _new_guard = Vigilante.objects.get_or_create(id_empresa=_company, id_usuario=_user)
+    else:
+        print('Add some companies first of all\n')
+        return 0
+
+
 def add_user(_is_superuser, type_rol):
     """Crea un usuario.
 
@@ -329,8 +317,6 @@ def add_user(_is_superuser, type_rol):
                             2: Administrador de Sistema,
                             3: Vigilante Parque,
                             4: Administrador Parque,
-
-
         type_rol: Tipo de rol que tiene el usuario.
     """
     full_name = faker.name()
