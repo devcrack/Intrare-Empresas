@@ -62,7 +62,7 @@ def add_casetas(how_many):
 
 def add_employees(how_many):
     print('Add employees...\n')
-    populate_company.add_employees(how_many)
+    populate_company.add_employee_all_areas(how_many)
 
 
 def add_guards(how_many):
