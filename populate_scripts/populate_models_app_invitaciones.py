@@ -15,8 +15,8 @@ from Usuarios.models import CustomUser
 faker = Faker()
 
 
-def add_Invitaciones(N=10):
-    """Se agrega un determinado numero de registros a la tabla Invitaciones.
+def add_invitation(N=1):
+    """Add a certain number of invitations to all companies and its  areas.
 
     Args:
         N(int):Por default son 10 registro pero en realidad puede tomar un valor que le sea proporcionado.
@@ -24,12 +24,21 @@ def add_Invitaciones(N=10):
     Attributes:
 
     Todo:
-        * Se tiene que obtener la empresa con la que se tiene que vincular, la invitacion.
-        * Obtener el area vinculada con la empresa y la invitacion.
+        * A cada una de las areas de cada empresa se les genera N invitaciones
+        * Se genera un Usuario 0 por cada registro de invitacion
         * Obtenemos el empleado vinculado con la empresa que es quien genera la invitacion.
         * Generamos el usuario al que le esta asiganda la invitacion.
         * Finalmente se genera la invitacion.
     """
+    num_companies = len(Empresa.objects.all())
+    if num_companies:
+        for index_company  in range(0, num_companies):
+            _company = Empresa.objects.all()[index_company]
+
+
+    else:
+        print('Add some companies first\n')
+
 
     a_length = len(Empresa.objects.all())
     if a_length > 1:
