@@ -10,7 +10,8 @@ from Empresas.models import  *
 from Usuarios.models import CustomUser
 from Invitaciones.models import Invitacion
 from faker import Faker
-from .random_number_phone import phn
+from .random_numbers import phn
+from .random_numbers import unique_id
 from Parques.models import Parque
 
 #Posibles Áreas de una  Empresa
@@ -204,20 +205,25 @@ def add_managers(N=5):
 
     print(str(count) + " Managers Added")
 
-def add_areas(N=5):
-    count_companies = len(Empresa.objects.all())
+
+def add_areas(n=1):
+    _companies = Empresa.objects.all()
+    count_companies = len(_companies)
     if count_companies > 0:
         for i in range(0, count_companies):
-            a_company = Empresa.objects.all()[i]
-            for j in range(N):
-                nombre = AREAS[j]
-                color = faker.hex_color()
+            # a_company = Empresa.objects.all()[i]
+            _company = _companies[i]
+            _company = Empresa(_company)
+            for j in range(0, n):
+                name = AREAS[j]
+                _color = str(faker.hex_color())
                 area = Area.objects.get_or_create(
-                    id_empresa=a_company,
-                    nombre=nombre,
-                    color=color
+                    id_empresa=_company.id,
+                    nombre=name,
+                    color=_color
                 )[0]
                 area.save()
+                print('Company ID#' + str(_company.id) + 'Area #' + str(j) + ' ADDED\n')
     else:
         print('You must to add some Companies first\n')
 
@@ -243,10 +249,12 @@ def add_casetas(N=5):
         print('You must to add some Companies first\n')
 
 
-def add_employees(N=5):
+def add_employees_random_area(n):
     """Add a set of employees to employees table of App Company.
+    Here we add a certain number of employees to all companies but to a random Area of
+    each company.
     Args:
-        N(int): Number of employees that you want add to data base table.
+        n(int): Number of employees that you want add to data base table.
     Todo:
         *
     """
@@ -256,13 +264,14 @@ def add_employees(N=5):
             # Seleccionamos la empresa para agregar el empleado
             _empresa = Empresa.objects.all()[i]
             try:
+                # Get all areas of current company
                 _areas = Area.objects.filter(id_empresa=_empresa.id)
                 num_areas = len(_areas)
                 _area = _areas[random.randint(0, num_areas - 1)]
                 _id_area = _area.id
             except ObjectDoesNotExist:
                 print('You must to add some Areas first to this ID' + str(_empresa.id) + '\n')
-            for j in range(N):
+            for j in range(n):
                 _id_usuario = add_user(False, settings.EMPLEADO)
                 _extension = phn()
                 _puede_enviar = bool(random.getrandbits(1))
@@ -280,12 +289,52 @@ def add_employees(N=5):
                 _empleado.save()
 
 
+def add_employee_all_areas(n=1):
+    """Add a certain number of employees to all companies and its areas ech one
+    of it, in other words to all areas of each company.
+
+    :return VOID:
+    """
+    _companies = Empresa.objects.all()
+    num_companies = len(_companies)
+    if num_companies > 0:
+        for index_company in range(0, num_companies):
+            # Get the current company
+            _company = _companies[index_company]
+            _company = Empresa(_company)
+            # Get all areas
+            _areas = Area.objects.filter(id_empresa=_company.id)
+            _num_areas = len(_areas)
+            if _num_areas:
+                for index_area in range(0, _num_areas):
+                    _area = _areas[index_area]
+                    _area = Area(_area)
+                    for num_employee in range(0, n):
+                        _user = add_user(False, settings.EMPLEADO)
+                        _extension = phn()
+                        _can_sent = True
+                        _id_notify = phn()
+                        _code =  phn()
+                        _employee = Empleado.objects.get_or_create(
+                            id_empresa=_company.id, id_usuario=_user,
+                            id_area=_area.id, extension=_extension,
+                            puede_enviar=_can_sent, id_notificaciones=_id_notify,
+                            codigo=_code
+                        )[0]
+                        _employee.save()
+                        print('Company ID#' + str(_company.id) +  ';Area ID#' +
+                              str(_area.id) + 'Employee #' + str(num_employee + 1) + ' CREATED\n')
+            else:
+                print('Add some areas to this company with this ID=' + str(_company.id) + ' first \n')
+    else:
+        print('Add some companies first \n')
+
+
 def add_guard(N=1):
-    """Add a guard 
+    """Add a guard
 
     Args:
         N(int):Por default son 10 registro pero en realidad puede tomar el valor que le sea proporcionado.
-
 
     Todo:
         * Primero que nada se tiene que dar de alta un usuario.
@@ -325,12 +374,12 @@ def add_user(_is_superuser, type_rol):
     last_name = list[1]  # Requiere: Vigiliante
     email = faker.email()
     username_pre = email.split("@")
-    username = username_pre[0]
+    username = username_pre[0] + unique_id()
     password = faker.password()
     is_staff = False
     is_active = True
     is_superuser = _is_superuser
-    _celular = phn()
+    _cellphone = phn()
     _rol = type_rol
     last_login = faker.date_time()
     user = CustomUser.objects.get_or_create(
@@ -343,7 +392,7 @@ def add_user(_is_superuser, type_rol):
         is_superuser=is_superuser,
         last_login=last_login,
         password=password,
-        celular=_celular,
+        celular=_cellphone,
         roll=_rol
         )[0]
     user.save()
