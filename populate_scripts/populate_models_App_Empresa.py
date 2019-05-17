@@ -2,7 +2,7 @@ import os
 import django
 import random
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.conf import settings
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
 django.setup()
 
@@ -184,7 +184,7 @@ def add_companies(N=5):
     else:
         parque = None
         for entry in range(N):
-            sys_admin = add_user(False, 5)
+            sys_admin = add_user(False, settings.ADMIN)
             fake_empresa = faker.company()
             fake_address = faker.street_address()
             fake_numer_phone = phn()
@@ -225,7 +225,7 @@ def add_managers(N=5):
     count = 0
     if count_users > 1:
         if count_companies > 0:
-            for i in range(0, count_companies):
+            for i in range(count_companies):
                 a_company = Empresa.objects.all()[i]
                 a_user = CustomUser.objects.get(id=a_company.custom_user.id)
                 print(a_user)
@@ -263,7 +263,7 @@ def add_casetas(N=5):
     if count_companies > 0:
         for i in range(count_companies):
             a_company = Empresa.objects.all()[i]
-            for j in range(0, 3):
+            for j in range(N):
                 nombre = CASETAS[j]
                 num_random = random.randint(0, 1)
                 if num_random == 0:
@@ -301,7 +301,7 @@ def add_employees(N=5):
             except ObjectDoesNotExist:
                 print('You must to add some Areas first to this ID' + str(_empresa.id) + '\n')
             for j in range(N):
-                _id_usuario = add_user(False, 1)
+                _id_usuario = add_user(False, settings.EMPLEADO)
                 _extension = phn()
                 _puede_enviar = bool(random.getrandbits(1))
                 _id_notifiaciones = phn()
