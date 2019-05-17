@@ -64,6 +64,11 @@ def add_employees(how_many):
     print('Add employees...\n')
     populate_company.add_employees(how_many)
 
+
+def add_guards(how_many):
+    print('Adding  guards..\n')
+    populate_company.add_guard(how_many)
+
 def add_managers(how_many):
     print('Adding mangers')
     populate_company.add_managers(how_many)
@@ -100,7 +105,8 @@ def main():
         'add_employees':add_employees,
         'add_managers':add_managers,
         'add_inv': agrega_invitaciones,
-        'add_parques': add_parks
+        'add_parques': add_parks,
+        'add_guards': add_guards
     }
     option = sys.argv[1]
     hw_many = sys.argv[2]
