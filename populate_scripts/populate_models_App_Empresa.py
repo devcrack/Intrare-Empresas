@@ -281,7 +281,7 @@ def add_employees(N=5):
 
 
 def add_guard(N=1):
-    """Se agrega un determinado numero de registros a la tabla Vigilante.
+    """Add a guard 
 
     Args:
         N(int):Por default son 10 registro pero en realidad puede tomar el valor que le sea proporcionado.
