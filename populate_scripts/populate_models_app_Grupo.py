@@ -9,7 +9,7 @@ django.setup()
 
 from Grupos.models import *
 from Empresas.models import Empleado
-from .random_number_phone import phn
+from .random_numbers import phn
 
 faker = Faker()
 
