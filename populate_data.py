@@ -10,7 +10,7 @@ import populate_scripts.fill_table_user as populate_user
 import populate_scripts.populate_models_App_Empresa as populate_company
 import populate_scripts.populate_models_app_invitaciones as populate_inv
 import populate_scripts.pupulate_models_app_Parques as populate_parks
-
+import populate_scripts.populate_models_app_Grupo as populate_groups
 
 # def create_users():
 #     populate_user.fill_table_user()
@@ -78,6 +78,19 @@ def add_parks(how_many):
     populate_parks.add_Parques(how_many)
 
 
+def add_groups(how_many):
+    print('Adding groups...')
+    populate_groups.add_group(how_many)
+
+def add_contacts(how_many):
+    print('Adding contacts...')
+    populate_groups.add_contact(how_many)
+
+def add_group_has_contacts(how_many):
+    print('Adding contacts per Groups...')
+    populate_groups.add_group_has_contact(how_many)
+
+
 def main():
     """Entrada principal para llevar a cabo la ejecucion de este script
 
@@ -106,7 +119,10 @@ def main():
         'add_managers':add_managers,
         'add_inv': agrega_invitaciones,
         'add_parques': add_parks,
-        'add_guards': add_guards
+        'add_guards': add_guards,
+        'add_contacts': add_contacts,
+        'add_groups': add_groups,
+        'add_group_has_contacts': add_group_has_contacts
     }
     option = sys.argv[1]
     hw_many = sys.argv[2]
