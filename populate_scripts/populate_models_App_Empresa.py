@@ -1,19 +1,6 @@
-import os
-import django
-import random
+
 from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
-django.setup()
-
-from Empresas.models import  *
-from Usuarios.models import CustomUser
-from Invitaciones.models import Invitacion
-from faker import Faker
-from .random_numbers import phn
-from .random_numbers import unique_id
-from Parques.models import Parque
-
+from . import *
 #Posibles Áreas de una  Empresa
 AREAS = [
     'Gerencia',
@@ -34,37 +21,6 @@ CASETAS = [
     'Este',
     'Oeste'
 ]
-faker = Faker()
-
-
-
-
-def add_user(_is_superuser):
-    full_name = faker.name()
-    list = full_name.split()
-    name = list[0] # Requiere: Vigalante,
-    last_name = list[1] # Requiere: Vigiliante
-    email = faker.email()
-    username_pre = email.split("@")
-    username = username_pre[0]
-    password = faker.password()
-    is_staff = False
-    is_active = True
-    is_superuser = _is_superuser
-    last_login = faker.date_time()
-    user = CustomUser.objects.get_or_create(
-        first_name=name,
-        last_name=last_name,
-        username=username,
-        email=email,
-        is_staff=is_staff,
-        is_active=is_active,
-        is_superuser=is_superuser,
-        last_login=last_login,
-        password=password)[0]
-    user.save()
-
-    return user
 
 
 def add_acceso():
@@ -134,10 +90,10 @@ def add_acceso():
     else:
         print("Add some companies first of all, please \n")
 
-def add_companies(N=5):
-    """
 
-    :param N:
+def add_companies(n=1):
+    """
+    :param n:
     :return:
     Todo:
         * Generar un Administrador del sistema para cada Compañia/Empresa.
@@ -147,7 +103,7 @@ def add_companies(N=5):
         parque = Parque.objects.all()[random.randint(1, num_parques - 1)]
     else:
         parque = None
-        for entry in range(N):
+        for entry in range(n):
             sys_admin = add_user(False, settings.ADMIN)
             fake_empresa = faker.company()
             fake_address = faker.street_address()
@@ -180,7 +136,6 @@ def add_companies(N=5):
             fake_empresa.save()
         else:
             print("Agrega uno o mas parques \n")
-
 
 
 def add_managers(N=5):
@@ -226,6 +181,7 @@ def add_areas(n=1):
                 print('Company ID#' + str(_company.id) + 'Area #' + str(j) + ' ADDED\n')
     else:
         print('You must to add some Companies first\n')
+
 
 def add_casetas(N=5):
     count_companies = len(Empresa.objects.all())
@@ -354,47 +310,3 @@ def add_guard(N=1):
         print('Add some companies first of all\n')
         return 0
 
-
-def add_user(_is_superuser, type_rol):
-    """Crea un usuario.
-
-    Args:
-        _is_superuser : Bandera que determina si es un super usuario, Solamente el STAFF es super Usuario.
-                        Tipos de Rol:
-                            0: Usuario de App,
-                            1 Staff,
-                            2: Administrador de Sistema,
-                            3: Vigilante Parque,
-                            4: Administrador Parque,
-        type_rol: Tipo de rol que tiene el usuario.
-    """
-    full_name = faker.name()
-    list = full_name.split()
-    name = list[0]  # Requiere: Vigalante,
-    last_name = list[1]  # Requiere: Vigiliante
-    email = faker.email()
-    username_pre = email.split("@")
-    username = username_pre[0] + unique_id()
-    password = faker.password()
-    is_staff = False
-    is_active = True
-    is_superuser = _is_superuser
-    _cellphone = phn()
-    _rol = type_rol
-    last_login = faker.date_time()
-    user = CustomUser.objects.get_or_create(
-        first_name=name,
-        last_name=last_name,
-        username=username,
-        email=email,
-        is_staff=is_staff,
-        is_active=is_active,
-        is_superuser=is_superuser,
-        last_login=last_login,
-        password=password,
-        celular=_cellphone,
-        roll=_rol
-        )[0]
-    user.save()
-    print('si sale??????????')
-    return user
