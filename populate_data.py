@@ -45,6 +45,10 @@ def add_invitations(how_many):
     print("Adding Invitation...\n")
     inv.add_invitation(how_many)
 
+def add_security_equp(how_many):
+    print('Adding security equipment...\n')
+    inv.add_security_equipment(how_many)
+
 def add_area(how_many):
     print('Adding areas....\n')
     populate_company.add_areas(how_many)
@@ -115,11 +119,14 @@ def main():
         'add_guards': add_guards,
         'add_contacts': add_contacts,
         'add_groups': add_groups,
-        'add_group_has_contacts': add_group_has_contacts
+        'add_group_has_contacts': add_group_has_contacts,
+        'add_security_equipment': add_security_equp
     }
     option = sys.argv[1]
-    hw_many = sys.argv[2]
-    print(sys.argv)
+    if len(sys.argv) == 3:
+        hw_many = sys.argv[2]
+    else:
+        hw_many = 1
     jobs[option](int(hw_many))
 
 if __name__ == '__main__':
