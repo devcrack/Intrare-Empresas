@@ -48,17 +48,18 @@ def add_contact(N=5):
     pass
 
 def add_group_has_contact(N=5):
-    count_contacts = len(Empleado.objects.all())
+    count_contacts = len(Contacto.objects.all())
     if count_contacts > 0:
         count_group = len(Grupo.objects.all())
         if count_group > 0:
-            a_contact = Contacto.objects.all()[random.randint(0, count_contacts - 1)]
-            a_group = Grupo.objects.all()[random.randint(0, count_group - 1)]
-            a_group_has_contact = Grupo_has_contacto.objects.get_or_create(
-                id_contacto=a_contact,
-                id_grupo=a_group
-            )[0]
-            a_group_has_contact.save()
+            for i in range(N):
+                a_contact = Contacto.objects.all()[random.randint(0, count_contacts - 1)]
+                a_group = Grupo.objects.all()[random.randint(0, count_group - 1)]
+                a_group_has_contact = Grupo_has_contacto.objects.get_or_create(
+                    id_contacto=a_contact,
+                    id_grupo=a_group
+                )[0]
+                a_group_has_contact.save()
         else:
             print('You must add some Groups, first!!!')
     else:

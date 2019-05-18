@@ -1,7 +1,7 @@
 import django
 import os
 from faker import Faker
-
+from django.core.exceptions import ObjectDoesNotExist
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
 django.setup()
 from Usuarios.models import CustomUser
