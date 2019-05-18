@@ -168,10 +168,12 @@ def add_invitacion_Empresarial():
         return 0
 
 
-def add_equipo_seguridad():
-    fake_name = faker.job()
-    equipo_seguridad = EquipoSeguridad.objects.get_or_create(nombre=fake_name)[0]
-    equipo_seguridad.save()
+def add_security_equipment(n):
+    for entry in range(n):
+        fake_name = faker.job()
+        _equipment_security = EquipoSeguridad.objects.get_or_create(nombre=fake_name)[0]
+        _equipment_security.save()
+        print('Security #' +str(entry + 1) + 'equipment Added\n')
 
 
 
