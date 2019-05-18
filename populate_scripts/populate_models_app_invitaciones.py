@@ -1,85 +1,62 @@
-import os
-from faker import Faker
-import random
-import django
-from django.core.exceptions import ObjectDoesNotExist
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
-django.setup()
-
-from Invitaciones.models import *
-from Empresas.models import Empresa, Area, Empleado
-from Usuarios.models import CustomUser
+from . import *
 
 
-faker = Faker()
-
-
-def add_invitation(N=1):
-    """Add a certain number of invitations to all companies and its  areas.
+def add_invitation(n=1):
+    """Add a certain number of invitations to all companies and its  areas, generates by each Employee.
 
     Args:
-        N(int):Por default son 10 registro pero en realidad puede tomar un valor que le sea proporcionado.
-
-    Attributes:
-
-    Todo:
-        * A cada una de las areas de cada empresa se les genera N invitaciones
-        * Se genera un Usuario 0 por cada registro de invitacion
-        * Obtenemos el empleado vinculado con la empresa que es quien genera la invitacion.
-        * Generamos el usuario al que le esta asiganda la invitacion.
-        * Finalmente se genera la invitacion.
+        n(int):Por default son 10 registro pero en realidad puede tomar un valor que le sea proporcionado.
     """
-    num_companies = len(Empresa.objects.all())
-    if num_companies:
-        for index_company  in range(0, num_companies):
-            _company = Empresa.objects.all()[index_company]
-
-
+    _companies = Empresa.objects.all()
+    num_companies = len(_companies)
+    if num_companies > 0:
+        for index_company in range(0, num_companies):
+            # Get the current company
+            _company = _companies[index_company]
+            _company = Empresa(_company)
+            # Get all areas
+            _areas = Area.objects.filter(id_empresa=_company.id)
+            _num_areas = len(_areas)
+            if _num_areas:
+                for index_area in range(0, _num_areas):
+                    _area = _areas[index_area]
+                    _area = Area(_area)
+                    # Get the employees related with current company and area
+                    _employees = Empleado.objects.filter(id_empresa=_company.id, id_area=_area.id)
+                    num_employees = len(_employees)
+                    if num_employees:
+                        for index_employee in range(0, num_employees):
+                            _employee = _employees[index_employee]
+                            _employee = Empleado(_employee)
+                            for entry in range(n):
+                                _user = add_user(False, 0)
+                                _business = faker.text(max_nb_chars=250, ext_word_list=None)
+                                _watched = False
+                                _from_company = faker.company()
+                                _notes = faker.text(max_nb_chars=100, ext_word_list=None)
+                                _car = bool(random.getrandbits(1))
+                                _date_sent = faker.date_time()
+                                _date_invitation = faker.date_time()
+                                _invitation = Invitacion.objects.get_or_create(
+                                    id_empresa=_company.id, id_area=_area.id,
+                                    id_empleado=_employee.id, id_usuario=_user,
+                                    leida=_watched, empresa=_from_company,
+                                    notas=_notes, automovil=_car, asunto=_business,
+                                    fecha_hora_invitacion=_date_invitation,
+                                    fecha_hora_envio=_date_sent
+                                )[0]
+                                _invitation.save()
+                                print('Invitation #' + str(entry + 1) + 'Created\n')
+                                print('COMPANY='+ str(_company.id) + '\n')
+                                print('AREA=' + str(_area.id) + '\n')
+                                print('EMPLOYEE that sent Invitation=' + str(_employee.id) + '\n')
+                    else:
+                        print('You need Add Employees to this Company =' +
+                              str(_company.id) + 'and to this Area=' + str(_area.id) + '\n')
+            else:
+                print('Add some areas to this company with this ID=' + str(_company.id) + ' first \n')
     else:
-        print('Add some companies first\n')
-
-
-    a_length = len(Empresa.objects.all())
-    if a_length > 1:
-        # Obtenemos un registro de la tabla empresa para vincularla con las invitaciones a generar.
-        _empresa = Empresa.objects.all()[random.randint(1, a_length - 1)]
-        _id_empresa = _empresa.id
-        # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
-        try:
-            _area_empresa = Area.objects.get(id=_id_empresa)
-        except ObjectDoesNotExist:
-            print("Agrega Areas vinculadas a la empresa con este Id" + str(_id_empresa) + "\n")
-            return 0
-        # Obtenemos el empleado que pertenece a esta empresa, es decir quien genero la invitacion
-        try:
-            _empleado = Empleado.objects.get(_id_empresa)
-        except ObjectDoesNotExist:
-            print("Agrega Empleados a la empresa con este Id" + str(_id_empresa) + "\n")
-            return 0
-        for entry in range(N):
-            # Creamo un usuario Tipo 0 para generar la invitacion
-            _usuario = add_user(False, 0)
-            _fecha_hora_envio = faker.date_time()
-            _fecha_hora_invitacion = faker.date_time()
-            _asunto = faker.paragraph(max_nb_chars=250, ext_word_list=None)
-            _automovil = bool(random.getrandbits(1))
-            _notas = faker.paragraph(max_nb_chars=150, ext_word_list=None)
-            _Empresa = faker.company()
-            _leida = bool(random.getrandbits(1))
-            invitacion = Invitacion.objects.get_or_create(
-                id_empresa=_empresa, id_area=_area_empresa,
-                id_empleado=_empleado, id_usuario=_usuario,
-                fecha_hora_envio=_fecha_hora_envio,
-                fecha_hora_invitacion=_fecha_hora_invitacion,
-                asunto=_asunto, automovil=_automovil,
-                notas=_notas, empresa=_empresa,
-                leida=_leida
-            )[0]
-            invitacion.save()
-    else:
-        print('Agrega registro a la tabla empresas\nNANI\n')
-        return 0
+        print('Add some companies first \n')
 
 
 def add_InvitacionTemporal(N=10):
@@ -189,45 +166,6 @@ def add_invitacion_Empresarial():
     else:
         print('Agrega registro a la tabla empresas\nNANI\n')
         return 0
-
-
-def add_user(_is_superuser, type_rol):
-    """Crea un usuario.
-
-    Args:
-        _is_superuser : Bandera que determina si es un super usuario o no.
-        type_rol: Tipo de rol que tiene el usuario.
-    """
-    full_name = faker.name()
-    list = full_name.split()
-    name = list[0]  # Requiere: Vigalante,
-    last_name = list[1]  # Requiere: Vigiliante
-    email = faker.email()
-    username_pre = email.split("@")
-    username = username_pre[0]
-    password = faker.password()
-    is_staff = False
-    is_active = True
-    is_superuser = _is_superuser
-    _celular = faker.msisdn()
-    _rol = type_rol
-    last_login = faker.date_time()
-    user = CustomUser.objects.get_or_create(
-        first_name=name,
-        last_name=last_name,
-        username=username,
-        email=email,
-        is_staff=is_staff,
-        is_active=is_active,
-        is_superuser=is_superuser,
-        last_login=last_login,
-        password=password,
-        celular=_celular,
-        roll=_rol
-        )[0]
-    user.save()
-
-    return user
 
 
 def add_equipo_seguridad():
