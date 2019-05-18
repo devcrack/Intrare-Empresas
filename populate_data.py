@@ -10,7 +10,7 @@ import populate_scripts.fill_table_user as populate_user
 import populate_scripts.populate_models_App_Empresa as populate_company
 import populate_scripts.populate_models_app_invitaciones as populate_inv
 import populate_scripts.pupulate_models_app_Parques as populate_parks
-
+import populate_scripts
 
 # def create_users():
 #     populate_user.fill_table_user()
@@ -31,25 +31,20 @@ def add_users(how_many):
 def add_companies(how_many):
     """Agrega registros fake para la tabla Empresa de la aplicacion Empresa.
 
-
     Args:
         how_many(int): Numero de registro que desea agregar a la base de datos.
-
     """
-
-
     print('Adding companies....\n')
     populate_company.add_companies(how_many)
 
-def agrega_invitaciones(how_many):
-    """Agrega un determinado numero de invitaciones
 
+def add_invitations(how_many):
+    """Agrega un determinado numero de invitaciones
      Args:
          how_many(int):Numero de invitaciones que se desea dar de alta.
     """
-    print("Agregando Invitaciones")
-    populate_inv.add_Invitaciones(how_many)
-
+    print("Adding Invitation...\n")
+    populate_inv.add_invitation(how_many)
 
 
 def add_area(how_many):
@@ -104,7 +99,7 @@ def main():
         'add_casetas':add_casetas,
         'add_employees':add_employees,
         'add_managers':add_managers,
-        'add_inv': agrega_invitaciones,
+        'add_invitation': add_invitations,
         'add_parques': add_parks,
         'add_guards': add_guards
     }
