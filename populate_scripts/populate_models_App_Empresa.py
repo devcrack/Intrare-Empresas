@@ -1,5 +1,3 @@
-
-from django.core.exceptions import ObjectDoesNotExist
 from . import *
 #Posibles Áreas de una  Empresa
 AREAS = [
@@ -24,72 +22,7 @@ CASETAS = [
 
 
 def add_acceso():
-    """
-    Aqui al seleccionar la empresa puede ser random,
-    el area debera estar vinculado a esta empresa pero tambien puede ser random,
-    el empleado tendra que estar vinculado a esta empresa pero tambien puede ser random.
-    El usuario se toma de la invitacion, para esto se tiene que hacer la interseccion
-    con la empresa, el area y el empleado.
-
-    Obtener una invitacion random y concederle acceso
-    :return:
-    Todo:
-        * La seleccion de la empresa es random.
-        * Area vinculada a la empresa seleccionada.
-        * Empleado vinculado a la empresa.
-        * Obtener la invitacion relacionada a esta area.
-    """
-    #Obtenemos la empresa en la que se concedera el acceso.
-    num_inv = len(Invitacion.objects.all())
-    if num_inv > 1:
-        _invitacion = Invitacion.objects.all()[random.randint(1, num_inv - 1)]
-        #Empresa donde se la esta dando acceso
-        _id_empresa = _invitacion.id_empresa
-        #Area de la empresa donde se esta dando el acceso.
-        _id_area  = _invitacion.id_area
-        #¿¿¿Empleado que esta dando el Acceso??, o ¿Que genero al invitacion?
-        employee_or_guard = bool(random.getrandbits(1))
-        #Eligimos quien da el acceso a esta invitacion.
-        if employee_or_guard: #El acceso se lo concedera un empleado,
-            #Si el acceso se lo concedio un empleado entonces tenenmos que obtener el
-            #Identificador del Empleado.
-            #_empleado_acceso =
-            pass
-        else : #El acceso se lo concedera un guardia
-            _id_empleado = _invitacion.id_empleado
-
-
-    else:
-        print("Add some invitations first of all, please \n")
-
-
-
-
-
-
-    num_company = len (Empresa.objects.all())
-    if num_company > 0:
-        # Obtenemos un registro de la tabla empresa para vincularla con el vigilante  a generar.
-        _empresa = Empresa.objects.all()[random.randint(1, num_company - 1)]
-        _id_empresa = _empresa.id
-
-        # Obtenemos el area de la empresa con la que actualmente se esta trabajando, para generar la invitacion.
-        try:
-            _area_empresa = Area.objects.get(id=_id_empresa)
-        except ObjectDoesNotExist:
-            print("Agrega Areas vinculadas a la empresa con este Id" + str(_id_empresa) + "\n")
-            return 0
-        # Obtenemos el empleado que pertenece a esta empresa, es decir quien concedio el acceso
-        try:
-            _empleado = Empleado.objects.get(_id_empresa)
-        except ObjectDoesNotExist:
-            print("Agrega Areas empleados a la empresa con este Id" + str(_id_empresa) + "\n")
-            return 0
-
-
-    else:
-        print("Add some companies first of all, please \n")
-
+    print('Nothing Here\n')
 
 def add_companies(n=1):
     """
