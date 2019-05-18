@@ -1,5 +1,56 @@
-# import django
-# import os
-#
-# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
-# django.setup()
+import django
+import os
+from faker import Faker
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ControlAccs.settings')
+django.setup()
+from Usuarios.models import CustomUser
+from Empresas.models import *
+from Invitaciones.models import *
+from .random_numbers import *
+
+
+
+faker = Faker()
+
+
+def add_user(_is_superuser, type_rol):
+    """Creates a non Staff User.
+    Args:
+        _is_superuser : Indicates if user will be super user.
+        type_rol: Type Rol that the user going have.
+    """
+    full_name = faker.name()
+    list = full_name.split()
+    name = list[0]
+    last_name = list[1]
+    email = faker.email()
+    username_pre = email.split("@")
+    username = username_pre[0] + unique_id()
+    password = faker.password()
+    is_staff = False
+    is_active = True
+    is_superuser = _is_superuser
+    _cellphone = phn()
+    _rol = type_rol
+    last_login = faker.date_time()
+    user = CustomUser.objects.get_or_create(
+        first_name=name,
+        last_name=last_name,
+        username=username,
+        email=email,
+        is_staff=is_staff,
+        is_active=is_active,
+        is_superuser=is_superuser,
+        last_login=last_login,
+        password=password,
+        celular=_cellphone,
+        roll=_rol
+        )[0]
+    user.save()
+    print('USER CREATED\n')
+    return user
+
+
+def print_dummy_message():
+    print('Hello from populate_scripts/__init__.py\n')
