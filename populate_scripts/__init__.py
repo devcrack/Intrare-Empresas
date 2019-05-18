@@ -7,6 +7,7 @@ django.setup()
 from Usuarios.models import CustomUser
 from Empresas.models import *
 from Invitaciones.models import *
+from Parques.models import *
 from .random_numbers import *
 
 
