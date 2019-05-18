@@ -112,7 +112,7 @@ def main():
         'add_users':add_users,
         'add_areas':add_area,
         'add_casetas':add_casetas,
-        'add_employees':add_employees,
+        'add_employees':add_employees, 
         'add_managers':add_managers,
         'add_invitation': add_invitations,
         'add_parques': add_parks,
