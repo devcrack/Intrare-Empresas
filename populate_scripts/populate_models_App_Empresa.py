@@ -71,7 +71,12 @@ def add_companies(n=1):
             print("Agrega uno o mas parques \n")
 
 
-def add_managers(N=5):
+def add_managers(n):
+    """
+    Función para agregar un Administrador por Empresa.
+    Nota: Se debe de agregar registros a la Tabla Empresa
+    para ejecutar correctamente la función.
+    """
     count_users = len(CustomUser.objects.all())
     count_companies = len(Empresa.objects.all())
     count = 0
@@ -85,6 +90,7 @@ def add_managers(N=5):
                     id_empresa=a_company,
                     id_usuario=a_user
                 )[0]
+                manager.save()
                 count += 1
         else:
             print('You must to add Companies first!!!\n')
@@ -95,6 +101,15 @@ def add_managers(N=5):
 
 
 def add_areas(n=1):
+    """
+    Función que agrega n Áreas a cada Empresa.
+    Nota: Se debe de agregar registros a la Tabla Empresa
+    para ejecutar esta función Correctamente.
+    :param n: Númeo Áreas a agregar a cada Empresa, n no
+    debe ser mayor a 10.
+    """
+    if n > 10:
+        n = 10
     _companies = Empresa.objects.all()
     count_companies = len(_companies)
     if count_companies > 0:
@@ -116,12 +131,22 @@ def add_areas(n=1):
         print('You must to add some Companies first\n')
 
 
-def add_casetas(N=5):
+def add_casetas(n=4):
+    """
+    Función para agregar N casetas por Empresa.
+    Nota: Se deben agregar registros a la Tabla Empresa,
+    para que se ejecute correctamente esta función.
+    :param n: Número de Casetas a agregar por Empresa, n no debe
+    ser mayor a 4.
+    :return:
+    """
+    if n > 4:
+        n = 4
     count_companies = len(Empresa.objects.all())
     if count_companies > 0:
         for i in range(count_companies):
             a_company = Empresa.objects.all()[i]
-            for j in range(N):
+            for j in range(n):
                 nombre = CASETAS[j]
                 num_random = random.randint(0, 1)
                 if num_random == 0:
