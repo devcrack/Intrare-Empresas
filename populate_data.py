@@ -96,6 +96,7 @@ def add_groups(how_many):
     print('Adding groups...')
     populate_groups.add_group(how_many)
 
+    
 def add_contacts(how_many):
     """
     Agrega un determinado número de Contactos.
@@ -104,6 +105,7 @@ def add_contacts(how_many):
     print('Adding contacts...')
     populate_groups.add_contact(how_many)
 
+    
 def add_group_has_contacts(how_many):
     """
     Agrega un determinado número de registros a la
@@ -134,9 +136,9 @@ def main():
 
 
     jobs = {
-        'add_company':add_companies,
+        'add_company':add_companies, #1
         'add_users':add_users,
-        'add_areas':add_area,
+        'add_areas':add_area,        #2
         'add_casetas':add_casetas,
         'add_employees':add_employees, 
         'add_managers':add_managers,
@@ -155,5 +157,6 @@ def main():
         hw_many = 1
     jobs[option](int(hw_many))
 
+    
 if __name__ == '__main__':
     main()

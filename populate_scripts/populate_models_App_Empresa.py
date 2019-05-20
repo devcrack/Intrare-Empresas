@@ -24,6 +24,7 @@ CASETAS = [
 def add_acceso():
     print('Nothing Here\n')
 
+    
 def add_companies(n=1):
     """
     :param n:
@@ -92,6 +93,7 @@ def add_managers(n):
                 )[0]
                 manager.save()
                 count += 1
+                print('Num = ' +  str(count) + ' Manager Added\n')
         else:
             print('You must to add Companies first!!!\n')
     else:
