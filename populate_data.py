@@ -73,6 +73,11 @@ def add_parks(how_many):
     populate_parks.add_Parques(how_many)
 
 
+
+def add_guards(how_many):
+    print('Adding Guards\n')
+    populate_company.add_guards(how_many)
+
 def main():
     """Entrada principal para llevar a cabo la ejecucion de este script
 
@@ -93,14 +98,15 @@ def main():
 
 
     jobs = {
-        'add_company':add_companies,
+        'add_company':add_companies, #1
         'add_users':add_users,
-        'add_areas':add_area,
+        'add_areas':add_area,        #2
         'add_casetas':add_casetas,
         'add_employees':add_employees,
-        'add_managers':add_managers,
+        'add_managers':add_managers, #3
         'add_inv': agrega_invitaciones,
-        'add_parques': add_parks
+        'add_parques': add_parks, #En el aire
+        'add_guard':add_guards  #4
     }
     option = sys.argv[1]
     hw_many = sys.argv[2]

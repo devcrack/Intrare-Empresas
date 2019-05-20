@@ -38,69 +38,6 @@ CASETAS = [
 
 faker = Faker()
 
-def add_vigilante():
-    """Se agrega un determinado numero de registros a la tabla Vigilante.
-
-    Args:
-        N(int):Por default son 10 registro pero en realidad puede tomar el valor que le sea proporcionado.
-
-
-    Todo:
-        * Primero que nada se tiene que dar de alta un usuario.
-        * Al dar de alta un usario como vigilante hay que tener especial cuidado de los campos
-          que vamos a dar de alta para dicho registro.
-        * Una vez que se haya creado el usuario hay que vincularlo con el vigilante.
-        * Los vigilantes siempre se consideran como agentes externos a la empresa(Empresa de seguridad) ??,
-          o en caso de ser vigilantes de la empresa, PASAN A ser EMPLEADOS????.
-    """
-    a_length = len(Empresa.objects.all())
-    if a_length > 0:
-        # Obtenemos un registro de la tabla empresa para vincularla con el vigilante  a generar.
-        _empresa = Empresa.objects.all()[random.randint(1, a_length - 1)]
-        _id_empresa = _empresa.id
-        #Generemos un usuario que sera el vigilante, NO ES SUPER USARIO
-        _user = add_user(False)
-        #Se tiene que cargar que el perfil del usuario recien creado es un empleado.
-        #ERROR_perfil = Perfil.objects.get_or_create(id=_user.user_perfil.id)
-        #ERROR_perfil.es_empleado = True
-        #Se tiene que cargar el numero telefonico del Guardia en Perfil.
-        #ERROR_perfil.celular = faker().msisdn()
-        #ERROR_perfil.save()
-        # Generar el nuevo Vigilante
-        _vigilante = Vigilante.objects.get_or_create(id_empresa=_empresa, id_usuario=_user)[0]
-        _vigilante.save()
-        return _vigilante
-    else:
-        print('Agrega registro a la tabla empresas\nNANI\n')
-        return 0
-
-
-def add_user(_is_superuser):
-    full_name = faker.name()
-    list = full_name.split()
-    name = list[0] # Requiere: Vigalante,
-    last_name = list[1] # Requiere: Vigiliante
-    email = faker.email()
-    username_pre = email.split("@")
-    username = username_pre[0]
-    password = faker.password()
-    is_staff = False
-    is_active = True
-    is_superuser = _is_superuser
-    last_login = faker.date_time()
-    user = CustomUser.objects.get_or_create(
-        first_name=name,
-        last_name=last_name,
-        username=username,
-        email=email,
-        is_staff=is_staff,
-        is_active=is_active,
-        is_superuser=is_superuser,
-        last_login=last_login,
-        password=password)[0]
-    user.save()
-
-    return user
 
 
 def add_acceso():
@@ -234,6 +171,7 @@ def add_managers(N=5):
                     id_usuario=a_user
                 )[0]
                 count += 1
+                print('Num = ' +  str(count) + ' Manager Added\n')
         else:
             print('You must to add Companies first!!!\n')
     else:
@@ -318,6 +256,37 @@ def add_employees(N=5):
                 _empleado.save()
 
 
+def add_guards(N):
+    """Se agrega un determinado numero de registros a la tabla Vigilante.
+
+    Args:
+        N(int):Por default son 10 registro pero en realidad puede tomar el valor que le sea proporcionado.
+
+
+    Todo:
+        * Primero que nada se tiene que dar de alta un usuario.
+        * Al dar de alta un usario como vigilante hay que tener especial cuidado de los campos
+          que vamos a dar de alta para dicho registro.
+        * Una vez que se haya creado el usuario hay que vincularlo con el vigilante.
+        * Los vigilantes siempre se consideran como agentes externos a la empresa(Empresa de seguridad) ??,
+          o en caso de ser vigilantes de la empresa, PASAN A ser EMPLEADOS????.
+    """
+
+    num_companies = len(Empresa.objects.all())
+    if num_companies > 0:
+        n_comp = 0
+        for i in range(0, num_companies):
+            # Seleccionamos la empresa para agregar el empleado
+            _empresa = Empresa.objects.all()[i]
+            for j in range(N):
+                _id_usuario = add_user(False, 2)
+                _vigilante = Vigilante.objects.get_or_create(
+                    id_empresa=_empresa,
+                    id_usuario=_id_usuario
+                )[0]
+                _vigilante.save()
+                print('NCompany = ' + str(i) + ' NGuard = ' + str(j) + '\n')
+
 def add_user(_is_superuser, type_rol):
     """Crea un usuario.
 
@@ -363,3 +332,5 @@ def add_user(_is_superuser, type_rol):
     user.save()
     print('si sale??????????')
     return user
+
+
