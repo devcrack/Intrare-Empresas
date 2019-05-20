@@ -122,7 +122,6 @@ class InvitacionEmpresarial(models.Model):
                                                                                    es porque esta dado de alta?)
               pasa a ser una invitacion normal?, ya que en un determinado momento la invitaicon  es una invitacion empresarial, pero si
               el usuario se da de alta o se vincula a esta invitacion empresarial, daria lugar a una invitacion normal?
-            * id_invitacion_temporal ????? para que se usa esto aqui??.
             * email(str):email del invitado empresarial, Que pasa con este campo cuando si se conoce
                          cuando si hay un usuario registrado para vincularlo con esta invitacion.
 
@@ -144,8 +143,9 @@ class InvitacionEmpresarial(models.Model):
         blank=False)
     id_usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        default=None) # ESTO PUEDE SER NULL
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE) # ESTO PUEDE SER NULL
     id_invitacion_temporal = models.ForeignKey(
         'InvitacionTemporal',
         on_delete=models.CASCADE,
