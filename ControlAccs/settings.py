@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'Invitaciones.apps.InvitacionesConfig',
     'Parques.apps.ParquesConfig',
     'Bitacoras.apps.BitacorasConfig',
+    'Grupos.apps.GruposConfig',
 
 ]
 

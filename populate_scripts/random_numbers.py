@@ -1,4 +1,5 @@
 import random
+import uuid
 
 def phn():
     n = '0000000000'
@@ -6,3 +7,10 @@ def phn():
         n = str(random.randint(10**9, 10**10-1))
     #return n[:3] + '-' + n[3:6] + '-' + n[6:]
     return n[:3] + n[3:6]  + n[6:]
+
+
+def unique_id():
+    un_id = uuid.uuid4()
+    un_id = str(un_id)
+    un_id = un_id[:5]
+    return un_id
