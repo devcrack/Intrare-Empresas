@@ -45,6 +45,12 @@ def add_invitations(how_many):
     print("Adding Invitation...\n")
     inv.add_invitation(how_many)
 
+
+def add_tmp_inv(how_many):
+
+    inv.add_temp_invitation(how_many)
+
+
 def add_security_equp(how_many):
     print('Adding security equipment...\n')
     inv.add_security_equipment(how_many)
@@ -110,13 +116,14 @@ def main():
 
 
     jobs = {
-        'add_company':add_companies, #1
-        'add_users':add_users,
-        'add_areas':add_area,        #2
-        'add_casetas':add_casetas,
-        'add_employees':add_employees, 
-        'add_managers':add_managers,
+        'add_company': add_companies, #1
+        'add_users': add_users,
+        'add_areas': add_area,        #2
+        'add_casetas': add_casetas,
+        'add_employees': add_employees,
+        'add_managers': add_managers,
         'add_invitation': add_invitations,
+        'add_tmp_invitation': add_tmp_inv,
         'add_parques': add_parks,
         'add_guards': add_guards,
         'add_contacts': add_contacts,
