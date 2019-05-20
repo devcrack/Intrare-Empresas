@@ -51,6 +51,8 @@ class Invitacion(models.Model):
     class Meta:
         verbose_name_plural = "Invitaciones"
 
+
+        
 class InvitacionTemporal(models.Model):
     """Clase en la que se apoya el modelo para la creacion de la tabla invitacion temporal.
 
