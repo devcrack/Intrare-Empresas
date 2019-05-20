@@ -56,10 +56,20 @@ def add_security_equp(how_many):
     inv.add_security_equipment(how_many)
 
 def add_area(how_many):
+    """
+    Agrega áreas a cada Empresa.
+    :param how_many: Número de Áreas por Empresa a agregar.
+    Nota: how_many no debe ser mayor a 10.
+    """
     print('Adding areas....\n')
     populate_company.add_areas(how_many)
 
 def add_casetas(how_many):
+    """
+    Agrega Casetas a cada Empresa.
+    :param how_many: Número de Casetas por Empresa a Agregar.
+    Nota: how_many no debe ser mayor a 4.
+    """
     print('Adding casetas....\n')
     populate_company.add_casetas(how_many)
 
@@ -73,6 +83,9 @@ def add_guards(how_many):
     populate_company.add_guard(how_many)
 
 def add_managers(how_many):
+    """
+    Agrega un Administrador por Empresa.
+    """
     print('Adding mangers')
     populate_company.add_managers(how_many)
 
@@ -82,16 +95,29 @@ def add_parks(how_many):
 
 
 def add_groups(how_many):
+    """
+    Agrega un determinado número de Grupos.
+    :param how_many: Número de registros a agregar.
+    """
     print('Adding groups...')
     populate_groups.add_group(how_many)
 
     
 def add_contacts(how_many):
+    """
+    Agrega un determinado número de Contactos.
+    :param how_many: Número de registros a agregar.
+    """
     print('Adding contacts...')
     populate_groups.add_contact(how_many)
 
     
 def add_group_has_contacts(how_many):
+    """
+    Agrega un determinado número de registros a la
+    Tabla Group_has_contacts.
+    :param how_many: Número de registros a agregar.
+    """
     print('Adding contacts per Groups...')
     populate_groups.add_group_has_contact(how_many)
 
