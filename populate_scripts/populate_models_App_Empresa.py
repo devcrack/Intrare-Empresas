@@ -1,4 +1,9 @@
+from datetime import timedelta
+
 from . import *
+import pytz
+
+
 #Posibles Áreas de una  Empresa
 AREAS = [
     'Gerencia',
@@ -21,8 +26,59 @@ CASETAS = [
 ]
 
 
-def add_acceso():
-    print('Nothing Here\n')
+def add_acceso(n=2):
+    count_access = 0
+    count_invitations = len(Invitacion.objects.all())
+    # print("Numero de Invitaciones = " + str(count_invitations))
+    if count_invitations > 0:
+        for i in range(n):
+            a_invitation = Invitacion.objects.all()[random.randint(0, count_invitations - 1)]
+            if not a_invitation.leida:
+                count_guards = len(Vigilante.objects.filter(id_empresa=a_invitation.id_empresa))
+                # print("Numero de Guardias en la Empresa " + a_invitation.id_empresa.name + " = ", str(count_guards))
+                if count_guards > 0:
+                    a_guard_in = Vigilante.objects.filter(id_empresa=a_invitation.id_empresa)[random.randint(0, count_guards - 1)]
+                    a_guard_out = Vigilante.objects.filter(id_empresa=a_invitation.id_empresa)[random.randint(0, count_guards - 1)]
+                    fake_checkin = a_invitation.fecha_hora_invitacion
+                    fake_checkout = faker.date_time_between(
+                        start_date=fake_checkin,
+                        end_date=fake_checkin + timedelta(hours=2),
+                        tzinfo=pytz.timezone('America/Mexico_City'))
+                    status = random.randint(0, 1)
+                    if status == 0:
+                        fake_status = 'afuera'
+                    else:
+                        fake_status = 'adentro'
+                    fake_pass_out = bool(random.getrandbits(1))
+                    fake_motive_not_sign = faker.text(max_nb_chars=50, ext_word_list=None)
+                    fake_comments = faker.text(max_nb_chars=100, ext_word_list=None)
+                    fake_car_data = faker.text(max_nb_chars=100, ext_word_list=None)
+                    fake_equipment = faker.text(max_nb_chars=100, ext_word_list=None)
+                    a_access = Acceso.objects.get_or_create(
+                        id_empresa=a_invitation.id_empresa,
+                        id_empleado=a_invitation.id_empleado,
+                        id_invitacion=a_invitation,
+                        id_vigilante_ent=a_guard_in,
+                        id_vigilante_sal=a_guard_out,
+                        id_area=a_invitation.id_area,
+                        fecha_hora_acceso=fake_checkin,
+                        fecha_hora_salida=fake_checkout,
+                        estado=fake_status,
+                        pase_salida=fake_pass_out,
+                        motivo_no_firma=fake_motive_not_sign,
+                        comentarios_VE=fake_comments,
+                        datos_coche=fake_car_data,
+                        equipo=fake_equipment
+                    )[0]
+                    a_access.save()
+                    a_invitation.leida = True
+                    a_invitation.save()
+                    count_access += 1
+            else:
+                print("You must add some guards first!!!")
+    else:
+        print("You must add some invitations first!!!")
+    print(str(count_access) + ' accesos han sido agregados')
 
     
 def add_companies(n=1):

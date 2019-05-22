@@ -89,6 +89,10 @@ def add_managers(how_many):
     print('Adding mangers')
     populate_company.add_managers(how_many)
 
+def add_access(how_many):
+    print('Adding access')
+    populate_company.add_acceso(how_many)
+
 def add_parks(how_many):
     print('Adding parks')
     populate_parks.add_Parques(how_many)
@@ -149,6 +153,7 @@ def main():
         'add_employees': add_employees,
         'add_managers': add_managers,
         'add_invitation': add_invitations,
+        'add_access': add_access,
         'add_tmp_invitation': add_tmp_inv,
         'add_parques': add_parks,
         'add_guards': add_guards,

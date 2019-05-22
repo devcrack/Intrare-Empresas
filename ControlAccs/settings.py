@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     'Bitacoras.apps.BitacorasConfig',
     'Grupos.apps.GruposConfig',
 
+    'rest_framework',
+
 ]
 
 MIDDLEWARE = [
