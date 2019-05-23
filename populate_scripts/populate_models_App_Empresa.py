@@ -74,8 +74,8 @@ def add_acceso(n=2):
                     a_invitation.leida = True
                     a_invitation.save()
                     count_access += 1
-            else:
-                print("You must add some guards first!!!")
+                else:
+                    print("You must add some guards first!!!")
     else:
         print("You must add some invitations first!!!")
     print(str(count_access) + ' accesos han sido agregados')
