@@ -30,7 +30,7 @@ class VigilanteParque(models.Model):
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id_usuario.name + " - " + self.id_parque.nombre
+        return self.id_usuario.username + " - " + self.id_parque.nombre
 
     class Meta:
         verbose_name_plural = 'Vigilantes del Parque'

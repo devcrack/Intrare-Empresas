@@ -22,7 +22,7 @@ class Empresa(models.Model):
             url_map(str): Dirección web del mapa de la Empresa.
             validity(Date): Vigencia de la Empresa.
     """
-    custom_user = models.ForeignKey(
+    custom_user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
@@ -108,7 +108,7 @@ class Administrador(models.Model):
             id_usuario(int): ID del Usuario del Administrador.
     """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
-    id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    id_usuario = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         """
