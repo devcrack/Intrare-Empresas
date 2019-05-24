@@ -11,3 +11,11 @@ class EmpresaList(generics.ListCreateAPIView):
 class EmpresaDetail(generics.RetrieveDestroyAPIView):
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializers
+
+
+class EmpresaUpdate(generics.UpdateAPIView):
+    queryset = Empresa.objects.all()
+    lookup_field = 'pk'
+    serializer_class = EmpresaSerializers
+
+
