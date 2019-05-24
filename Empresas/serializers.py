@@ -1,12 +1,23 @@
 from rest_framework import serializers
-from .models import Empresa
-from Parques.models import Parque
-from Usuarios.models import CustomUser
+from .models import *
 
 
 class EmpresaSerializers(serializers.ModelSerializer):
     class Meta:
         model = Empresa
         fields = '__all__'
+
+
+class EmpleadoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Empleado
+        fields = '__all__'
+
+
+class AdministradorSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Administrador
+        fields = '__all__'
+
 
 
