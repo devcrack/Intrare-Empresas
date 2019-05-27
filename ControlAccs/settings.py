@@ -32,6 +32,15 @@ ALLOWED_HOSTS = []
 AUTH_USER_MODEL = 'Usuarios.CustomUser'
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework.authentication.BasicAuthentication',
+        #'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
+
 NONE = 0
 EMPLEADO = 1
 VIGILANTE = 2
@@ -49,6 +58,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'rest_framework',
+    'rest_framework.authtoken',
+    # App Para con control de los usuarios (Login, Registro, Token, Email, Etc)..
+    # https://djoser.readthedocs.io/en/latest/
+    'djoser',
+
     'Usuarios.apps.UsuariosConfig',
     'Empresas.apps.EmpresasConfig',
     'Invitaciones.apps.InvitacionesConfig',
@@ -56,7 +71,7 @@ INSTALLED_APPS = [
     'Bitacoras.apps.BitacorasConfig',
     'Grupos.apps.GruposConfig',
 
-    'rest_framework',
+
 
 ]
 

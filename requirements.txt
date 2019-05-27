@@ -3,3 +3,4 @@ djangorestframework
 faker
 pylint
 pep8
+djoser
