@@ -21,6 +21,9 @@
      * Despliega listado de todas las empresas 
        y despliega un mayor detalle de la empresa seleccionada ya sea para consulta o modificacion. 
        Ver sistema para mas detalles.
+- [x] Alta Administradores de Empresas
+- [x] Modificación Administradores de Empresas        
+       
 
 ### Administrador 
 - [x] Altas Empleado

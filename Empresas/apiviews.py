@@ -1,40 +1,48 @@
 from rest_framework import generics
 from rest_framework import viewsets
 from .serializers import *
+from Usuarios.permissions import *
 
 
 class EmpresaList(generics.ListCreateAPIView):
+    permission_classes = (isSuperAdmin, )
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializers
 
 
 class EmpresaDetail(generics.RetrieveDestroyAPIView):
+    permission_classes = (isSuperAdmin, )
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializers
 
 
 class EmpresaViewSet(viewsets.ModelViewSet):
+    permission_classes = (isSuperAdmin, )
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializers
 
 
 class EmpresaUpdate(generics.UpdateAPIView):
+    permission_classes = (isSuperAdmin, )
     queryset = Empresa.objects.all()
     lookup_field = 'pk'
     serializer_class = EmpresaSerializers
 
 
 class AdministradorList(generics.ListCreateAPIView):
+    permission_classes = (isSuperAdmin, )
     queryset = Administrador.objects.all()
     serializer_class = AdministradorSerializers
 
 
 class AdministradorDetail(generics.RetrieveDestroyAPIView):
+    permission_classes = (isSuperAdmin, )
     queryset = Administrador.objects.all()
     serializer_class = AdministradorSerializers
 
 
 class AdministradorUpdate(generics.UpdateAPIView):
+    permission_classes = (isSuperAdmin, )
     queryset = Administrador.objects.all()
     lookup_field = 'pk'
     serializer_class = AdministradorSerializers
