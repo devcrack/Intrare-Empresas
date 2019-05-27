@@ -52,3 +52,8 @@
 - [ ] Consulta Hisrorial de Accesos.
 - [ ] Firma pase de Salida.
 - [ ] Consulta visitas pendientes.
+
+### Vigilante
+- [ ] Registra accesos y salidas
+- [ ] Genera accesos sin Código
+- [ ] Consulta  Bitacora
