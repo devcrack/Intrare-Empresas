@@ -29,3 +29,9 @@
       * Despliega listado de todas las empresas 
        y despliega un mayor detalle de la empresa seleccionada ya se para consulta o modificacion. 
        Ver sistema para mas detalles.
+
+### Empleado 
+- [ ] Altas Invitaciones (si es que se le otorgó ese Permiso)
+- [ ] Consulta Hisrorial de Accesos
+- [ ] Firma pase de Salida
+- [ ] Consulta visitas pendientes
