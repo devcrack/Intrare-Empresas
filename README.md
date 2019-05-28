@@ -9,23 +9,26 @@
 
 ## Acciones por cada tipo de Usuario
 ### Super Administrador
-- [ ] Altas de Parque
-- [ ] Modificaciones de Parque
-- [ ] Consultas de Parque
+- [x] Altas de Parque
+- [x] Modificaciones de Parque
+- [x] Consultas de Parque
     * Despliega listado de todas las empresas 
        y despliega un mayor detalle de la empresa seleccionada ya sea para consulta o modificacion. 
        Ver sistema para mas detalles.
-- [ ] Altas de Empresa 
-- [ ] Modificaciones de Empresa 
-- [ ] Consultas de Empresas
+- [x] Altas de Empresa 
+- [x] Modificaciones de Empresa 
+- [x] Consultas de Empresas
      * Despliega listado de todas las empresas 
        y despliega un mayor detalle de la empresa seleccionada ya sea para consulta o modificacion. 
        Ver sistema para mas detalles.
+- [x] Alta Administradores de Empresas
+- [x] Modificación Administradores de Empresas        
+       
 
 ### Administrador 
-- [ ] Altas Empleado
-- [ ] Modificaciones Empleado
-- [ ] Consultas de Empleado
+- [x] Altas Empleado
+- [x] Modificaciones Empleado
+- [x] Consultas de Empleado
       * Despliega listado de todos los empleados
        y despliega un mayor detalle del empleado seleccionado ya sea para consulta o modificacion. 
        Ver sistema para mas detalles.
@@ -44,4 +47,13 @@
 - [ ] Despliega listado de todas las casetas de la empresa y despliega con mayor detalle de la inforamcion de la caseta seleccionada ya sea para consulta o modificacion. 
 - [ ] Envia mensaje de emergencia
 
+### Empleado 
+- [ ] Altas Invitaciones (si es que se le otorgó ese Permiso).
+- [ ] Consulta Hisrorial de Accesos.
+- [ ] Firma pase de Salida.
+- [ ] Consulta visitas pendientes.
 
+### Vigilante
+- [ ] Registra accesos y salidas
+- [ ] Genera accesos sin Código
+- [ ] Consulta  Bitacora
