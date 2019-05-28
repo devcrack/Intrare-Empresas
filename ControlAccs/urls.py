@@ -24,5 +24,5 @@ urlpatterns = [
     path('auth/', include('djoser.urls.authtoken')),
 
     path('', include('Empresas.urls')),
-
+    path('', include('Invitaciones.urls')),
 ]
