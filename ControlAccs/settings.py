@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework.authtoken',  # Token Authentication.
     # App Para con control de los usuarios (Login, Registro, Token, Email, Etc)..
     # https://djoser.readthedocs.io/en/latest/
     'djoser',
