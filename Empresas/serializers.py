@@ -7,6 +7,7 @@ class EmpresaSerializers(serializers.ModelSerializer):
         model = Empresa
         fields = '__all__'
 
+
 class AdministradorSerializers(serializers.ModelSerializer):
     class Meta:
         model = Administrador
