@@ -47,35 +47,35 @@
 
 # DJANGO REST FRAMEWORK
 [Request Django Rest Framework](https://www.django-rest-framework.org/api-guide/requests/)
-##About Request
+## About Request
 This class extends the standard HttpRequest, so adding for Rest Framework flexible request parsing and request 
 authentication.
 
-###Request Parsing 
+### Request Parsing 
 Request parsing allows you to treat request with JSON data or other media types in the same way that you would normally
 deal with a form data.
 
-####.data
+#### .data
 Returns the parsed content of the request body.
 
 
-###Content negotation
+### Content negotation
 Expose some properties that allow you to determine the result of the content negotiation stage.
 This allows you to implement behaviour such as selecting different schemes for different media types.
 
 
-###Authentication
+### Authentication
 This provides flexible, PRE-request Authentication, that gives the ability to:
 * Use different authentication polices for different parts of your API.
 * Support the use of multiple authentication policies.
 * Provide both user and token information associated with the incoming request.
 
-###.user
+### .user
 ```request.user``` typically returns an instance of ```django.contrib.models.User```.
 
 If the request is unauthenticated the default value of ```request.user``` is an instance of ```django.contrib.models.AnonymousUser```.
 
-###.auth
+### .auth
 ```request.auth``` returns any additional authentication context.
 
 
@@ -84,11 +84,11 @@ If the request is unauthenticated the default value of ```request.user``` is an 
 
 
  
-##About Athentification
+## About Athentification
 Authentication is the mechanism of associating an incoming request with a set identifying credentials,
 so in that sense can use those credentials to determine if the request should be permitted.
 
-###Basic Authentication
+### Basic Authentication
 Basic authentication is just appropriate For TESTING.  
 If successfully authenticated, BasicAuthentication provides the following credentials:
 
@@ -117,16 +117,16 @@ to allow access to any authenticated user or deny  access to any unauthenticated
 Another permission is allow read-only access to unauthenticated users. This corresponds to the ```IsAuthenticatedorReadOnly```
 class in RestFramework.   
 
-###How permissions are determined
+### How permissions are determined
 Permissions are always defined as a list of permission classes.
-###Object level permissions
+### Object level permissions
 Object level permissions are used to determine if a user should be allowed to act on a particular object, wich will
 typically be a model instance.
 
 Object level permission are run by views when ```.get_object()``` is called. An ```exceptions.PermissionDenied``` exception
 will be raised if the user is not allowed to act on the given object.
 
-####Limitations of object level permissions
+#### Limitations of object level permissions
 
 For performance reasons the generic views will not automatically apply object level permissions to each instance in 
 a query set when returning objects.
@@ -135,31 +135,31 @@ When you are using object level permissions you will want to filter the queryset
 have visibility onto instance that they are permitted to view.  
 
 
-##API Quick Reference
+## API Quick Reference
 
-###AllowAny 
+### AllowAny 
 The ```AllowAny``` permission class wil allow unrestricted access.
 
 
-###IsAuthenticated
+### IsAuthenticated
 The ```IsAuthenticated``` permission class will deny permission to any unauthenticated user.
 This is suitable if you want your API to only be accessible to registered users.
 
 
-###IsAdminUser
+### IsAdminUser
 The ```IsAdminUser``` permission class will deny to any user, unless  ```user.is_staff``` is ```True``` in which case 
 permission will be allowed.
 
 This permission is suitable if you want your API only be accessible to a subset of trusted administrators.
 
 
-###IsAuthenticatedOrReadOnly
+### IsAuthenticatedOrReadOnly
 The ```IsAuthenticatedOrReadOnly``` will allow authenticated users to perform any request. Request for unauthorised
 users will only be permitted if the request method **is one of the safe** methods; ```GET```, ```HEAD```, ```OPTIONS```.
 
 This permission is suitable if you want to your API allow read permission to anonymous users.
 
-##DjangoModelPermissions
+## DjangoModelPermissions
 This permissions must only be applied to views that have a ```.queryset``` property set.
 
 * ```POST``` request require the user to have the ```add``` permission model.
@@ -176,7 +176,7 @@ Override ```BasePermission``` and implement either, or both, of the following me
 
 This methods should return ```True``` if the request should be granted access, and ```False``` otherwise.
 
-###Note
+### Notes
 The instance-level ```has_object_permission``` method will only be called if the view-level ```has_permission``` checks
 have already passed. Not that  that for instance-level checks to run, the view code should explicitly call 
 ```.check_object_permission(request, obj)```. If you are using the **generic views** then this will be handled for you 
@@ -195,7 +195,7 @@ class CustomAccessPermision(permissions.BasePermission):
         ...
 ```
 
-###Examples
+### Examples
 The following is an example of a permission class that checks the incoming requet's IP address against a blacklist, and 
 denies the request if the IP has been blacklisted.
 
