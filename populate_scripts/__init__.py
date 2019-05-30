@@ -34,8 +34,8 @@ def add_user(_is_superuser, type_rol):
     is_superuser = _is_superuser
     _cellphone = phn()
     _rol = type_rol
-    last_login = faker.date_time()
-    user = CustomUser.objects.get_or_create(
+    # last_login = faker.date_time()
+    user = CustomUser.objects.create_user(
         first_name=name,
         last_name=last_name,
         username=username,
@@ -43,11 +43,11 @@ def add_user(_is_superuser, type_rol):
         is_staff=is_staff,
         is_active=is_active,
         is_superuser=is_superuser,
-        last_login=last_login,
+        # last_login=last_login,
         password=password,
         celular=_cellphone,
         roll=_rol
-        )[0]
+        )
     user.save()
     print('USER CREATED\n')
     return user
