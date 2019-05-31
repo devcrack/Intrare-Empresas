@@ -2,7 +2,6 @@ from rest_framework import generics
 from rest_framework import viewsets
 from .serializers import *
 from Usuarios.permissions import *
-from Usuarios.models import CustomUser
 from rest_framework.permissions import IsAdminUser
 
 
@@ -13,7 +12,7 @@ class EmpresaList(generics.ListCreateAPIView):
     que Lista todas empresas.
     Nota: Solo usuarios com permiso Staff pueden consumirla.
     """
-    permission_classes = (IsAdminUser, )
+    permission_classes = (isSuperAdmin, )
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializers
 
@@ -69,7 +68,7 @@ class AreaListAll(generics.ListCreateAPIView):
     que Lista todos los Administradores.
     Nota: Solo usuarios com permiso Staff pueden consumirla.
     """
-    permission_classes = (IsAdminUser, )
+    permission_classes = (isSuperAdmin, )
     queryset = Area.objects.all()
     serializer_class = AreaSerializers
 
