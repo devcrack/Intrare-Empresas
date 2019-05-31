@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework import viewsets
 from .serializers import *
 from Usuarios.permissions import *
+from Usuarios.models import CustomUser
 
 
 class EmpresaList(generics.ListCreateAPIView):
@@ -103,9 +104,19 @@ class VigilanteUpdate(generics.UpdateAPIView):
 
 
 class EmpleadoListAll(generics.ListCreateAPIView):
-    queryset = Empleado.objects.all()
+    """List all avaiable employees of the administrator company.
+
+    """
+    permission_classes = (is_admin,)  # Validates if this user is and Admin of some company
     serializer_class = EmpleadoSerializers
 
+    def get_queryset(self):
+        user = self.request.user
+        admin_company = Administrador.objects.filter(id_usuario=user)[0]
+        id_company = admin_company.id_empresa
+        queryset = Empleado.objects.filter(id_empresa=id_company)
+
+        return queryset
 
 class EmpleadoList(generics.ListCreateAPIView):
     def get_queryset(self):
