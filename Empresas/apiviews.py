@@ -2,16 +2,23 @@ from rest_framework import generics
 from rest_framework import viewsets
 from .serializers import *
 from Usuarios.permissions import *
+from rest_framework.permissions import IsAdminUser
 
 
 class EmpresaList(generics.ListCreateAPIView):
-    permission_classes = (isSuperAdmin, )
+    """
+    Clase EmpresaList, lista todas las Empresas.
+    Clase que hereda de ListCreateAPIView, provee un método GET
+    que Lista todas empresas.
+    Nota: Solo usuarios com permiso Staff pueden consumirla.
+    """
+    permission_classes = (IsAdminUser, )
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializers
 
 
 class EmpresaDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = (isSuperAdmin, )
+    permission_classes = (isAdminUserOwner, )
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializers
 
@@ -23,14 +30,20 @@ class EmpresaViewSet(viewsets.ModelViewSet):
 
 
 class EmpresaUpdate(generics.UpdateAPIView):
-    permission_classes = (isSuperAdmin, )
+    permission_classes = (isAdminUserOwner, )
     queryset = Empresa.objects.all()
     lookup_field = 'pk'
     serializer_class = EmpresaSerializers
 
 
 class AdministradorList(generics.ListCreateAPIView):
-    permission_classes = (isSuperAdmin, )
+    """
+    Clase AdministradorList, lista todas los Administradores de las Empresas.
+    Esta clase hereda de ListCreateAPIView, provee un método GET
+    que Lista todos los Administradores.
+    Nota: Solo usuarios com permiso Staff pueden consumirla.
+    """
+    permission_classes = (IsAdminUser, )
     queryset = Administrador.objects.all()
     serializer_class = AdministradorSerializers
 
@@ -49,11 +62,19 @@ class AdministradorUpdate(generics.UpdateAPIView):
 
 
 class AreaListAll(generics.ListCreateAPIView):
+    """
+    Clase AreaListAll, lista todas las Áreas de todas las Empresas.
+    Esta clase hereda de ListCreateAPIView, provee un método GET
+    que Lista todos los Administradores.
+    Nota: Solo usuarios com permiso Staff pueden consumirla.
+    """
+    permission_classes = (IsAdminUser, )
     queryset = Area.objects.all()
     serializer_class = AreaSerializers
 
 
 class AreaList(generics.ListCreateAPIView):
+    permission_classes = (IsAdminUser,)
     def get_queryset(self):
         """
         Método que devuelve las Áreas de una Empresa específica
@@ -65,11 +86,13 @@ class AreaList(generics.ListCreateAPIView):
 
 
 class AreaDetail(generics.RetrieveDestroyAPIView):
+    permission_classes = (isAdminUserOwnerArea, )
     queryset = Area.objects.all()
     serializer_class = AreaSerializers
 
 
 class AreaUpdate(generics.UpdateAPIView):
+    permission_classes = (isAdminUserOwnerArea, )
     queryset = Area.objects.all()
     lookup_field = 'pk'
     serializer_class = AreaSerializers
@@ -108,6 +131,7 @@ class EmpleadoListAll(generics.ListCreateAPIView):
 
 
 class EmpleadoList(generics.ListCreateAPIView):
+    permission_classes = (isSuperAdmin, )
     def get_queryset(self):
         """
         Método que devuelve los Empleados de una Empresa específica
