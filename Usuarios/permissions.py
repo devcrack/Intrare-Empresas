@@ -1,7 +1,6 @@
 from rest_framework import permissions
 from django.conf import settings
-from Usuarios.models import CustomUser
-from Empresas.models import Area
+
 
 class isSuperAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -11,8 +10,7 @@ class isSuperAdmin(permissions.BasePermission):
 class isAdminUserOwner(permissions.BasePermission):
     def has_permission(self, request, view):
         print("Primer Nivel")
-        print(request.user and request.user.is_superuser)
-        return bool(request.user and request.user.is_superuser)
+        return bool(request.user and request.user.roll == settings.ADMIN)
 
     def has_object_permission(self, request, view, obj):
         """
@@ -31,8 +29,7 @@ class isAdminUserOwner(permissions.BasePermission):
 class isAdminUserOwnerArea(permissions.BasePermission):
     def has_permission(self, request, view):
         print("Primer Nivel")
-        print(request.user and request.user.is_superuser)
-        return bool(request.user and request.user.is_superuser)
+        return bool(request.user and request.user.roll == settings.ADMIN)
 
     def has_object_permission(self, request, view, obj):
         """
