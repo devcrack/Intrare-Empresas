@@ -190,7 +190,16 @@ class EmpleadoEmpresaXArea(generics.ListCreateAPIView):
 
 
 class EmpleadoDetail(generics.RetrieveDestroyAPIView):
-    queryset = Empleado.objects.all()
+    permission_classes = (isAdmin, )    
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            queryset = Empleado.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            queryset = Empleado.objects.filter(id_empresa=id_company)
+        return queryset
     serializer_class = EmpleadoSerializers
 
 
@@ -208,3 +217,48 @@ class EmpleadoUpdate(generics.UpdateAPIView):
         return queryset
     lookup_field = 'pk'
     serializer_class = EmpleadoSerializers
+
+
+class CasetaListAll(generics.ListCreateAPIView):
+    permission_classes = (isAdmin, )
+    serializer_class = CasetaSerializers
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            queryset = Caseta.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            queryset = Caseta.objects.filter(id_empresa=id_company)
+        return queryset
+
+
+class CasetaDetail(generics.RetrieveDestroyAPIView):
+    permission_classes = (isAdmin, )
+    serializer_class = CasetaSerializers
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            queryset = Caseta.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            queryset = Caseta.objects.filter(id_empresa=id_company)
+        return queryset
+
+class CasetaUpdate(generics.UpdateAPIView):
+    permission_classes = (isAdmin, )
+    serializer_class = CasetaSerializers
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            queryset = Caseta.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            queryset = Caseta.objects.filter(id_empresa=id_company)
+        return queryset
+    lookup_field = 'pk'

@@ -27,6 +27,10 @@ urlpatterns = [
     path('empresas/empleados/<int:pk>/', EmpleadoDetail.as_view(), name='empleado_detail'),
     path('empresas/empleados/<int:pk>/update/', EmpleadoUpdate.as_view(), name='empleado_update'),
 
+    path('empresas/casetas/', CasetaListAll.as_view(), name='casetas_list'),
+    path('empresas/casetas/<int:pk>/', CasetaDetail.as_view(), name='caseta_list'),
+    path('empresas/casetas/<int:pk>/update/', CasetaUpdate.as_view(), name='caseta_update'),
+
     path('empresas/<int:pk>/area/<int:pk_area>/empleados/', EmpleadoEmpresaXArea.as_view(), name='empleado_empresa_area_list'),
 ]
 
