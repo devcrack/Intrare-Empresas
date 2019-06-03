@@ -11,11 +11,6 @@ urlpatterns = [
     path("empresas/<int:pk>/", EmpresaDetail.as_view(), name="empresa_detail"),
     path('empresas/<int:pk>/update/', EmpresaUpdate.as_view(), name='empresa_update'),
 
-    path('empresas/<int:pk>/areas/', AreaList.as_view(), name="area_list"),
-    path('empresas/<int:pk>/vigilantes/', VigilanteList.as_view(), name='vigilante_list'),
-    path('empresas/<int:pk>/empleados/', EmpleadoList.as_view(), name='empleado_list'),
-    path('empresas/<int:pk>/area/<int:pk_area>/empleados/', EmpleadoEmpresaXArea.as_view(), name='empleado_empresa_area_list'),
-
     path('empresas/administradores/', AdministradorList.as_view(), name='administradores_list'),
     path('empresas/administradores/<int:pk>/', AdministradorDetail.as_view(), name='administrador_detail'),
     path('empresas/administradores/<int:pk>/update/', AdministradorUpdate.as_view(), name='administrador_update'),
@@ -30,7 +25,9 @@ urlpatterns = [
 
     path('empresas/empleados/', EmpleadoListAll.as_view(), name='empleados_list'),
     path('empresas/empleados/<int:pk>/', EmpleadoDetail.as_view(), name='empleado_detail'),
-    path('empresas/empleados/<int:pk>/update/', EmpleadoUpdate.as_view(), name='empleado_update')
+    path('empresas/empleados/<int:pk>/update/', EmpleadoUpdate.as_view(), name='empleado_update'),
+
+    path('empresas/<int:pk>/area/<int:pk_area>/empleados/', EmpleadoEmpresaXArea.as_view(), name='empleado_empresa_area_list'),
 ]
 
 urlpatterns += router.urls

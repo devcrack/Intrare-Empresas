@@ -2,7 +2,6 @@ from rest_framework import generics
 from rest_framework import viewsets
 from .serializers import *
 from Usuarios.permissions import *
-from Usuarios.models import CustomUser
 from rest_framework.permissions import IsAdminUser
 
 
@@ -13,13 +12,13 @@ class EmpresaList(generics.ListCreateAPIView):
     que Lista todas empresas.
     Nota: Solo usuarios com permiso Staff pueden consumirla.
     """
-    permission_classes = (IsAdminUser, )
+    permission_classes = (isSuperAdmin, )
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializers
 
 
 class EmpresaDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = (isAdminUserOwner, )
+    permission_classes = (isSuperAdmin,)
     queryset = Empresa.objects.all()
     serializer_class = EmpresaSerializers
 
@@ -31,7 +30,7 @@ class EmpresaViewSet(viewsets.ModelViewSet):
 
 
 class EmpresaUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdminUserOwner, )
+    permission_classes = (isSuperAdmin, )
     queryset = Empresa.objects.all()
     lookup_field = 'pk'
     serializer_class = EmpresaSerializers
@@ -44,7 +43,7 @@ class AdministradorList(generics.ListCreateAPIView):
     que Lista todos los Administradores.
     Nota: Solo usuarios com permiso Staff pueden consumirla.
     """
-    permission_classes = (IsAdminUser, )
+    permission_classes = (isSuperAdmin, )
     queryset = Administrador.objects.all()
     serializer_class = AdministradorSerializers
 
@@ -69,59 +68,94 @@ class AreaListAll(generics.ListCreateAPIView):
     que Lista todos los Administradores.
     Nota: Solo usuarios com permiso Staff pueden consumirla.
     """
-    permission_classes = (IsAdminUser, )
-    queryset = Area.objects.all()
-    serializer_class = AreaSerializers
-
-
-class AreaList(generics.ListCreateAPIView):
-    permission_classes = (IsAdminUser,)
+    permission_classes = (isAdmin, )
     def get_queryset(self):
-        """
-        Método que devuelve las Áreas de una Empresa específica
-        :return: Áreas de la Empresa
-        """
-        queryset = Area.objects.filter(id_empresa=self.kwargs["pk"])
+        user = self.request.user
+        if user.is_staff:
+            queryset = Area.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            print("id Company = " + str(id_company))
+            queryset = Area.objects.filter(id_empresa=id_company)
         return queryset
     serializer_class = AreaSerializers
 
 
 class AreaDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = (isAdminUserOwnerArea, )
-    queryset = Area.objects.all()
+    permission_classes = (isAdmin, )
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            queryset = Area.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            print("id Company = " + str(id_company))
+            queryset = Area.objects.filter(id_empresa=id_company)
+        return queryset
     serializer_class = AreaSerializers
 
 
 class AreaUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdminUserOwnerArea, )
-    queryset = Area.objects.all()
+    permission_classes = (isAdmin, )
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            queryset = Area.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            print("id Company = " + str(id_company))
+            queryset = Area.objects.filter(id_empresa=id_company)
+        return queryset
     lookup_field = 'pk'
     serializer_class = AreaSerializers
 
 
 class VigilanteListAll(generics.ListCreateAPIView):
-    queryset = Vigilante.objects.all()
-    serializer_class = VigilanteSerializers
-
-
-class VigilanteList(generics.ListCreateAPIView):
+    permission_classes = (isAdmin, )    
     def get_queryset(self):
-        """
-        Método que devuelve los Vigilantes de una Empresa específica
-        :return: Vigilantes de la Empresa
-        """
-        queryset = Vigilante.objects.filter(id_empresa=self.kwargs["pk"])
+        user = self.request.user
+        if user.is_staff:
+            queryset = Vigilante.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            print("id Company = " + str(id_company))
+            queryset = Vigilante.objects.filter(id_empresa=id_company)
         return queryset
     serializer_class = VigilanteSerializers
 
 
 class VigilanteDetail(generics.RetrieveDestroyAPIView):
-    queryset = Vigilante.objects.all()
+    permission_classes = (isAdmin, )    
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            queryset = Vigilante.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            print("id Company = " + str(id_company))
+            queryset = Vigilante.objects.filter(id_empresa=id_company)
+        return queryset
     serializer_class = VigilanteSerializers
 
 
 class VigilanteUpdate(generics.UpdateAPIView):
-    queryset = Vigilante.objects.all()
+    permission_classes = (isAdmin, )    
+    
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            queryset = Vigilante.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            print("id Company = " + str(id_company))
+            queryset = Vigilante.objects.filter(id_empresa=id_company)
+        return queryset
     lookup_field = 'pk'
     serializer_class = VigilanteSerializers
 
@@ -130,27 +164,18 @@ class EmpleadoListAll(generics.ListCreateAPIView):
     """List all avaiable employees of the administrator company.
 
     """
-    permission_classes = (is_admin,)  # Validates if this user is and Admin of some company
+    permission_classes = (isAdmin,)  # Validates if this user is and Admin of some company
     serializer_class = EmpleadoSerializers
 
     def get_queryset(self):
         user = self.request.user
-        admin_company = Administrador.objects.filter(id_usuario=user)[0]
-        id_company = admin_company.id_empresa
-        queryset = Empleado.objects.filter(id_empresa=id_company)
-
+        if user.is_staff:
+            queryset = Empleado.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            queryset = Empleado.objects.filter(id_empresa=id_company)
         return queryset
-
-class EmpleadoList(generics.ListCreateAPIView):
-    permission_classes = (isSuperAdmin, )
-    def get_queryset(self):
-        """
-        Método que devuelve los Empleados de una Empresa específica
-        :return: Empleados de la Empresa
-        """
-        queryset = Empleado.objects.filter(id_empresa=self.kwargs["pk"])
-        return queryset
-    serializer_class = EmpleadoSerializers
 
 
 class EmpleadoEmpresaXArea(generics.ListCreateAPIView):
@@ -170,6 +195,16 @@ class EmpleadoDetail(generics.RetrieveDestroyAPIView):
 
 
 class EmpleadoUpdate(generics.UpdateAPIView):
-    queryset = Empleado.objects.all()
+    permission_classes = (isAdmin, )    
+    
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            queryset = Empleado.objects.all()
+        else:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            queryset = Empleado.objects.filter(id_empresa=id_company)
+        return queryset
     lookup_field = 'pk'
     serializer_class = EmpleadoSerializers

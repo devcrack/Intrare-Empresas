@@ -45,8 +45,9 @@
 - [ ] Alta de Vigilante
 - [ ] Modificaciones de Vigilante.
 - [ ] Despliega listado de todas las casetas de la empresa y despliega con mayor detalle de la inforamcion de la caseta seleccionada ya sea para consulta o modificacion. 
-- [ ] Envia mensaje de emergencia
-
+- [ ] Alta Áreas (de su propia Empresa)
+- [ ] Editar Áreas (de su propia Empresa)
+- [ ] Consultar Áreas (de su propia Empresa)
 ### Empleado 
 - [ ] Altas Invitaciones (si es que se le otorgó ese Permiso).
 - [ ] Consulta Hisrorial de Accesos.
