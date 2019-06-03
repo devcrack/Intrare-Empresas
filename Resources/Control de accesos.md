@@ -1,50 +1,3 @@
-# Tipos de Usuario 
-* Super Administrador
-* Administradores
-  * Administradores (Empresa)
-  * Administradores Parque.
-* Empleado
-* Vigilante Empresa, Vigilante Parque
-
-
-## Acciones por cada tipo de Usuario
-### Super Administrador
-- [ ] Altas de Parque
-- [ ] Modificaciones de Parque
-- [ ] Consultas de Parque
-    * Despliega listado de todas las empresas 
-       y despliega un mayor detalle de la empresa seleccionada ya sea para consulta o modificacion. 
-       Ver sistema para mas detalles.
-- [ ] Altas de Empresa 
-- [ ] Modificaciones de Empresa 
-- [ ] Consultas de Empresas
-     * Despliega listado de todas las empresas 
-       y despliega un mayor detalle de la empresa seleccionada ya sea para consulta o modificacion. 
-       Ver sistema para mas detalles.
-
-### Administrador 
-- [ ] Altas Empleado
-- [ ] Modificaciones Empleado
-- [ ] Consultas de Empleado
-      * Despliega listado de todos los empleados
-       y despliega un mayor detalle del empleado seleccionado ya sea para consulta o modificacion. 
-       Ver sistema para mas detalles.
-- [ ] Consulta Invitaciones. Ver sistema para mas detalles. **Nota** Puede filtrar invitaciones por fecha.
-- [ ] Consulta Accesos. Ver sistema para mas     detalles.
-- [ ] Consulta Bitacora. Ver sistema para mas detalles.
-- [ ] Genera un tipo de invitacion llamada Invitacion 
-      Personal. En el backend una invitacion empresarial.
-- [ ] Puede firmar pase de salida(Autorizar accesos).
-- [ ] Configura el color de las areas.
-- [ ] Alta de Caseta
-- [ ] Modificaciones de Caseta.
-- [ ] Despliega listado de todas las casetas de la empresa y despliega con mayor detalle de la inforamcion de la caseta seleccionada ya sea para consulta o modificacion. 
-- [ ] Alta de Vigilante
-- [ ] Modificaciones de Vigilante.
-- [ ] Despliega listado de todas las casetas de la empresa y despliega con mayor detalle de la inforamcion de la caseta seleccionada ya sea para consulta o modificacion. 
-- [ ] Envia mensaje de emergencia
-
-
 # DJANGO REST FRAMEWORK
 [Request Django Rest Framework](https://www.django-rest-framework.org/api-guide/requests/)
 ## About Request
@@ -79,11 +32,6 @@ If the request is unauthenticated the default value of ```request.user``` is an 
 ```request.auth``` returns any additional authentication context.
 
 
-
-
-
-
- 
 ## About Athentification
 Authentication is the mechanism of associating an incoming request with a set identifying credentials,
 so in that sense can use those credentials to determine if the request should be permitted.
@@ -102,7 +50,8 @@ response.
 This authentication scheme uses a simple token based HTTP authentication scheme. This type
 of authentication is appropriate for client-servers setups, such as native desktop and mobile apps.
 
- 
+
+
 ## Permissions in DJANGO Rest Framework
 
 The permissions in Django Rest Framework are always run at the very start of the view, before any other code is allowed 
@@ -238,5 +187,52 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 **Note** that the generic views will check the appropriate object level permissions, but if you write your own custom 
 views, you need call ```self.check_object_permission(request, obj)``` from the view once you have the object instance.
  
- 
+## About Views
 
+### APIView 
+This provides some handler methods, to handle the http verbs: get, post, put, patch, and delete.
+
+### ViewSet
+This is an abstraction over APIView, which provides actions as methods:
+- list
+- retrieve
+- create
+- update/partial_update
+- destroy
+
+Both can be used with normal django urls.
+Because of the conventions established with the actions, the ViewSet has also the ability to be mapped into a router, 
+which is really helpful.
+
+Now, both of this Views, have shortcuts, these shortcuts give you a simple implementation ready to be used.
+
+GenericAPIView: for APIView, this gives you shortcuts that map closely to your database models. Adds commonly required behavior for standard list and detail views. Gives you some attributes like, the serializer_class, also gives pagination_class, filter_backend, etc
+
+GenericViewSet: There are many GenericViewSet, the most common being ModelViewSet. They inherit from GenericAPIView and have a full implementation of all of the actions: list, retrieve, destroy, updated, etc. Of course, you can also pick some of them, read the docs.
+
+If you are doing something really simple, with a ModelViewSet should be enough, even redefining and calling super also is enough. For more complex cases, you can go for lower level classes.
+
+### Viewset
+
+Class is simply a type of class-based View, that does not provide any method handlers such as .get() or .post(), 
+and instead provides actions such as ```.list()``` and ```.create()```. This type of view is ussually used when you have 
+to do simple tasks.
+
+
+### ```.list()```
+Read only, returns multiple resources (http verb: get). Returns a list of dicts.
+
+
+### ```.retrieve()```
+Read only, single resource (http verb: get, but will expect an id). Returns a single dict.
+
+
+### ```.create()```
+Creates a new resource (http verb: **post**).
+
+
+### ```update/partial_update```
+Edits a resource (http verbs: **put/patch**)
+
+### ```.destroy()```
+removes a resource (http verb: **delete**)
