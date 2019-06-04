@@ -162,7 +162,7 @@ class VigilanteUpdate(generics.UpdateAPIView):
 
 class EmpleadoListAll(generics.ListCreateAPIView):
     """List all avaiable employees of the administrator company.
-
+    This only list all employees that belongs to the company wich the adm
     """
     permission_classes = (isAdmin,)  # Validates if this user is and Admin of some company
     serializer_class = EmpleadoSerializers
