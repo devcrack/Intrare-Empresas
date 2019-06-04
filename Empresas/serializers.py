@@ -32,4 +32,7 @@ class EmpleadoSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
+class CasetaSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Caseta
+        fields = '__all__'

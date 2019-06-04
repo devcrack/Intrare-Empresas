@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'rest_framework',
-    'rest_framework.authtoken',
+    'rest_framework.authtoken',  # Token Authentication.
     # App Para con control de los usuarios (Login, Registro, Token, Email, Etc)..
     # https://djoser.readthedocs.io/en/latest/
     'djoser',
@@ -98,6 +98,7 @@ CORS_ORIGIN_WHITELIST = (
 CORS_ORIGIN_REGEX_WHITELIST = (
     'http://localhost:8000',
 )
+
 
 ROOT_URLCONF = 'ControlAccs.urls'
 
