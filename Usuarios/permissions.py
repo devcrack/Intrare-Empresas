@@ -86,11 +86,13 @@ class isAdminUserOwnerArea(permissions.BasePermission):
 
 
 class isEmployee(permissions.BasePermission):
+    message = 'Not allowed.'
     def has_permission(self, request, view):
         return bool(request.user and request.user.roll == settings.EMPLEADO)
 
 
 class is_admin(permissions.BasePermission):
+    message = 'Not allowed.'
     def has_permission(self, request, view):
         return request.user.roll == settings.ADMIN
 
