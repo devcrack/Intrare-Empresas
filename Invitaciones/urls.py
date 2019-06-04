@@ -14,5 +14,5 @@ from .Apiviews import *
     route   
 """
 urlpatterns = [
-    path('invitaciones/', Invitacion_List.as_view(), name='invitaciones_url')  # path(route, view, kwargs, name= None)]
+    path('invitaciones/', Invitacion_List.as_view({'get': 'list'}), name='invitaciones_url')  # path(route, view, kwargs, name= None)]
 ]
