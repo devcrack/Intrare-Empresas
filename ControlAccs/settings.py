@@ -88,6 +88,9 @@ MIDDLEWARE = [
 
 ]
 
+# Enable CORS for all domains
+CORS_ORIGIN_ALLOW_ALL = True
+
 ROOT_URLCONF = 'ControlAccs.urls'
 
 TEMPLATES = [
