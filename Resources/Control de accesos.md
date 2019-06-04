@@ -216,7 +216,7 @@ If you are doing something really simple, with a ModelViewSet should be enough, 
 
 Class is simply a type of class-based View, that does not provide any method handlers such as .get() or .post(), 
 and instead provides actions such as ```.list()``` and ```.create()```. This type of view is ussually used when you have 
-to do simple tasks.
+to do simples tasks.
 
 
 ### ```.list()```
