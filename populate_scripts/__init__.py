@@ -53,5 +53,55 @@ def add_user(_is_superuser, type_rol):
     return user
 
 
+def add_user1(*args):
+    """Creates a non Staff User.
+    Args:
+        args:Tuple that contains all parameters.
+        args[0](bool):Indicates if user will be super user.
+        args[1](int): Type Rol that the user going have.
+        args[2](str): email of user.
+        args[3](str): Password.
+    """
+    full_name = faker.name()
+    email = faker.email()
+    password = faker.password()
+    if len(args) > 2:
+        email = unique_id()
+        email += args[2]
+        if len(args) > 3:
+            password = args[3]
+    list = full_name.split()
+    name = list[0]
+    last_name = list[1]
+    username_pre = email.split("@")
+    username = username_pre[0] + unique_id()
+    is_staff = False
+    is_active = True
+    is_superuser = args[0]
+    _cellphone = phn()
+    _rol = args[1]
+    # last_login = faker.date_time()
+    user = CustomUser.objects.create_user(
+        first_name=name,
+        last_name=last_name,
+        username=username,
+        email=email,
+        is_staff=is_staff,
+        is_active=is_active,
+        is_superuser=is_superuser,
+        # last_login=last_login,
+        password=password,
+        celular=_cellphone,
+        roll=_rol
+        )
+    user.save()
+    print('USER CREATED wit mail  =')
+    print(email)
+    print(' And Password  =')
+    print(password)
+
+    return user
+
+
 def print_dummy_message():
     print('Hello from populate_scripts/__init__.py\n')
