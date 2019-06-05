@@ -100,3 +100,8 @@ class is_admin(permissions.BasePermission):
 class isAdmin(permissions.BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and (request.user.roll == settings.ADMIN or request.user.is_staff))
+
+class is_staff(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user.is_staff
