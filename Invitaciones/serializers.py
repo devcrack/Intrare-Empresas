@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from .models import *
-
+from Empresas.models import Administrador,Empresa
+from Empresas.models import Empleado
 
 class InvitacionSerializers(serializers.ModelSerializer):
     """ Serializer just for invitations.
