@@ -80,10 +80,14 @@ def add_acceso(n=2):
         print("You must add some invitations first!!!")
     print(str(count_access) + ' accesos han sido agregados')
 
-    
-def add_companies(n=1):
+
+# def add_companies(n=1):
+def add_companies(*args):
     """
-    :param n:
+    Args:
+        args[0]:Number of companies to insert in database.
+        args[1]:Email of manager company.
+        args[2]:Password of manager company.
     :return:
     Todo:
         * Generar un Administrador del sistema para cada Compañia/Empresa.
@@ -93,8 +97,14 @@ def add_companies(n=1):
         parque = Parque.objects.all()[random.randint(1, num_parques - 1)]
     else:
         parque = None
-        for entry in range(n):
-            sys_admin = add_user(True, settings.ADMIN)
+        for entry in range(args[0]):
+            if len(args) > 1:
+                if len(args) > 2:
+                    sys_admin = add_user1(True, settings.ADMIN, args[1], args[2])
+                else:
+                    sys_admin = add_user1(True, settings.ADMIN, args[1])
+            else:
+                sys_admin = add_user1(True, settings.ADMIN)
             fake_empresa = faker.company()
             fake_address = faker.street_address()
             fake_numer_phone = phn()
@@ -124,38 +134,11 @@ def add_companies(n=1):
                 validity=fake_validity
             )[0]
             fake_empresa.save()
+            fake_manager = Administrador.objects.get_or_create(id_empresa=fake_empresa, id_usuario=sys_admin)[0]
+            fake_manager.save()
         else:
             print("Agrega uno o mas parques \n")
 
-
-def add_managers(n):
-    """
-    Función para agregar un Administrador por Empresa.
-    Nota: Se debe de agregar registros a la Tabla Empresa
-    para ejecutar correctamente la función.
-    """
-    count_users = len(CustomUser.objects.all())
-    count_companies = len(Empresa.objects.all())
-    count = 0
-    if count_users > 1:
-        if count_companies > 0:
-            for i in range(count_companies):
-                a_company = Empresa.objects.all()[i]
-                a_user = CustomUser.objects.get(id=a_company.custom_user.id)
-                print(a_user)
-                manager = Administrador.objects.get_or_create(
-                    id_empresa=a_company,
-                    id_usuario=a_user
-                )[0]
-                manager.save()
-                count += 1
-                print('Num = ' +  str(count) + ' Manager Added\n')
-        else:
-            print('You must to add Companies first!!!\n')
-    else:
-        print('You must to add some Users first!!!\n')
-
-    print(str(count) + " Managers Added")
 
 
 def add_areas(n=1):
@@ -261,10 +244,13 @@ def add_employees_random_area(n):
                 _empleado.save()
 
 
-def add_employee_all_areas(n=1):
+def add_employee_all_areas(*args):
     """Add a certain number of employees to all companies and its areas ech one
     of it, in other words to all areas of each company.
-
+    args:
+        args[0]:Number of employees to insert.
+        args[1]:pre mail of employee
+        args[2]:password of employee
     :return VOID:
     """
     _companies = Empresa.objects.all()
@@ -281,12 +267,18 @@ def add_employee_all_areas(n=1):
                 for index_area in range(0, _num_areas):
                     _area = _areas[index_area]
                     _area = Area(_area)
-                    for num_employee in range(0, n):
-                        _user = add_user(False, settings.EMPLEADO)
+                    for num_employee in range(0, args[0]):
+                        if len(args) > 1:
+                            if len(args) > 2:
+                                _user = add_user1(False, settings.EMPLEADO, args[1], args[2])
+                            else:
+                                _user = add_user1(False, settings.EMPLEADO, args[1])
+                        else:
+                            _user = add_user(False, settings.EMPLEADO)
                         _extension = phn()
                         _can_sent = True
                         _id_notify = phn()
-                        _code =  phn()
+                        _code = phn()
                         _employee = Empleado.objects.get_or_create(
                             id_empresa=_company.id, id_usuario=_user,
                             id_area=_area.id, extension=_extension,

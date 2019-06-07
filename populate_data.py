@@ -34,14 +34,19 @@ def add_companies(how_many):
         how_many(int): Numero de registro que desea agregar a la base de datos.
     """
     print('Adding companies....\n')
-    populate_company.add_companies(how_many)
-
+    if len(sys.argv) > 4:
+        print("Password")
+        print(sys.argv[4])
+        populate_company.add_companies(how_many, sys.argv[3], sys.argv[4])
+    else:
+        populate_company.add_companies(how_many)
 
 def add_invitations(how_many):
     """Agrega un determinado numero de invitaciones
      Args:
          how_many(int):Numero de invitaciones que se desea dar de alta.
     """
+
     print("Adding Invitation...\n")
     inv.add_invitation(how_many)
 
@@ -73,21 +78,20 @@ def add_casetas(how_many):
     print('Adding casetas....\n')
     populate_company.add_casetas(how_many)
 
+
 def add_employees(how_many):
     print('Add employees...\n')
-    populate_company.add_employee_all_areas(how_many)
+    if len(sys.argv) > 4:
+        print("Password")
+        print(sys.argv[4])
+        populate_company.add_employee_all_areas(how_many, sys.argv[3], sys.argv[4])
+    else:
+        populate_company.add_employee_all_areas(how_many)
 
 
 def add_guards(how_many):
     print('Adding  guards..\n')
     populate_company.add_guard(how_many)
-
-def add_managers(how_many):
-    """
-    Agrega un Administrador por Empresa.
-    """
-    print('Adding mangers')
-    populate_company.add_managers(how_many)
 
 def add_access(how_many):
     print('Adding access')
@@ -126,6 +130,10 @@ def add_group_has_contacts(how_many):
     populate_groups.add_group_has_contact(how_many)
 
 
+def  add_invitation_from_user(how_many):
+    inv.employee_add_invitation(how_many, sys.argv[3])
+
+
 def main():
     """Entrada principal para llevar a cabo la ejecucion de este script
 
@@ -150,8 +158,7 @@ def main():
         'add_users': add_users,
         'add_areas': add_area,        #2
         'add_casetas': add_casetas,
-        'add_employees': add_employees,
-        'add_managers': add_managers,
+        'add_employee': add_employees,
         'add_invitation': add_invitations,
         'add_access': add_access,
         'add_tmp_invitation': add_tmp_inv,
@@ -160,10 +167,12 @@ def main():
         'add_contacts': add_contacts,
         'add_groups': add_groups,
         'add_group_has_contacts': add_group_has_contacts,
-        'add_security_equipment': add_security_equp
+        'add_security_equipment': add_security_equp,
+        'add_inv': add_invitation_from_user
     }
+
     option = sys.argv[1]
-    if len(sys.argv) == 3:
+    if len(sys.argv) > 2:
         hw_many = sys.argv[2]
     else:
         hw_many = 1
