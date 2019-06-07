@@ -60,6 +60,12 @@ def add_invitation(n=1):
 
 
 def employee_add_invitation(*args):
+    """
+    A specific employee add a N number of invitations to all areas of his company.
+    Args:
+        args[0]:  Number of invitations to insert.
+        args[1]: Email of the user for generate the invitation.
+    """
     n = args[0]
     email = args[1]
     users = CustomUser.objects.filter(email=email)  # Get the user
@@ -102,8 +108,8 @@ def employee_add_invitation(*args):
                         print('AREA=' + str(_area.id) + '\n')
                         print('EMPLOYEE that sent Invitation=' + str(employee.id_usuario) + '\n')
                         num_inv += 1
-                else:
-                    print('This Company not have areas\n')
+            else:
+                print('This Company not have areas\n')
         else:
             print('This user is not a Employee\n')
     else:
@@ -232,4 +238,20 @@ def add_security_equipment(n):
         print('Security #' +str(entry + 1) + 'equipment Added\n')
 
 
-
+def number_invitations_by_employee(*args):
+    """
+    Return the number of invitation that a specific Employee has generated.
+    """
+    email = args[0]
+    users = CustomUser.objects.filter(email=email)
+    if len(users):
+        user = users[0]
+        employees = Empleado.objects.filter(id_usuario=user.id)
+        if len(employees):
+            employee = employees[0]
+            invitations = Invitacion.objects.filter(id_empleado=employee.id)
+            print('This Employee has Generated  ' + str(len(invitations)) + ' Invitations\n')
+        else:
+            print('The user is not a Employee \n')
+    else:
+        print('Users with email provided do not exist')
