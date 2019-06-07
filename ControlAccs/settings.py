@@ -40,6 +40,11 @@ REST_FRAMEWORK = {
     )
 }
 
+DJOSER = {
+    'SERIALIZERS': {
+         'user': 'Usuarios.serializers.UserSerializer'
+    }
+}
 
 NONE = 0
 EMPLEADO = 1
