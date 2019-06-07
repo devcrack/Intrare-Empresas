@@ -130,7 +130,6 @@ def add_group_has_contacts(how_many):
     populate_groups.add_group_has_contact(how_many)
 
 
-
 def  add_invitation_from_user(how_many):
     inv.employee_add_invitation(how_many, sys.argv[3])
 
@@ -173,7 +172,7 @@ def main():
     }
 
     option = sys.argv[1]
-    if len(sys.argv) == 3:
+    if len(sys.argv) > 2:
         hw_many = sys.argv[2]
     else:
         hw_many = 1
