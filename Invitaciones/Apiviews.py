@@ -7,16 +7,22 @@ from Usuarios.permissions import *
 
 
 class Invitacion_List(viewsets.ModelViewSet):
-    permission_classes = (is_admin | isEmployee,)  # The user logged have to be and admin or an employee
+    permission_classes = (IsAdmin | IsEmployee,)  # The user logged have to be and admin or an employee
     serializer_class = InvitacionSerializers  # Used for validate and deserializing input, and for serializing output.
 
     def list(self, request, *args, **kwargs):
         usr = self.request.user
-        adm_company = Administrador.objects.filter(id_usuario=usr)[0]
-        id_company = adm_company.id_empresa
-        inv_this_company = Invitacion.objects.filter(id_empresa=id_company)
-        # if is_admin:
-        queryset = inv_this_company
+        invitations = None
+        if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
+            print('IS an ADMINISTRATOR')
+            adm_company = Administrador.objects.filter(id_usuario=usr)[0]
+            id_company = adm_company.id_empresa
+            invitations = Invitacion.objects.filter(id_empresa=id_company)
+        if usr.roll == settings.EMPLEADO:
+            print('IS an EMPLOYEE')
+            employee = Empleado.objects.filter(id_usuario=usr)[0]
+            invitations = Invitacion.objects.filter(id_empleado=employee.id)
+        queryset = invitations
         serializer = InvitacionSerializers(queryset, many=True)
         return Response(serializer.data)
 
@@ -28,11 +34,4 @@ class Invitacion_List(viewsets.ModelViewSet):
         # admin_company = Administrador.objects.filter(id_usuario=user)[0]
 
         # # Here first we have to filter invitation of the current company
-
-
-
-
-
-    queryset = Invitacion.objects.all()  # Used for return objects from this view.
-
 
