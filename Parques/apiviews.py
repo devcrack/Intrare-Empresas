@@ -1,11 +1,22 @@
 from rest_framework import generics
-from rest_framework import viewsets
 from .serializers import *
+from Usuarios.permissions import *
 
 
 class ParqueList(generics.ListCreateAPIView):
-
-    #permission_classes = pass
-
+    permission_classes = (isSuperAdmin,)
     queryset = Parque.objects.all()
-    serializer_class = ParqueSerializer
+    serializer_class = ParqueSerializers
+
+
+class ParqueDetail(generics.RetrieveDestroyAPIView):
+    permission_classes = (isSuperAdmin, )
+    queryset = Parque.objects.all()
+    serializer_class = ParqueSerializers
+
+
+class ParqueUpdate(generics.UpdateAPIView):
+    permission_classes = (isSuperAdmin, )
+    queryset = Parque.objects.all()
+    lookup_field = 'pk'
+    serializer_class = ParqueSerializers
