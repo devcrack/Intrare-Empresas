@@ -13,7 +13,6 @@ class AdministradorSerializers(serializers.ModelSerializer):
         model = Administrador
         fields = '__all__'
 
-
 class AreaSerializers(serializers.ModelSerializer):
     class Meta:
         model = Area

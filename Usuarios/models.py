@@ -14,11 +14,11 @@ class CustomUser(AbstractUser):
     """
     Perfil
     """
-    email = models.EmailField(unique=True, blank=False, name='email')
+    email = models.EmailField(unique=True, blank=True, name='email', null=True)
     celular = models.CharField(max_length=30, unique=True, null=False, blank=True, name='celular')
     ine_frente = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_frente')
     ine_atras = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_atras')
-    roll = models.IntegerField(null=False, default=0, blank=True, name='roll')
+    roll = models.IntegerField(null=False, default=0, blank=False, name='roll')
     plataforma = models.CharField(max_length=25, default='', name='plataforma')  # Tipo de aplicacion que es el sistema(Web, Android, iOs)
 
     """
