@@ -52,10 +52,10 @@ class Invitacion(models.Model):
     leida = models.BooleanField(default=False, null=False, blank=False) #  Se activa cuando el invitado revisa la invitacion y asi el empleado se de cuenta de que se ha leido.
 
     def __str__(self):
-        return "%s %s" % (str(self.id), self.id_usuario.email)
+        return f"ID_Invitation: {self.id};  COMPANY: {self.empresa}; GUEST_PHONE: {self.id_usuario.celular}; GUEST:MAIL: {self.id_usuario.email}"
 
     class Meta:
-        verbose_name_plural = "Invitaciones"
+        verbose_name_plural = "INVITATIONS"
 
 
         
@@ -187,14 +187,16 @@ class EquipoSeguridad(models.Model):
     Attributes:
         nombre(str): Nombre del equipo de seguridad.
     """
-    nombre = models.CharField(max_length=254, null=False, blank=False)
+    nombre = models.CharField(max_length=254, null=False, blank=False, unique=True)
 
 
-    def __str__(self):        
-        return f"No {self.id}"
+    # def __str__(self):
+    #     return f"No {self.id}"
+    def __str__(self):
+        return f"ID->{self.id} NAME:{self.nombre}"
 
     class Meta:
-        verbose_name_plural = "Equipos de Seguridad"
+        verbose_name_plural = "Equipment Security"
 
 class EquiposporInvitacion(models.Model):
     """Se refiere a los equipo de seguridad que cada invitado pudiese llevar.
@@ -209,10 +211,10 @@ class EquiposporInvitacion(models.Model):
     
 
     def __str__(self):        
-        return f"No {self.id}"
+        return f"Invitation->{self.id_invitacion.id} Security Equipment:{self.id_equipo_seguridad.nombre}"
 
     class Meta:
-        verbose_name_plural = "Equipo por Invitaciones"
+        verbose_name_plural = "Security Equipment by Invitation"
 
 
 class EquipoporInvitacionesEmpresariales(models.Model):

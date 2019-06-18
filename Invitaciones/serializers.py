@@ -1,26 +1,38 @@
 from rest_framework import serializers
 
 from .models import *
+from Usuarios.models import CustomUser
 from Empresas.models import Administrador,Empresa
 from Empresas.models import Empleado
 
 class json_invit():
 
-    def __init__(
-            self, cell_number,
-            email, area,
-            inv_date, business,
-            sec_equip, vehicle,
-            notes, company_from):
+    # def __init__(
+    #         self, cell_number,
+    #         email, area,
+    #         business,
+    #         sec_equip, vehicle,
+    #         notes, company_from):
+    #     self.cell_number = cell_number
+    #     self.email = email,
+    #     self.area = area,
+    #     self.business = business,
+    #     self.sec_equip = sec_equip,
+    #     self.vehicle = vehicle,
+    #     self.notes = notes,
+    #     self.company_from = company_from
+
+    def __init__(self, cell_number, email, area, business, sec_equip, vehicle, company, notes, date):
         self.cell_number = cell_number
-        self.email = email,
-        self.area = area,
-        self.inv_date = inv_date,
-        self.business = business,
-        self.sec_equip = sec_equip,
-        self.vehicle = vehicle,
-        self.notes = notes,
-        self.company_from = company_from
+        self.email = email
+        self.area = area
+        self.business = business
+        self.sec_equip = sec_equip
+        self.vehicle = vehicle
+        self.company = company
+        self.notes = notes
+        self.date = date
+
 
     # def __init__(self, email, content, created):
     #     self.email = email
@@ -29,18 +41,28 @@ class json_invit():
 
 
 class InvitacionCreateSerializer(serializers.Serializer):
+    # cell_number = serializers.IntegerField()
+    # email = serializers.EmailField()
+    # area = serializers.CharField()
+    # business = serializers.CharField()
+    # sec_equip = serializers.CharField()
+    # vehicle = serializers.BooleanField()
+    # notes = serializers.CharField()
+    # company_from = serializers.CharField()
     cell_number = serializers.IntegerField()
     email = serializers.EmailField()
-    area = serializers.CharField()
-    inv_date = serializers.DateField()
-    business = serializers.CharField()
-    sec_equip = serializers.CharField()
+    area = serializers.CharField(max_length=100)
+    business = serializers.CharField(max_length=300)
+    sec_equip = serializers.CharField(max_length=300)
     vehicle = serializers.BooleanField()
-    notes = serializers.CharField()
-    company_from = serializers.CharField()
+    company = serializers.CharField(max_length=200)
+    notes = serializers.CharField(max_length=300)
+    # date = serializers.DateField()
+    # date = serializers.DateField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
+    date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
     # email = serializers.EmailField()
     # content = serializers.CharField(max_length=200)
-    # created = serializers.DateTimeField()
+    # created = serializers.DateField()
 
     def create(self, validated_data):
         print('HELLO FROM INVITATION_CREATE_SERIALIZER fuckeeeeerr!!!!!\n')

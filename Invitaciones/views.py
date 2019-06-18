@@ -1,3 +1,5 @@
+from hmac import new
+
 from django.shortcuts import render
 
 # Create your views here.
@@ -60,19 +62,31 @@ class InvitationCreate(generics.CreateAPIView):
                 Es invitacion, o invitacion temporal
 
         """
+
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
             usr = self.request.user
-            tmp_data = request.data.copy()
-            print('SERIALIZER DATA\n')
-            print(type(serializer.data))
+            # tmp_data = request.data.copy()
+            # print('SERIALIZER DATA\n')
+            print('FECHA ' + str(serializer.data['date']))
+            cell_phone_number = serializer.data['cell_number']
+            user = CustomUser.objects.filter(celular=cell_phone_number)
+
+            if user:  # Create normal invitation.
+                print('USER EXIST')
+
+            else:  # Create user just with name and number cell phone and crate temporal invitation
+                print('USER dont EXIST')
+
+
 
             #self.serializer_class()
             if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
-                adm_company = Administrador.objects.filter(id_usuario=usr)[0]
+                adm_company = Administrador. objects.filter(id_usuario=usr)[0]
                 id_company = adm_company.id_empresa
-                print('Administrador\n')
+
+                # print('Administrador\n')
             if usr.roll == settings.EMPLEADO:
                 employee = Empleado.objects.filter(id_usuario=usr)[0]
                 id_company = employee.id_empresa
@@ -96,4 +110,14 @@ class InvitationCreate(generics.CreateAPIView):
 
 # How the fuck documment p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
+
+    def process_input(self):
+        data_input = self.request.data
+        new_data = {}
+        for k, v in data_input.items():
+            if k != 'inv_date':
+                new_data[k] = v
+
+        return new_data
+
 

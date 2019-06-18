@@ -93,7 +93,8 @@ class Empresa(models.Model):
         Método que devuelve el nombre de la Empresa
         :return: name
         """
-        return self.name
+        # return self.name
+        return f"ID->{self.id}; Company: {self.name}"
 
 class Administrador(models.Model):
     """

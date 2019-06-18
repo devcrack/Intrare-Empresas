@@ -29,4 +29,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ["celular", "username", "first_name", "last_name"]
     USERNAME_FIELD = "email"
 
+    def __str__(self):
+        return f"ID->{self.id}; Number_Phone{self.celular}; email: {self.email}; Roll={self.roll}"
+
 
