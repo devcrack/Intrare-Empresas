@@ -41,14 +41,6 @@ class json_invit():
 
 
 class InvitacionCreateSerializer(serializers.Serializer):
-    # cell_number = serializers.IntegerField()
-    # email = serializers.EmailField()
-    # area = serializers.CharField()
-    # business = serializers.CharField()
-    # sec_equip = serializers.CharField()
-    # vehicle = serializers.BooleanField()
-    # notes = serializers.CharField()
-    # company_from = serializers.CharField()
     cell_number = serializers.IntegerField()
     email = serializers.EmailField()
     area = serializers.CharField(max_length=100)
@@ -57,8 +49,6 @@ class InvitacionCreateSerializer(serializers.Serializer):
     vehicle = serializers.BooleanField()
     company = serializers.CharField(max_length=200)
     notes = serializers.CharField(max_length=300)
-    # date = serializers.DateField()
-    # date = serializers.DateField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
     date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
     # email = serializers.EmailField()
     # content = serializers.CharField(max_length=200)

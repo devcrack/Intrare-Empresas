@@ -70,24 +70,29 @@ class InvitationCreate(generics.CreateAPIView):
             # tmp_data = request.data.copy()
             # print('SERIALIZER DATA\n')
             print('FECHA ' + str(serializer.data['date']))
-            cell_phone_number = serializer.data['cell_number']
-            user = CustomUser.objects.filter(celular=cell_phone_number)
-
-            if user:  # Create normal invitation.
-                print('USER EXIST')
-
-            else:  # Create user just with name and number cell phone and crate temporal invitation
-                print('USER dont EXIST')
+            # cell_phone_number = serializer.data['cell_number']
+            # user = CustomUser.objects.filter(celular=cell_phone_number)
+            #
+            # if user:  # Create normal invitation.
+            #     print('USER EXIST')
+            #     new_invitation = Invitacion()
+            #
+            # else:  # Create user just with name and number cell phone and crate temporal invitation
+            #     print('USER dont EXIST')
 
 
 
             #self.serializer_class()
             if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
+                print('Administrator\n')
                 adm_company = Administrador. objects.filter(id_usuario=usr)[0]
                 id_company = adm_company.id_empresa
-
-                # print('Administrador\n')
+                if self.guest_exist(serializer.data):
+                    print('USER EXIST')
+                else:
+                    print('USER dont EXIST')
             if usr.roll == settings.EMPLEADO:
+                print('Employee\n')
                 employee = Empleado.objects.filter(id_usuario=usr)[0]
                 id_company = employee.id_empresa
 
@@ -107,17 +112,17 @@ class InvitationCreate(generics.CreateAPIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def create_invitation(self, id_company):
+        pass
 
-# How the fuck documment p
+    @classmethod
+    def guest_exist(cls, serializer):
+        cell_phone_number = serializer['cell_number']
+        user = CustomUser.objects.filter(celular=cell_phone_number)
+        if user:
+            return True
+        return False
+
+# How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
-
-    def process_input(self):
-        data_input = self.request.data
-        new_data = {}
-        for k, v in data_input.items():
-            if k != 'inv_date':
-                new_data[k] = v
-
-        return new_data
-
 

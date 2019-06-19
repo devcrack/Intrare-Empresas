@@ -38,11 +38,11 @@ class Invitacion(models.Model):
         on_delete=models.CASCADE,
         related_name='id_company_inv')
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
-    id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
+    id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE,blank=True, null=True)
     id_usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-        default=None, related_name='inv_user')
-    fecha_hora_envio = models.DateTimeField(default=timezone.now(), null=False, blank=False)
+        default=None)
+    fecha_hora_envio = models.DateTimeField(auto_now_add=True, null=False, blank=False)
     fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
