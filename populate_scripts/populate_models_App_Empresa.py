@@ -249,7 +249,7 @@ def add_employee_all_areas(*args):
     of it, in other words to all areas of each company.
     args:
         args[0]:Number of employees to insert.
-        args[1]:pre mail of employee
+        args[1]email of employee
         args[2]:password of employee
     :return VOID:
     """

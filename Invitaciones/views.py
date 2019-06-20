@@ -71,27 +71,50 @@ class InvitationCreate(generics.CreateAPIView):
                 serializer.save()
                 employee_first_name = serializer.data['employee_first_name']  # First name employee provided
                 employee_last_name = serializer.data['employee_last_name']  # Last name employee provided
+                area_name = serializer.data['area']
+                sec_equip_name = serializer.data['sec_equip']
 
-                # Trying get the queryset of USERS with this full name.
-                employee_usr_s = CustomUser.objects.filter(first_name=employee_first_name, last_name=employee_last_name)
+                """
+                Company Data Validations
+                """
+                area_s = Area.objects.filter(id_empresa=id_company, nombre=area_name)
+                if area_s:  # VALIDATE AREAS
+                    area = area_s[0]
 
-                if employee_usr_s:
-                    _usr_s = employee_usr_s[0]
-                    print('Current User:', _usr_s.id, '\n')
-                    # Trying get employee in current logged company with current user obtained.
-                    employee_s = Empleado.objects.filter(id_empresa=id_company, id_usuario=_usr_s.id)
+                    sec_equips = EquipoSeguridad.objects.filter(nombre=sec_equip_name)
 
-                    if employee_s:  # Employee validation successful!!
-                        get_employee = employee_s[0]
-                        print('Employee FOUND! goal!! Goal!!! SUCCESS!!!!')
+                    if sec_equips:#Validate
 
+                    print('Current AREA: ', area.nombre)
+                    employee_usr_s = CustomUser.objects.filter(first_name=employee_first_name, last_name=employee_last_name)
+                    if employee_usr_s:  # USER EXIST
+                        _usr_s = employee_usr_s[0]
+                        print('Current User:', _usr_s.id, '\n')
+
+                        # Trying get employee in current logged company with current user obtained.
+                        employee_s = Empleado.objects.filter(id_empresa=id_company, id_usuario=_usr_s.id)
+
+                        if employee_s:  # EMPLOYEE EXIST
+                            get_employee = employee_s[0]
+                            print('Employee FOUND! goal!! Goal!!! SUCCESS!!!!')
+                            # self.create_invitation(
+                            #     serializer.data,
+                            #     id_company,
+                            #     )
+                        else:
+                            print('Employee NOT FOUND')
+                            error_response = {'Error': 'The Employee provided do not exist'}
+                            return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
                     else:
-                        print('Employee NOT FOUND')
-                        error_response = {'Error': 'The Employee provided do not exist'}
+                        error_response = {'Error': 'User with provided full name do not exist'}
                         return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
                 else:
-                    error_response = {'Error': 'User with provided full name do not exist'}
+                    error_response = {'Error': 'The Area provided do not exist'}
                     return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
+
+                """
+                Guest data validation
+                """
                 if self.guest_exist(serializer.data):  # Create a normal invitation.
                     print('USER EXIST')
                     # self.create_invitation(

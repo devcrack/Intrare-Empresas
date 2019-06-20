@@ -225,7 +225,7 @@ class Area(models.Model):
         Método que devuelve el nombre de la Empresa y su Área
         :return: id_empresa.name + nombre
         """
-        return self.id_empresa.name + " - " + self.nombre
+        return f"ID->{self.id}; NAME:{self.nombre}; Company:{self.id_empresa.name}"
 
 
 class Caseta(models.Model):

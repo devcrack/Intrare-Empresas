@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from .models import *
 from Usuarios.models import CustomUser
-from Empresas.models import Administrador, Empresa
+from Empresas.models import Administrador, Empresa, Area
 from Empresas.models import Empleado
 
 
