@@ -37,19 +37,27 @@ class Invitacion(models.Model):
         'Empresas.Empresa',
         on_delete=models.CASCADE,
         related_name='id_company_inv')
-    id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
-    id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE,blank=True, null=True)
+    id_area = models.ForeignKey(
+        'Empresas.Area',
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False)
+    id_empleado = models.ForeignKey(
+        'Empresas.Empleado',
+        on_delete=models.CASCADE,
+        blank=True, null=True)
     id_usuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
         default=None)
     fecha_hora_envio = models.DateTimeField(auto_now_add=True, null=False, blank=False)
     fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
-    notas = models.CharField(max_length=12)
+    notas = models.CharField(max_length=12, null=True, blank=True)
     """ Esto  me lo puedo traer desde la consulta con el id_empresa"""
     empresa = models.CharField(max_length=254, null=False, blank=False)
-    leida = models.BooleanField(default=False, null=False, blank=False) #  Se activa cuando el invitado revisa la invitacion y asi el empleado se de cuenta de que se ha leido.
+    leida = models.BooleanField(default=False, null=False) #  Se activa cuando el invitado revisa la invitacion y asi el empleado se de cuenta de que se ha leido.
 
     def __str__(self):
         return f"ID_Invitation: {self.id};  COMPANY: {self.empresa}; GUEST_PHONE: {self.id_usuario.celular}; GUEST:MAIL: {self.id_usuario.email}"

@@ -65,7 +65,132 @@ saxrg8y
 - fecha_hora_envio=_date_sent
 
 
-** Notes and Task
+* Desktop
+| Usuario | Rol           | Mail           | Password    | Token                                    |   |
+|---------+---------------+----------------+-------------+------------------------------------------+---|
+|         | Administrador |                |             | 32f217c04e4c30a2cd3bbf8d0e3a9f1edc51195f |   |
+|         | Administrador | yeyo@gmail.com | !K0WJ2wyV_  | e423d806132dea59c9995fd76f9193b65ed96bac |   |
+|         | Administrador | mail@gmail.com | mientras123 | 3c76de45add332a88415c0fd1d83463ab4a75310 |   |
+
+
+
+Empleados 
+
+| Empresa         | Area                               | Email                 | Password    | Token                                    | Num_Inv |
+|-----------------+------------------------------------+-----------------------+-------------+------------------------------------------+---------|
+| Stewart-Miller  | Stewart-Miller - Gerencia          | cc2faandres@gmail.com | mientras123 | 30aca111950d82580696aad7129509843ea46d3b | 4       |
+| Stewart-Miller  | Stewart-Miller - Recursos Humanos  | 40281andres@gmail.com | mientras123 |                                          |         |
+| Hernandez Group | Hernandez Group - Gerencia         | 59049andres@gmail.com | ..........  | 0848618dae61e88d1f5515dc587463e594477067 |         |
+| Hernandez Group | Hernandez Group - Recursos Humanos | af37bandres@gmail.com | ..........  |                                          |         |
+|                 |                                    |                       |             |                                          |         |
+
+
+** JSON's
+*** Invitaciones
+**** Wished JSON
+    {
+       	"celular": 4444894789,
+       	"email": "conradscott@hotmail.com",
+       	"area":"Recursos Humanos",     
+       	"fecha_invitacion:,
+       	"asunto":,
+       	"equipo_seguridad":,
+       	"vehiculo":
+       	"notas":
+       	"Empresa":
+       	
+    }
+
+
+    {
+	 "celular":5598021626,
+	 "email": "aurelio.hdz.aguilar@gmail.com",
+	 "area": "Hernandez Group - Recursos Humanos",
+	 "fecha_invitacion":"2006-10-25",
+	 "asunto":"Vamos ir a chelear",
+	 "equipo_seguridad":"Casco",
+	 "vehiculo":"TRUE",
+	 "Notas":"NO llegues tarde",
+	 "Empresa": "Loreal"
+	 
+    }
+
+**** JSON
+
+   {
+       "id_empresa": "Stewart-Miller"
+       "id_area": "Hernandez Group - Recursos Humanos",
+       "id_empleado":"2e901andresfcedd",     
+       "id_usuario:"2e901andres@gmail.com",
+       "fecha_hora_envio":"04-06-2019",
+       "fecha_hora_invitacion":"12-06-2019",
+       "vehiculo":"FALSE"
+       "asunto":"Sepa Madres!,
+       "automovil":"True",
+       "notas":"Lleve pomada y sal",
+       "empresa":"Brazzers",
+       "leida":       
+   }
+
+
+
+{
+       "email":"leila@example.com",
+       "content":"foo bar",
+       "created":"2016-01-27T15:17:10.375877"
+}
+
+
+
+{
+	"cell_number":4443738675,
+	"email":"leila@example.com",
+	"area": "recursos humanos",
+	"inv_date": "2016-01-27",
+	"business": "algo :p", 
+	"sec_equip": "Revolver",
+	"vehicle":true,
+	"notes":"no notes",
+	"company_from":"INTRARE"
+}
+
+** Existen users
+- 5598021626
+
+
+** Data Required for create an Invitation
+** What is necesary for create a normal Invitation
+
+- id_empresa= Company that sent the inviations.                        NOT NULL 
+- id_area= Area that it will be visited.                               NOT NULL, 
+- id_empleado= Employee that create the invitation,                    Can BE NULL.
+- id_usuario=_user,                                                    NOT NULL
+- fecha_hora_envio=_date_sent                                          Take a DEFAULT Value.
+- fecha_hora_invitacion=_date_invitation,                              NOT NULL
+- asunto                                                               NOT NULL
+- automovil                                                            NOT NULL
+- notas=_notes,                                                        Can be NULL 
+- empresa=_from_company,                                               NOT NULL
+- leida=_watched,                                                      Use a default value.
+
+
+{
+ Invitation:
+ {
+   fecha_hora_envio:
+   fecha_hora_invitacion:
+
+   automovil:
+   notas:
+   empresa:       Company from invitate comes.
+   leida:         Check for know if have been readed
+   id_area:       Area of invitation.
+   id_empleado:   Employee that sent invitation
+   id_empresa:    Company that is invita.
+   id_usuario:    User that has been invitated.
+}
+
+* Notes and Task
 *** Task
 
 
@@ -82,3 +207,5 @@ saxrg8y
   2019-06-06 20:45:15+00:00
 
 *** Notes 
+* Questions 
+  1. In model Invitation, id_area refers to area it will be visit?
