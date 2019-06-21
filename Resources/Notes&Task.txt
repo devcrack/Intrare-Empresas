@@ -1,5 +1,10 @@
 * PORTABLE
 ** Administradores de Empresas
+Staff 
+email: devcrack@mail.com
+user_name: devcrack
+password: mientras123
+
 
 | Empresa                      | email                | password    | Token                                    |   |
 |------------------------------+----------------------+-------------+------------------------------------------+---|
@@ -19,9 +24,7 @@
 |                              |                                                 |                    |             |                                          |                    |
 |                              |                                                 |                    |             |                                          |                    |
 
-** Ticket
-saxrg8y
-4yk
+
 ** JSON FORMATS
 *** Json Create_Invitations
    
