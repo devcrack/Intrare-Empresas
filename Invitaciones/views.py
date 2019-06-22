@@ -1,6 +1,7 @@
 from hmac import new
 
-from django.shortcuts import render
+from django.db.utils import Error
+
 
 # Create your views here.
 from rest_framework import generics
@@ -88,6 +89,12 @@ class InvitationCreate(generics.CreateAPIView):
                         """"
                         Now we can proceed to create an Invitation 
                         """
+                        user = self.guest_exist(serializer.data['cell_number'])
+                        if user:  # If user guest exist create a normal Invitation.
+                            print('CREATE INVITATION??')
+                            self.create_invitation(serializer.data, id_company, area, employee, user)
+                        else:  # If not create an user and Temporal Invitation.
+
                         print('<SUCCESS>!!!!!!!!!!!!!!!!')
 
                     else:
@@ -108,19 +115,26 @@ class InvitationCreate(generics.CreateAPIView):
         return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
     @classmethod
-    def guest_exist(cls, serializer):
-        cell_phone_number = serializer['cell_number']
-        user = CustomUser.objects.filter(celular=cell_phone_number)
+    def guest_exist(cls, _phone_number):
+        user = CustomUser.objects.filter(celular=_phone_number)
         if user:
-            return True
-        return False
+            return user[0]
+        return None
 
     @classmethod
     def create_invitation(cls, *args):
+        """
+        Args:
+            args[0]: serializer data
+            args[1]: id company
+            args[2]: id area
+            args[3]: id employee
+            args[4]: user
+        """
         data = args[0]
         id_company = args[1]
-        _id_area = args[2]
-        id_employee = args[3]
+        _area = args[2]
+        _employee = args[3]
         user = args[4]
         date_inv = data['date']
         business = data['business']
@@ -129,15 +143,31 @@ class InvitationCreate(generics.CreateAPIView):
         from_company = data['company']
         print('Data')
         print(id_company)
-        print(_id_area)
-        print(id_employee)
+        print(_area)
+        print(_employee)
         print(user)
         print(date_inv)
         print(business)
         print(vehicle)
         print(notes)
         print(from_company)
+        nw_invitation = Invitacion(
+            id_empresa=id_company,
+            id_area=_area,
+            id_usuario=user,
+            id_empleado=_employee,
+            fecha_hora_invitacion=date_inv,
+            asunto=business,
+            automovil=vehicle,
+            notas=notes,
+            empresa=from_company,
+            )
 
+        nw_invitation.save()
+        print('TIME SENT Invitation', nw_invitation.fecha_hora_envio)
+
+        # p = Person(first_name="Bruce", last_name="Springsteen")
+        # p.save(force_insert=True)
 
 
         # nw_inv = Invitacion(

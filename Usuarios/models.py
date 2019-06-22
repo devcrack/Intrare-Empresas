@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
     Perfil
     """
     email = models.EmailField(unique=True, blank=True, name='email', null=True)
-    celular = models.CharField(max_length=30, unique=True, null=False, blank=True, name='celular')
+    celular = models.CharField(max_length=30, unique=True, null=False, blank=False, name='celular')
     ine_frente = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_frente')
     ine_atras = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_atras')
     roll = models.IntegerField(null=False, default=0, blank=False, name='roll')
@@ -30,6 +30,6 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = "email"
 
     def __str__(self):
-        return f"ID->{self.id}; Number_Phone{self.celular}; email: {self.email}; Roll={self.roll}"
+        return f"ID->{self.id}; Name: {self.first_name } {self.last_name}; Number_Phone{self.celular}; email: {self.email}; Roll={self.roll}"
 
 
