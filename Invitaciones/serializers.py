@@ -7,7 +7,10 @@ from Empresas.models import Empleado
 
 
 class json_invit_admin():
-
+    """
+    Object Class for render the input for the creation of
+    invitations by Administrators.
+    """
     def __init__(
             self,
             employee_first_name,
@@ -36,16 +39,19 @@ class json_invit_admin():
 
 
 class InvitationCreateSerializerAdmin(serializers.Serializer):
+    """
+    Serializer Class for create and validates Invitations created by an ADMIN
+    """
     employee_first_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)  # Not accept words with accent
     employee_last_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)   # Not accept words with accent
     cell_number = serializers.IntegerField()
-    email = serializers.EmailField()
+    email = serializers.EmailField(allow_blank=True)
     area = serializers.CharField(max_length=100)
     business = serializers.CharField(max_length=300)
     sec_equip = serializers.CharField(max_length=300, allow_blank=True)
     vehicle = serializers.BooleanField()
     company = serializers.CharField(max_length=200)
-    notes = serializers.CharField(max_length=300)
+    notes = serializers.CharField(max_length=300, allow_blank=True)
     date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
 
     def create(self, validated_data):
@@ -54,7 +60,10 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
 
 
 class json_invit_employee():
-
+    """
+    Object Class for render the json input data for create invitations by
+    employees.
+    """
     def __init__(self, cell_number, email, area, business, sec_equip, vehicle, company, notes, date):
         self.cell_number = cell_number
         self.email = email
@@ -68,14 +77,17 @@ class json_invit_employee():
 
 
 class InvitationCreateSerializerEmployee(serializers.Serializer):
+    """
+    Serializer Class for creation of invitations by Employees.
+    """
     cell_number = serializers.IntegerField()
-    email = serializers.EmailField()
+    email = serializers.EmailField(allow_blank=True)
     area = serializers.CharField(max_length=100)
     business = serializers.CharField(max_length=300)
-    sec_equip = serializers.CharField(max_length=300, allow_null=True)
+    sec_equip = serializers.CharField(max_length=300, allow_blank=True)
     vehicle = serializers.BooleanField()
     company = serializers.CharField(max_length=200)
-    notes = serializers.CharField(max_length=300)
+    notes = serializers.CharField(max_length=300, allow_blank=True)
     date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
 
     def create(self, validated_data):

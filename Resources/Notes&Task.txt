@@ -1,5 +1,5 @@
 * PORTABLE
-** Administradores de Empresas
+** Credentials User
 Staff 
 email: devcrack@mail.com
 user_name: devcrack
@@ -67,9 +67,10 @@ password: mientras123
 - asunto=_business,
 - fecha_hora_invitacion=_date_invitation,
 - fecha_hora_envio=_date_sent
-
   
 * Desktop
+
+** User Credentials
 | Usuario | Rol           | Mail           | Password    | Token                                    |   |
 |---------+---------------+----------------+-------------+------------------------------------------+---|
 |         | Administrador |                |             | 32f217c04e4c30a2cd3bbf8d0e3a9f1edc51195f |   |
@@ -82,7 +83,7 @@ Empleados
 
 | Empresa         | Area                               | Email                 | Password    | Token                                    | Num_Inv |
 |-----------------+------------------------------------+-----------------------+-------------+------------------------------------------+---------|
-| Stewart-Miller  | Stewart-Miller - Gerencia          | cc2faandres@gmail.com | mientras123 | 30aca111950d82580696aad7129509843ea46d3b | 4       |
+| Stewart-Miller  | Stewart-Miller - Gerencia          | cc2faandres@gmail.com | mientras123 |   | 4       |
 | Stewart-Miller  | Stewart-Miller - Recursos Humanos  | 40281andres@gmail.com | mientras123 |                                          |         |
 | Hernandez Group | Hernandez Group - Gerencia         | 59049andres@gmail.com | ..........  | 0848618dae61e88d1f5515dc587463e594477067 |         |
 | Hernandez Group | Hernandez Group - Recursos Humanos | af37bandres@gmail.com | ..........  |                                          |         |
@@ -211,6 +212,30 @@ Empleados
   2019-06-06 20:45:15+00:00
 - [ ]Create a normal invitation.
 *** Notes 
+**** Create a User 
+     For create an user is necessary 
+     - password
+     - username
+     - celular
+     The others fields are not mandatory
+**** Temporary Invitation
+     The temporary Invitation is used for those users that are not register
+     in app. So we create first and user with minumum requirements and 
+     then link this recently created user with a Temporary_Invitation.
+***** Creating a Temporary Invitation
+      
+      
+    id_empresa = Company to Visit
+    id_area = Area to Visit
+    id_empleado = Employe who created the invitation 
+    celular_invitado = Cellphone number of guest.
+    fecha_hora_envio = Obvious
+    fecha_hora_invitacion = Obvious
+    asunto = Obvious
+    automovil = 
+    notas = 
+    empresa = Company FROM.
+
 *** JSON 
     {
 	"employee_first_name":"Kristine",

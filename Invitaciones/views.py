@@ -41,30 +41,11 @@ class InvitationCreate(generics.CreateAPIView):
     # serializer_class = InvitacionCreateSerializer
 
     def create(self, request, *args, **kwargs):
-        """
-
-        Args:
-
-        Notes:
-            For Empleado user is necesary this data:
-                Telefono:
-                Correo Electronico:
-                Area:
-                Fecha y hora de la invitacion
-                Asunto:
-                Vehiculo:
-                Notas:
-                Empresa:
-
-        """
         usr = self.request.user
-        print('ROLL FROM VIEW', usr.roll)
-        #self.serializer_class()
         if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
-            print('ROLL->Administrator\n')
+            print('Logged as Administrator\n')
             adm_company = Administrador.objects.filter(id_usuario=usr)[0]
             id_company = adm_company.id_empresa
-            print('Current Company->', id_company, '\n')
             # usr_employee = CustomUser.objects.filter(n)
             self.serializer_class = InvitationCreateSerializerAdmin
             serializer = self.serializer_class(data=request.data)
@@ -86,31 +67,51 @@ class InvitationCreate(generics.CreateAPIView):
                             return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
                     error_response, employee = self.validate_employee(id_company, _first_name, _last_name)
                     if employee:  # Validate if EMPLOYEE exist
+
                         """"
                         Now we can proceed to create an Invitation 
                         """
                         user = self.guest_exist(serializer.data['cell_number'])
                         if user:  # If user guest exist create a normal Invitation.
-                            print('CREATE INVITATION??')
                             self.create_invitation(serializer.data, id_company, area, employee, user)
-                        else:  # If not create an user and Temporal Invitation.
-
-                        print('<SUCCESS>!!!!!!!!!!!!!!!!')
+                        else:  # If not create an USER and Temporal Invitation.
+                            user = self.create_user(serializer.data['cell_number'])
+                            if user:
+                                self.create_temporal_invitation(serializer.data, id_company, area,
+                                                                employee, user.celular)
+                            else:
+                                error_response = {'Error': 'Error in User Create'}
+                                return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
+                            print('<SUCCESS>!!!!!!!!!!!!!!!!')
 
                     else:
                         return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
                 else:
                     return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
-            return Response(serializer.errors, status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_200_OK)
         if usr.roll == settings.EMPLEADO:
-            print('Employee\n')
+            print('Logged as Employee\n')
             employee = Empleado.objects.filter(id_usuario=usr)[0]
             id_company = employee.id_empresa
             self.serializer_class = InvitationCreateSerializerEmployee
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
                 serializer.save()
+                sec_equip_name = serializer.data['sec_equip']
+                print('Security Equipment', sec_equip_name)
                 print('Date ' + str(serializer.data['date']))
+                error_response, area = self.validate_areas(id_company, serializer.data['area'])
+                if area: # Validate if AREA exist
+                    if sec_equip_name:
+                        error_response, security_equipment = self.validate_security_equip(sec_equip_name)
+                        if error_response:
+                            return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
+
+                else:
+
+            else:
+                return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
@@ -118,6 +119,7 @@ class InvitationCreate(generics.CreateAPIView):
     def guest_exist(cls, _phone_number):
         user = CustomUser.objects.filter(celular=_phone_number)
         if user:
+            print('User Exist with NUMBER PHONE: ', user[0].celular)
             return user[0]
         return None
 
@@ -141,16 +143,7 @@ class InvitationCreate(generics.CreateAPIView):
         vehicle = data['vehicle']
         notes = data['notes']
         from_company = data['company']
-        print('Data')
-        print(id_company)
-        print(_area)
-        print(_employee)
-        print(user)
-        print(date_inv)
-        print(business)
-        print(vehicle)
-        print(notes)
-        print(from_company)
+
         nw_invitation = Invitacion(
             id_empresa=id_company,
             id_area=_area,
@@ -162,24 +155,45 @@ class InvitationCreate(generics.CreateAPIView):
             notas=notes,
             empresa=from_company,
             )
+        try:
+            nw_invitation.save()
+        except ValueError:
+            print('Something is bad in model creation')
+        print(nw_invitation.id, ' INVITATION CREATED  200_OK')
 
-        nw_invitation.save()
-        print('TIME SENT Invitation', nw_invitation.fecha_hora_envio)
+    @classmethod
+    def create_temporal_invitation(cls, *args):
+        """
+        Args:
+            args[0]: serializer data
+            args[1]: id company
+            args[2]: id area
+            args[3]: id employee
+            args[4]: cell phone number of recently user created
+       """
+        data = args[0]
+        _id_company = args[1]
+        _id_area = args[2]
+        _id_employee = args[3]
+        cellphone_number_user = args[4]
+        date_inv = data['date']
+        business = data['business']
+        vehicle = data['vehicle']
+        notes = data['notes']
+        from_company = data['company']
 
-        # p = Person(first_name="Bruce", last_name="Springsteen")
-        # p.save(force_insert=True)
-
-
-        # nw_inv = Invitacion(
-
-
-        # nw_inv = Invitacion(
-        #     id_empresa=id_company,
-        #     id_area=_id_area,
-        #     id_empleado=id_employee,
-        #     id_usuario=user,
-        #
-        #     )
+        tmp_invitation = InvitacionTemporal(
+            id_empresa=_id_company, id_area=_id_area,
+            id_empleado=_id_employee, celular_invitado=cellphone_number_user,
+            fecha_hora_invitacion=date_inv, asunto=business, automovil=vehicle, notas=notes, empresa=from_company
+            )
+        try:
+            tmp_invitation.save()
+            print('Temporary Invitation Created 200_OK')
+            return True
+        except ValueError:
+            print('ERROR in create a Temporary Invitation')
+            return False
 
     @classmethod
     def validate_employee(cls, *args):
@@ -200,7 +214,6 @@ class InvitationCreate(generics.CreateAPIView):
         _usr_s = CustomUser.objects.filter(first_name=_first_name, last_name=_last_name)
         if _usr_s:
             usr = _usr_s[0]
-            print('Current USER: ', usr.id)
             employee_s = Empleado.objects.filter(id_empresa=id_company, id_usuario=usr.id)
             if employee_s:
                 print('Employee FOUND! goal!! Goal!!! SUCCESS!!!!')
@@ -215,7 +228,7 @@ class InvitationCreate(generics.CreateAPIView):
         return error_response, employee
 
     @classmethod
-    def validate_areas(cls,*args):
+    def validate_areas(cls, *args):
         """
             Args:
                 args[0]: Id_company.
@@ -224,7 +237,6 @@ class InvitationCreate(generics.CreateAPIView):
             Returns:
                 tuple:data error message and area if is found it.
         """
-
         id_company = args[0]
         area_name = args[1]
         area = None
@@ -249,6 +261,28 @@ class InvitationCreate(generics.CreateAPIView):
             error_response = {'Error': 'No Security Equipment found with data provided'}
         return error_response, security_equipment
 
+    @classmethod
+    def create_user(cls, *args):
+        """
+        Create a user with minimum requirements data fill.
+
+        Args:
+              args[0]: number phone
+              args[1]: user name in this case is the number phone too.
+
+        """
+        number_phone = args[0]
+        user = args[0]
+        _password = 'pass'
+        nw_user = CustomUser(
+            celular=number_phone, username=user, password=_password)
+        try:
+            nw_user.save()
+            print(nw_user.id, ' USER CREATED 200_OK')
+            return nw_user
+        except ValueError:
+            print('CAN\'T SAVE USER')
+            return None
 
 
 # How the fuck document p
