@@ -39,6 +39,8 @@ class InvitationCreate(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         usr = self.request.user
+        security_equipment = None
+
         if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
             print('Logged as Administrator\n')
             adm_company = Administrador.objects.filter(id_usuario=usr)[0]
@@ -69,16 +71,27 @@ class InvitationCreate(generics.CreateAPIView):
                         """
                         user = self.guest_exist(serializer.data['cell_number'])
                         if user:  # If user guest exist create a normal Invitation.
-                            error_response = self.create_invitation(serializer.data, id_company, area, employee, user)
+                            error_response, invitation = self.create_invitation(serializer.data, id_company, area,
+                                                                                employee, user)
                             if error_response:
                                 return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
+                            else:
+                                if security_equipment:
+                                    error_response = self.EquiposporInvitacion_add(security_equipment, invitation)
+                                    if error_response:
+                                        return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
                         else:  # If user not exist create an USER and Temporal Invitation.
                             user = self.create_user(serializer.data['cell_number'])
                             if user:
-                                error_response = self.create_temporal_invitation(serializer.data, id_company, area,
-                                                                employee, user.celular)
+                                error_response, invitation = self.create_temporal_invitation(serializer.data, id_company, area,
+                                                                                             employee, user.celular)
                                 if error_response:
                                     return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
+                                else:
+                                    if security_equipment:
+                                        error_response = self.EquipoporInvitacionTemporal_Add(security_equipment, invitation)
+                                        if error_response:
+                                            return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
                             else:
                                 error_response = {'Error': 'Error in User Create'}
                                 return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
@@ -111,16 +124,26 @@ class InvitationCreate(generics.CreateAPIView):
                             return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
                     user = self.guest_exist(serializer.data['cell_number'])
                     if user: # If user exist just create a normal invitation with the data
-                        error_response = self.create_invitation(serializer.data, id_company, area, employee, user)
+                        error_response, invitation = self.create_invitation(serializer.data, id_company, area, employee, user)
                         if error_response:
                             return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
+                        else:
+                            if security_equipment:
+                                error_response = self.EquiposporInvitacion_add(security_equipment, invitation)
+                                if error_response:
+                                    return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
                     else:
                         user = self.create_user(serializer.data['cell_number'])
                         if user:
-                            error_response = self.create_temporal_invitation(serializer.data,
+                            error_response, invitation = self.create_temporal_invitation(serializer.data,
                                                                              id_company, area, employee, user.celular)
                             if error_response:
                                 return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
+                            else:
+                                if security_equipment:
+                                    error_response = self.EquipoporInvitacionTemporal_Add(security_equipment, invitation)
+                                    if error_response:
+                                        return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
                         else:
                             error_response = {'Error': 'Can\'t  Create User'}
                             return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
@@ -176,8 +199,9 @@ class InvitationCreate(generics.CreateAPIView):
             nw_invitation.save()
         except ValueError:
             error_response = {'Error': 'Can\'t create an Invitation'}
+            nw_invitation = None
         print(nw_invitation.id, ' INVITATION CREATED  200_OK')
-        return error_response
+        return error_response, nw_invitation
 
     @classmethod
     def create_temporal_invitation(cls, *args):
@@ -210,8 +234,9 @@ class InvitationCreate(generics.CreateAPIView):
             tmp_invitation.save()
         except ValueError:
             error_response = {'Error': 'Can\'t create an Invitation'}
+            tmp_invitation = None
         print('TEMPORARY INVITATION Created 200_OK')
-        return error_response
+        return error_response, tmp_invitation
 
     @classmethod
     def validate_employee(cls, *args):
@@ -302,7 +327,33 @@ class InvitationCreate(generics.CreateAPIView):
             print('CAN\'T SAVE USER')
             return None
 
+    @classmethod
+    def EquiposporInvitacion_add(cls, *args):
+        security_equipment = args[0]
+        inv = args[1]
+        error_response = None
 
+        e_s = EquiposporInvitacion(id_equipo_seguridad=security_equipment, id_invitacion=inv)
+        try:
+            e_s.save()
+            print('Equipment by Invitation Created 200_OK')
+        except ValueError:
+            error_response = {'Error': 'Can\'t create Equipment for invitation'}
+        return error_response
+
+    @classmethod
+    def EquipoporInvitacionTemporal_Add(cls, *args):
+        security_equip = args[0]
+        tmp_inv = args[1]
+        error_response = None
+
+        e_s = EquipoporInvitacionTemporal(id_equipo_seguridad=security_equip, id_invitacion_temporal=tmp_inv)
+        try:
+            e_s.save()
+            print('Equipment by Invitation Created 200_OK')
+        except ValueError:
+            error_response = {'Error': 'Can\'t create Equipment for invitation'}
+        return error_response
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
 

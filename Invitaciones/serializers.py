@@ -128,12 +128,6 @@ class InvitacionSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         print(validated_data)
 
-    # def is_valid(self, raise_exception=False):1
-    #     print('INITIAL DATA\n')
-    #     print(self.initial_data)
-    #     print('HELLO from IS VALID Method\n')
-    #     return True
-
 
 class InvitationTmpSerializer(serializers.ModelSerializer):
 
