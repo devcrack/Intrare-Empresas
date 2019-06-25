@@ -233,6 +233,61 @@ Creates a new resource (http verb: **post**).
 
 ### ```update/partial_update```
 Edits a resource (http verbs: **put/patch**)
-
+especified models fields in serialize and get all fields in deserialize DJANGO REST
 ### ```.destroy()```
 removes a resource (http verb: **delete**)
+
+
+# Code Sheet 
+## 	Access field of data contain in a **SERIALIZER**
+We have the model 
+
+```python
+    class Video(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100, blank=False, null=False, default='', unique=True)
+    file = models.FileField(upload_to='videos/', blank=False, null=False)
+    owner = models.ForeignKey('auth.User', related_name='videos', on_delete=models.CASCADE, verbose_name='')
+
+    def __str__(self):
+        return self.name + ': ' + self.file.name
+
+    class Meta:
+        ordering = ('created',)
+```
+
+And the serializer:
+
+```python
+class VideoSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
+    class Meta:
+        model = Video
+        fields = ['name', 'file', 'owner']
+```
+
+and for acces to data serializer from view:
+
+```python
+serializer = VideoSerializer(data=request.data)
+    if serializer.is_valid():
+        # I need the name of the file!!!!!
+        # accessing the fields below
+        print(serializer.data['name])
+        # print(serializer.file.name)  # How is this???
+        # accessing the fields above
+        serializer.save(owner=request.user)
+        videos = Video.objects.filter(owner=request.user)
+        return Response({'videos': videos, 'serializer': VideoSerializer(), 'style': self.style})
+    return Response(data=None, status=status.HTTP_400_BAD_REQUEST, template_name='videoserver/error.html')
+```
+
+
+
+
+
+
+
+
+## 

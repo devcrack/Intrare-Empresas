@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from .Apiviews import *
+from .views import *
 
 """path
 
@@ -14,5 +14,7 @@ from .Apiviews import *
     route   
 """
 urlpatterns = [
-    path('invitaciones/', Invitacion_List.as_view({'get': 'list'}), name='invitaciones_url')  # path(route, view, kwargs, name= None)]
+    path('get_inv/', Invitacion_List.as_view({'get': 'list'}), name='get_invitations_url'),  # path(route, view, kwargs, name= None)]
+    path('create_inv/', InvitationCreate.as_view(), name='get_invitations_url')  # path(route, view, kwargs, name= None
+
 ]

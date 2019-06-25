@@ -93,7 +93,8 @@ class Empresa(models.Model):
         Método que devuelve el nombre de la Empresa
         :return: name
         """
-        return self.name
+        # return self.name
+        return f"ID->{self.id}; Company: {self.name}"
 
 class Administrador(models.Model):
     """
@@ -170,8 +171,8 @@ class Empleado(models.Model):
         del Empleado
         :return: id_usuario.username
         """
-        return self.id_usuario.username
-
+        # return self.id_usuario.username
+        return f"EMPLOYEE->{self.id}; User->{self.id_usuario.id}{self.id_usuario.first_name} {self.id_usuario.last_name}; Company->{self.id_empresa.name}"
     class Meta:
         verbose_name_plural = "Empleados"
 
@@ -224,7 +225,7 @@ class Area(models.Model):
         Método que devuelve el nombre de la Empresa y su Área
         :return: id_empresa.name + nombre
         """
-        return self.id_empresa.name + " - " + self.nombre
+        return f"ID->{self.id}; NAME:{self.nombre}; Company:{self.id_empresa.name}"
 
 
 class Caseta(models.Model):

@@ -14,12 +14,12 @@ class CustomUser(AbstractUser):
     """
     Perfil
     """
-    email = models.EmailField(unique=True, blank=False, name='email')
-    celular = models.CharField(max_length=30, unique=True, null=False, blank=True, name='celular')
+    email = models.EmailField(unique=True, blank=True, name='email', null=True)
+    celular = models.CharField(max_length=30, unique=True, null=False, blank=False, name='celular')
     ine_frente = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_frente')
     ine_atras = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_atras')
-    roll = models.IntegerField(null=False, default=0, blank=True, name='roll')
-    plataforma = models.CharField(max_length=25, default='', name='plataforma')  # Tipo de aplicacion que es el sistema(Web, Android, iOs)
+    roll = models.IntegerField(null=False, default=0, blank=False, name='roll')
+    plataforma = models.CharField(max_length=25, default='web', name='plataforma')  # Tipo de aplicacion que es el sistema(Web, Android, iOs)
 
     """
     Aqui se especifican los campos obligatorios para poder reegistrar un usuarios.
@@ -28,5 +28,8 @@ class CustomUser(AbstractUser):
     """
     REQUIRED_FIELDS = ["celular", "username", "first_name", "last_name"]
     USERNAME_FIELD = "email"
+
+    def __str__(self):
+        return f"ID->{self.id}; Name: {self.first_name } {self.last_name}; Number_Phone{self.celular}; email: {self.email}; Roll={self.roll}"
 
 

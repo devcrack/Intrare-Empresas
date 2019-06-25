@@ -4,6 +4,7 @@
 
 Aqui creamos los modelos correspondientes para cada una de las tablas que comprende esta aplicacion
 """
+from django.utils import timezone
 from django.db import models
 
 from django.conf import settings
@@ -32,24 +33,37 @@ class Invitacion(models.Model):
            esta generando la invitacion?, o es la empresa de la que proviene el invitado?
            R: Es la empresa de donde viene el invitado, y puede estar vacio.
     """
-    id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE)
-    id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
-    id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
-    id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, default=None)
-    fecha_hora_envio = models.DateTimeField(null=False, blank=False)
+    id_empresa = models.ForeignKey(
+        'Empresas.Empresa',
+        on_delete=models.CASCADE,
+        related_name='id_company_inv')
+    id_area = models.ForeignKey(
+        'Empresas.Area',
+        on_delete=models.CASCADE,
+        blank=False,
+        null=False)
+    id_empleado = models.ForeignKey(
+        'Empresas.Empleado',
+        on_delete=models.CASCADE,
+        blank=True, null=True)
+    id_usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        default=None)
+    fecha_hora_envio = models.DateTimeField(auto_now_add=True, null=False, blank=False)
     fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
-    notas = models.CharField(max_length=12)
+    notas = models.CharField(max_length=12, null=True, blank=True)
     """ Esto  me lo puedo traer desde la consulta con el id_empresa"""
     empresa = models.CharField(max_length=254, null=False, blank=False)
-    leida =models.BooleanField(null=False, blank=False) #  Se activa cuando el invitado revisa la invitacion y asi el empleado se de cuenta de que se ha leido.
+    leida = models.BooleanField(default=False, null=False) #  Se activa cuando el invitado revisa la invitacion y asi el empleado se de cuenta de que se ha leido.
 
     def __str__(self):
-        return "%s %s" % (str(self.id), self.id_usuario.email)
+        return f"ID_Invitation: {self.id};  COMPANY: {self.empresa}; GUEST_PHONE: {self.id_usuario.celular}; GUEST:MAIL: {self.id_usuario.email}"
 
     class Meta:
-        verbose_name_plural = "Invitaciones"
+        verbose_name_plural = "INVITATIONS"
 
 
         
@@ -79,7 +93,7 @@ class InvitacionTemporal(models.Model):
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE)
     id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
     celular_invitado = models.CharField(max_length=13)
-    fecha_hora_envio = models.DateTimeField(null=False, blank=False)
+    fecha_hora_envio = models.DateTimeField(default=timezone.now(), null=False, blank=False)
     fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
     asunto = models.CharField(max_length=254, blank=False)            
     automovil = models.BooleanField(null=False, blank=False)
@@ -129,8 +143,6 @@ class InvitacionEmpresarial(models.Model):
 
 
     """
-
-
     id_empresa = models.ForeignKey(
         'Empresas.Empresa',
         on_delete=models.CASCADE,
@@ -155,7 +167,7 @@ class InvitacionEmpresarial(models.Model):
     """ Necesita un validador para email """
 
     email = models.EmailField(max_length=100, unique=True, null=False, blank=False,name='email')
-    fecha_hora_envio = models.DateTimeField(null=False, blank=False)
+    fecha_hora_envio = models.DateTimeField(default=timezone.now(), null=False, blank=False)
     fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)    
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
@@ -183,14 +195,16 @@ class EquipoSeguridad(models.Model):
     Attributes:
         nombre(str): Nombre del equipo de seguridad.
     """
-    nombre = models.CharField(max_length=254, null=False, blank=False)
+    nombre = models.CharField(max_length=254, null=False, blank=False, unique=True)
 
 
-    def __str__(self):        
-        return f"No {self.id}"
+    # def __str__(self):
+    #     return f"No {self.id}"
+    def __str__(self):
+        return f"ID->{self.id} NAME:{self.nombre}"
 
     class Meta:
-        verbose_name_plural = "Equipos de Seguridad"
+        verbose_name_plural = "Equipment Security"
 
 class EquiposporInvitacion(models.Model):
     """Se refiere a los equipo de seguridad que cada invitado pudiese llevar.
@@ -205,10 +219,10 @@ class EquiposporInvitacion(models.Model):
     
 
     def __str__(self):        
-        return f"No {self.id}"
+        return f"Invitation->{self.id_invitacion.id} Security Equipment:{self.id_equipo_seguridad.nombre}"
 
     class Meta:
-        verbose_name_plural = "Equipo por Invitaciones"
+        verbose_name_plural = "Security Equipment by Invitation"
 
 
 class EquipoporInvitacionesEmpresariales(models.Model):
