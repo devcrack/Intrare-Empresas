@@ -55,7 +55,6 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
 
     def create(self, validated_data):
-        print('HELLO FROM Invitation_Create_Serializer_ADMIN!!!\n')
         return json_invit_admin(**validated_data)
 
 
@@ -91,44 +90,7 @@ class InvitationCreateSerializerEmployee(serializers.Serializer):
     date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
 
     def create(self, validated_data):
-        print('HELLO from Invitation_CREATE_Serializer_Employee!!!\n')
         return json_invit_employee(**validated_data)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class InvitacionSerializers(serializers.ModelSerializer):
