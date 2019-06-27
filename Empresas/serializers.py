@@ -19,6 +19,8 @@ class AdministradorSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         id_usuario_data = validated_data.pop('id_usuario')
         usuario = CustomUser.objects.create(**id_usuario_data)
+        usuario.set_password(id_usuario_data['password'])
+        usuario.save()
         admon = Administrador.objects.create(id_usuario=usuario, **validated_data)
         return admon
 
