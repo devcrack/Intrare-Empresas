@@ -22,10 +22,10 @@ class Empresa(models.Model):
             url_map(str): Dirección web del mapa de la Empresa.
             validity(Date): Vigencia de la Empresa.
     """
-    custom_user = models.OneToOneField(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
+    # custom_user = models.OneToOneField(
+    #     settings.AUTH_USER_MODEL,
+    #     on_delete=models.CASCADE
+    # )
     id_parque = models.ForeignKey(
     'Parques.Parque',
     on_delete=models.CASCADE,
