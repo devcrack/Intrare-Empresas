@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import *
-from Usuarios.serializers import UserAdminSerializer
+from Usuarios.serializers import UserAdminSerializer, UserEmployeeSerializer
 from Usuarios.models import CustomUser
 
 class EmpresaSerializers(serializers.ModelSerializer):
@@ -82,10 +82,19 @@ class VigilanteSerializers(serializers.ModelSerializer):
 
 
 class EmpleadoSerializers(serializers.ModelSerializer):
+    id_usuario = UserEmployeeSerializer(many=False)
+
     class Meta:
         model = Empleado
         fields = '__all__'
 
+    def create(self, validated_data):
+        id_usario_data = validated_data.pop('id_usuario')
+        usuario = CustomUser.objects.create(**id_usario_data)
+        usuario.set_password(id_usario_data['password'])
+        usuario.save()
+        employee = Empleado.objects.create(id_usuario=usuario, **validated_data)
+        return employee
 
 class CasetaSerializers(serializers.ModelSerializer):
     class Meta:
