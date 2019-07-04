@@ -26,28 +26,6 @@ class AdministradorSerializers(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         id_usuario_data = validated_data.pop('id_usuario')
-        # instance.id_empresa = validated_data.get('id_empresa', instance.id_empresa)
-        # instance.save()
-
-        # usuario = (instance.id_usuario)
-        # print('Usuario')
-        # print(usuario)
-        # print('Datos Validate Data')
-        # print(id_usuario_data)
-        # print('Datos de Instancia')
-        # print(instance.id)
-        # print(instance.id_empresa)
-        # print(instance.id_usuario.email)
-        # print(instance.id_usuario.username)
-        # algo = validated_data.get('id_empresa', instance.id_empresa)
-        # print('ALGO')
-        # print(algo)
-        # print('Usernameeeee')
-        # print(validated_data.get('username'))
-        # instance.id_empresa = validated_data.get('id_empresa', instance.id_empresa)
-        # usuario.username = validated_data.get('username', instance.id_usuario.username)
-        # usuario.celular = validated_data.get('celular', instance.id_usuario.celular)
-        # usuario.email = validated_data.get('email', instance.id_usuario.email)
         usuario = CustomUser.objects.get(pk=instance.id_usuario.id)
         usuario.username = id_usuario_data['username']
         usuario.first_name = id_usuario_data['first_name']
