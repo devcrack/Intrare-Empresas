@@ -39,7 +39,7 @@ class AdministradorSerializers(serializers.ModelSerializer):
         instance.id_usuario.last_name = id_usuario_data['last_name']
         instance.id_usuario.email = id_usuario_data['email']
         instance.id_usuario.celular = id_usuario_data['celular']
-        instance.id_usuario.password = id_usuario_data['password']
+        instance.id_usuario.password = usuario.password
         instance.id_empresa = validated_data['id_empresa']
         instance.save()
         return instance
