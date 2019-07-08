@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import *
 from Usuarios.serializers import UserAdminSerializer, UserEmployeeSerializer
 from Usuarios.models import CustomUser
+import base64
 
 class EmpresaSerializers(serializers.ModelSerializer):
     class Meta:
@@ -66,6 +67,8 @@ class EmpleadoSerializers(serializers.ModelSerializer):
 
     def create(self, validated_data):
         id_usario_data = validated_data.pop('id_usuario')
+        id_usario_data.pop('groups')
+        id_usario_data.pop('user_permissions')
         usuario = CustomUser.objects.create(**id_usario_data)
         usuario.set_password(id_usario_data['password'])
         usuario.save()
