@@ -15,6 +15,6 @@ from .views import *
 """
 urlpatterns = [
     path('get_inv/', Invitacion_List.as_view({'get': 'list'}), name='get_invitations_url'),  # path(route, view, kwargs, name= None)]
-    path('create_inv/', InvitationCreate.as_view(), name='get_invitations_url')  # path(route, view, kwargs, name= None
-
+    path('create_inv/', InvitationCreate.as_view(), name='get_invitations_url'),  # path(route, view, kwargs, name= None
+    path('equipo_seguridad/', EquipoSeguridadList.as_view(), name='equipo_seguridad_list')
 ]

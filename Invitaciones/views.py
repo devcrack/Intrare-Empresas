@@ -12,6 +12,17 @@ from .serializers import *
 from Usuarios.permissions import *
 from rest_framework import status
 
+class EquipoSeguridadList(generics.ListCreateAPIView):
+    """
+    Clase AdministradorList, lista todas los Administradores de las Empresas.
+    Esta clase hereda de ListCreateAPIView, provee un método GET
+    que Lista todos los Administradores.
+    Nota: Solo usuarios com permiso Staff pueden consumirla.
+    """
+    queryset = EquipoSeguridad.objects.all()
+    serializer_class = EquipoSeguridadSerializers
+
+
 class Invitacion_List(viewsets.ModelViewSet):
     permission_classes = (IsAdmin | IsEmployee,)  # The user logged have to be and admin or an employee
     serializer_class = InvitacionSerializers  # Used for validate and deserializing input, and for serializing output.
@@ -100,6 +111,8 @@ class InvitationCreate(generics.CreateAPIView):
                         return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
                 else:
                     return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
+            else:
+                Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.error_messages)
             return Response(status=status.HTTP_200_OK)
 
         """

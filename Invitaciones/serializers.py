@@ -135,3 +135,8 @@ class InvitationTmpSerializer(serializers.ModelSerializer):
         model = InvitacionTemporal
         fields = '__all__'
 
+class EquipoSeguridadSerializers(serializers.ModelSerializer):
+
+    class Meta:
+        model = EquipoSeguridad
+        fields = '__all__'
