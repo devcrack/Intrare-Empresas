@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.db import models
 
 from django.conf import settings
+from secrets import token_hex
 
 
 class Invitacion(models.Model):
@@ -25,6 +26,8 @@ class Invitacion(models.Model):
              notas(str): Notas y comentario extras acerca de la visita.
              empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
              leida(bool): Bandera que indica si la invitacion ha sido leida por el invitado.
+
+             qr_code(str): Codigo hec generado para identificar la invitacion.
 
 
     Todo:
@@ -58,12 +61,18 @@ class Invitacion(models.Model):
     """ Esto  me lo puedo traer desde la consulta con el id_empresa"""
     empresa = models.CharField(max_length=254, null=False, blank=False)
     leida = models.BooleanField(default=False, null=False) #  Se activa cuando el invitado revisa la invitacion y asi el empleado se de cuenta de que se ha leido.
+    qr_code = models.CharField(max_length=16, null=False, blank=True, unique=True)
 
     def __str__(self):
         return f"ID_Invitation: {self.id};  COMPANY: {self.empresa}; GUEST_PHONE: {self.id_usuario.celular}; GUEST:MAIL: {self.id_usuario.email}"
 
+    def save(self, *args, **kwargs):
+        code = token_hex(8)
+        self.qr_code = code
+        super(Invitacion, self).save(*args, **kwargs)
+
     class Meta:
-        verbose_name_plural = "INVITATIONS"
+        verbose_name_plural = "INVITATIONES"
 
 
         
@@ -124,6 +133,7 @@ class InvitacionEmpresarial(models.Model):
             empresa(str):Nombre de la empresa o institucion de donde proviene el visitante.
             asignada(bool):Este campo no lo entiendo del todo?.
             cod_seguridad(str): Constraseña especial,
+            qr_code(str): Codigo hec generado para identificar la invitacion empresarial.
 
 
         Todo:
@@ -177,7 +187,12 @@ class InvitacionEmpresarial(models.Model):
     asignada = models.BooleanField(null=False, blank=False)
     """ Necesita un validador para contraseñas """
     cod_seguridad = models.CharField(max_length=254, null=False, blank=False) #Truco para proteger la url
+    qr_code = models.CharField(max_length=16, null=False, blank=True, unique=True)
 
+    def save(self, *args, **kwargs):
+        code = token_hex(8)
+        self.qr_code = code
+        super(InvitacionEmpresarial, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.id}-{self.email}"
