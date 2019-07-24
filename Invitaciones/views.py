@@ -12,6 +12,10 @@ from .serializers import *
 from Usuarios.permissions import *
 from rest_framework import status
 
+from django.core.mail import send_mail
+from django.conf import settings
+
+
 class EquipoSeguridadList(generics.ListCreateAPIView):
     """
     Clase AdministradorList, lista todas los Administradores de las Empresas.
@@ -91,6 +95,9 @@ class InvitationCreate(generics.CreateAPIView):
                                     error_response = self.EquiposporInvitacion_add(security_equipment, invitation)
                                     if error_response:
                                         return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
+                            #Se envia la notificacion para una invitacion normal
+                            self.send_email(user, invitation, id_company)
+
                         else:  # If user not exist create an USER and Temporal Invitation.
                             user = self.create_user(serializer.data['cell_number'])
                             if user:
@@ -103,6 +110,7 @@ class InvitationCreate(generics.CreateAPIView):
                                         error_response = self.EquipoporInvitacionTemporal_Add(security_equipment, invitation)
                                         if error_response:
                                             return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
+                                # Se envia la notificacion para una invitacion temporal
                             else:
                                 error_response = {'Error': 'Error in User Create'}
                                 return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
@@ -168,6 +176,20 @@ class InvitationCreate(generics.CreateAPIView):
         return Response(status=status.HTTP_200_OK)
 
     @classmethod
+    def send_email(cls, _user, _inv, _compy):
+
+
+
+        subject = 'Intrare Industrial - Invitación'
+        message = f'Has recibido una invitación de la empresa: {_inv.empresa}'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [_user.email, ]
+
+        send_mail(subject, message, email_from, recipient_list)
+
+
+
+    @classmethod
     def guest_exist(cls, _phone_number):
         user = CustomUser.objects.filter(celular=_phone_number)
         if user:
@@ -213,6 +235,8 @@ class InvitationCreate(generics.CreateAPIView):
         except ValueError:
             error_response = {'Error': 'Can\'t create an Invitation'}
             nw_invitation = None
+
+            qr_code = nw_invitation
         print(nw_invitation.id, ' INVITATION CREATED  200_OK')
         return error_response, nw_invitation
 
