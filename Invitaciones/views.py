@@ -96,7 +96,7 @@ class InvitationCreate(generics.CreateAPIView):
                                     if error_response:
                                         return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
                             #Se envia la notificacion para una invitacion normal
-                            self.send_email(user, invitation, id_company)
+                            self.send_email(usr, invitation, id_company)
 
                         else:  # If user not exist create an USER and Temporal Invitation.
                             user = self.create_user(serializer.data['cell_number'])
