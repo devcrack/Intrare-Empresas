@@ -96,7 +96,7 @@ class InvitationCreate(generics.CreateAPIView):
                                     if error_response:
                                         return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
                             #Se envia la notificacion para una invitacion normal
-                            self.send_email(serializer, invitation, id_company)
+
 
                         else:  # If user not exist create an USER and Temporal Invitation.
                             user = self.create_user(serializer.data['cell_number'])
@@ -173,6 +173,7 @@ class InvitationCreate(generics.CreateAPIView):
                     return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
             else:
                 return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        self.send_email(serializer, invitation, id_company)
         return Response(status=status.HTTP_200_OK)
 
     @classmethod
@@ -183,7 +184,7 @@ class InvitationCreate(generics.CreateAPIView):
         subject = 'Intrare Industrial - Invitación'
         message = f'Has recibido una invitación de la empresa: {_inv.empresa}'
         email_from = settings.EMAIL_HOST_USER
-        recipient_list = [_user['email'], ]
+        recipient_list = [_user.data['email'], ]
 
         send_mail(subject, message, email_from, recipient_list)
 
