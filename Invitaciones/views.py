@@ -15,6 +15,11 @@ from rest_framework import status
 from django.core.mail import send_mail
 from django.conf import settings
 
+from django.template.loader import render_to_string
+
+from string import Template
+import os
+
 
 class EquipoSeguridadList(generics.ListCreateAPIView):
     """
@@ -111,7 +116,7 @@ class InvitationCreate(generics.CreateAPIView):
                                         if error_response:
                                             return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
                                 # Se envia la notificacion para una invitacion temporal
-                                self.send_email(serializer, invitation, id_company)
+                                #self.send_email(serializer, invitation, id_company)
                             else:
                                 error_response = {'Error': 'Error in User Create'}
                                 return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
@@ -179,14 +184,19 @@ class InvitationCreate(generics.CreateAPIView):
     @classmethod
     def send_email(cls, _user, _inv, _compy):
 
-
-
         subject = 'Intrare Industrial - Invitación'
-        message = f'Has recibido una invitación de la empresa: {_inv.empresa}'
+
+        #html_message = eml.generate(_inv.empresa, _inv.fecha_hora_invitacion, _inv.qr_code)
+        html_message = render_to_string('email.html',
+                                        {'empresa': _inv.empresa,
+                                         'fecha': _inv.fecha_hora_invitacion,
+                                         'codigo': _inv.qr_code}
+                                        )
+        message = ''
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [_user.data['email'], ]
 
-        send_mail(subject, message, email_from, recipient_list)
+        send_mail(subject=subject, message=message, from_email=email_from, recipient_list=recipient_list, html_message=html_message)
 
 
 

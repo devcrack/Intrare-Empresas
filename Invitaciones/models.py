@@ -12,18 +12,6 @@ from secrets import token_hex
 import qrcode
 
 
-def save_qr_image(code):
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_H,
-        box_size=10,
-        border=4,
-    )
-    qr.add_data(code)
-    qr.make(fit=True)
-    img = qr.make_image()
-
-
 class Invitacion(models.Model):
     """Clase en la que se apoya el modelo para la creacion de la tabla invitacion.
 
