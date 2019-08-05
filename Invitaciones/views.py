@@ -1,3 +1,6 @@
+# TODO En lugar de nombre de usuario ID de usuario.
+#
+
 from hmac import new
 
 from django.db.utils import Error
