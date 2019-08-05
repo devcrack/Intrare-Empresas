@@ -1,3 +1,18 @@
+# NUEVO JSON 
+  ```json
+  {
+	"employee_id":2,
+	"cell_number":3008269546,
+	"email":"leila@example.com",
+	"area_id":2,
+	"business":"Junta de trabajo con el gerente",
+	"sec_equip":"Macana",
+	"vehicle":true,
+	"company":"Red Sparrow Techologies",
+	"date":"2016-01-27 12:05",
+	"notes":"foo bar"
+}
+  ```
 # Tipos de Usuario 
 * Super Administrador
 * Administradores
