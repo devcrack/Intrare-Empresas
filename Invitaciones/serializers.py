@@ -13,8 +13,7 @@ class json_invit_admin():
     """
     def __init__(
             self,
-            employee_first_name,
-            employee_last_name,
+            id_employee,
             cell_number,
             email,
             area,
@@ -25,11 +24,10 @@ class json_invit_admin():
             notes,
             date):
 
-        self.employee_first_name = employee_first_name
-        self.employee_last_name = employee_last_name
+        self.id_employee = id_employee
         self.cell_number = cell_number
         self.email = email
-        self.area = area
+        self.id_area = area
         self.business = business
         self.sec_equip = sec_equip
         self.vehicle = vehicle
@@ -42,11 +40,13 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     """
     Serializer Class for create and validates Invitations created by an ADMIN
     """
-    employee_first_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)  # Not accept words with accent
-    employee_last_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)   # Not accept words with accent
+    # employee_first_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)  # Not accept words with accent
+    # employee_last_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)   # Not accept words with accent
+    id_employee = serializers.IntegerField()
     cell_number = serializers.IntegerField()
     email = serializers.EmailField(allow_blank=True)
-    area = serializers.CharField(max_length=100)
+    # area = serializers.CharField(max_length=100)
+    area = serializers.IntegerField()
     business = serializers.CharField(max_length=300)
     sec_equip = serializers.CharField(max_length=300, allow_blank=True)
     vehicle = serializers.BooleanField()
@@ -81,7 +81,8 @@ class InvitationCreateSerializerEmployee(serializers.Serializer):
     """
     cell_number = serializers.IntegerField()
     email = serializers.EmailField(allow_blank=True)
-    area = serializers.CharField(max_length=100)
+    # area = serializers.CharField(max_length=100)
+    area = serializers.IntegerField()
     business = serializers.CharField(max_length=300)
     sec_equip = serializers.CharField(max_length=300, allow_blank=True)
     vehicle = serializers.BooleanField()
