@@ -73,25 +73,29 @@ class InvitationCreate(generics.CreateAPIView):
             serializer = self.serializer_class(data=request.data)
             if serializer.is_valid():
                 serializer.save()
-                _first_name = serializer.data['employee_first_name']  # First name employee provided
-                _last_name = serializer.data['employee_last_name']  # Last name employee provided
-                area_name = serializer.data['area']
+                # _first_name = serializer.data['employee_first_name']  # First name employee provided
+                # _last_name = serializer.data['employee_last_name']  # Last name employee provided
+                # area_name = serializer.data['area']
                 sec_equip_name = serializer.data['sec_equip']
+                id_employee = serializer.data['employee_id']
+                id_area = serializer.data['area_id']
+
                 """
                 Company Data Validations
                 """
-                error_response, area = self.validate_areas(id_company, area_name)
+                error_response, area = self.validate_areas(id_company, id_area)
                 if area:  # Validate if AREA Exist
                     if sec_equip_name:  # Validate if security equipment Exist.
                         error_response, security_equipment = self.validate_security_equip(sec_equip_name)
                         if error_response:
                             return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
-                    error_response, employee = self.validate_employee(id_company, _first_name, _last_name)
+                    error_response, employee = self.validate_employee(id_company, id_employee)
                     if employee:  # Validate if EMPLOYEE exist
 
                         """"
                         Now we can proceed to create an Invitation 
                         """
+
                         user = self.guest_exist(serializer.data['cell_number'])
                         if user:  # If user guest exist create a normal Invitation.
                             error_response, invitation = self.create_invitation(serializer.data, id_company, area,
@@ -105,7 +109,6 @@ class InvitationCreate(generics.CreateAPIView):
                                         return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
                             #Se envia la notificacion para una invitacion normal
                             self.send_email(serializer, invitation, id_company)
-
                         else:  # If user not exist create an USER and Temporal Invitation.
                             user = self.create_user(serializer.data['cell_number'])
                             if user:
@@ -135,6 +138,7 @@ class InvitationCreate(generics.CreateAPIView):
         """
         When the logged user is an Employee.
         """
+
         if usr.roll == settings.EMPLEADO:
             print('Logged as Employee\n')
             employee = Empleado.objects.filter(id_usuario=usr)[0]
@@ -301,25 +305,23 @@ class InvitationCreate(generics.CreateAPIView):
             tuple:data error message and area if is found it.
         """
         id_company = args[0]
-        _first_name = args[1]
-        _last_name = args[2]
+        id_employee = args[1]
+        # PREV
+        # _first_name = args[1]
+        # _last_name = args[2]
+
         error_response = None
         employee = None
-        _usr_s = CustomUser.objects.filter(first_name=_first_name, last_name=_last_name)
-        if _usr_s:
-            usr = _usr_s[0]
-            employee_s = Empleado.objects.filter(id_empresa=id_company, id_usuario=usr.id)
-            if employee_s:
-                print('Employee FOUND! goal!! Goal!!! SUCCESS!!!!')
-                employee = employee_s[0]
-            else:
-                print('Employee NOT FOUND')
-                error_response = {'Error': 'The Employee provided do not exist'}
+        _usr_s = CustomUser.objects.filter()
+        employee_s = Empleado.objects.filter(id_empresa=id_company, id_usuario=id_employee)
+        if employee_s:
+            print('Employee FOUND! goal!! Goal!!! SUCCESS!!!!')
+            employee = employee_s[0]
         else:
-            print('USER Not Found')
-            error_response = {'Error': 'User with provided full name do not exist'}
-
+            print('Employee NOT FOUND')
+            error_response = {'Error': 'The Employee provided do not exist'}
         return error_response, employee
+
 
     @classmethod
     def validate_areas(cls, *args):
@@ -332,11 +334,11 @@ class InvitationCreate(generics.CreateAPIView):
                 tuple:data error message and area if is found it.
         """
         id_company = args[0]
-        area_name = args[1]
+        id_area= args[1]
         area = None
         error_response = None
 
-        area_s = Area.objects.filter(id_empresa=id_company, nombre=area_name)
+        area_s = Area.objects.filter(id_empresa=id_company, id=id_area)
         if area_s:
             area = area_s[0]
             print('Area FOUND: ', area.nombre)
