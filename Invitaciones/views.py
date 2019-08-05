@@ -132,7 +132,7 @@ class InvitationCreate(generics.CreateAPIView):
                 else:
                     return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
             else:
-                Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.error_messages)
+                return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.error_messages)
             return Response(status=status.HTTP_200_OK)
 
         """
