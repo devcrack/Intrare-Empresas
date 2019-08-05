@@ -43,7 +43,7 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     # employee_first_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)  # Not accept words with accent
     # employee_last_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)   # Not accept words with accent
     id_employee = serializers.IntegerField()
-    cell_number = serializers.IntegerField()
+    cell_number = serializers.IntegerField(allow_blank=True)
     email = serializers.EmailField(allow_blank=True)
     # area = serializers.CharField(max_length=100)
     area = serializers.IntegerField()
