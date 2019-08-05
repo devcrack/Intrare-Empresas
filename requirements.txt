@@ -7,3 +7,4 @@ pep8
 djoser
 django-cors-headers
 Pillow
+qrcode
