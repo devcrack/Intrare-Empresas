@@ -300,8 +300,7 @@ class InvitationCreate(generics.CreateAPIView):
         """
         Args:
             args[0]: Id_company.
-            args[1]: first_name.
-            args[2]: last_name.
+            args[1]: id_employee.
 
         Returns:
             tuple:data error message and area if is found it.
@@ -314,8 +313,7 @@ class InvitationCreate(generics.CreateAPIView):
 
         error_response = None
         employee = None
-        _usr_s = CustomUser.objects.filter()
-        employee_s = Empleado.objects.filter(id_empresa=id_company, id_usuario=id_employee)
+        employee_s = Empleado.objects.filter(id_empresa=id_company, id=id_employee)
         if employee_s:
             print('Employee FOUND! goal!! Goal!!! SUCCESS!!!!')
             employee = employee_s[0]
