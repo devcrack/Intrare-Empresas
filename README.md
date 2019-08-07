@@ -6,7 +6,7 @@ Vista accesos                                       |                           
 Puta aplicacion de mierda                           |                                               |                                                            |Como hacer para que el usuario pueda eliminar sus invitaciones      |
 
 
-## Acerca de las invitaciones
+# Acerca de las invitaciones
 
 Existe solo un tipo de invitacion y tiene una sola variacion en su funcionamiento.
 
@@ -90,10 +90,53 @@ referido o un tercero que es la persona a la que delegamos la tarea de vincular 
 completando totalmente el registro de la invitacion.
 
 
+## JSON's para la Creacion de Invitaciones
 
+Para que generar una invitacion caso **Administrador** genera la invitacion el json que recibe el  el API es el siguiente:
+ ```json
+{
+  "areaId": 3,
+  "employeeId":2,
+  "dateInv": "2016-01-27 12:05",
+  "numCell": 4443424829,
+  "subject": "Algun asunto de la visita",
+  "secEquip": "1,3,6",
+  "vehicle": false,
+  "companyFrom": "Edison Effect",
+  "notes": "Notas de relativas a la invitacion"
+}
+ ```
 
+En donde 
+- areaId: Identificador del area donde se va hacer la visita
+- employeeId: Identificador del empleado que esta generando la visita.
+- dateInv: Fecha de cuando se llevara acabo la visita.
+- numCell: Numero de telefono **Celular** del visitante(Usuario).
+- subject: Razon por la cual se hace la visita.
+- secEquip: Cadena con los identificadores de los equipos de seguridad, separado por comas  en caso de ser varios. 
+- vehicle": Indica si el visitante lleva vehiculo o no.
+- companyFrom: Compañia de donde  proviene el visitante. **Puede dejarse en blanco/null** en caso de no tener definido esto. 
+- notes: Notas de relativas a la invitacion. 
 
+Generar una invitacion caso **Empleado** genera la invitacion el json que recibe el  el API es el siguiente:
 
+Para que generar una invitacion caso **Administrador** genera la invitacion el json que recibe el  el API es el siguiente:
+ 
+ ```json
+{
+  "areaId": 3,
+  "employeeId":null,
+  "dateInv": "2016-01-27 12:05",
+  "numCell": 4443424829,
+  "subject": "Algun asunto de la visita",
+  "secEquip": "1,3,6",
+  "vehicle": false,
+  "companyFrom": "Edison Effect",
+  "notes": "Notas de relativas a la invitacion"
+}
+ ``` 
+Como se puede observar es el mismo json que se discutio previamente, con la unica diferencia de que employeeId es null 
+ya que este valor se obtiene a traves del token de sesion.
 
 
 
