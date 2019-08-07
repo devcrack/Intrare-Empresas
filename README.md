@@ -4,11 +4,11 @@ POR HACER(INMEDIATO)                                                           |
 Vistas con reestructuracion de las invitaciones                       |Restructurando modelos invitaciones para manejar referidos         |Agregar caducidad al link de invitacion por referidos                  |
 Generar link a formulario invitacion por referidos                    |                                                                   | Script para depurar base de datos(Eliminar invitaciones muy viejas)   |
 Vista Accesos                                                         |                                                                   |Como hacer para que el usuario pueda eliminar sus invitaciones         |
-                                                                      |
+Puta aplicacion de mierda                                             |                                                                   | 
 
 ## Acerca de las invitaciones
-Existe solo un tipo de invitacion pero con sus respectivas variantes de acuerdo a unas caracteristicas
-especiales. Dichas caracteristicas vienene dadas por la siguiente tabla:
+
+Existe solo un tipo de invitacion y tiene una sola variacion en su funcionamiento.
 
 ### Tabla invitaciones
 Invitacion      |Tipo   | OBLIGATORIO   | 
@@ -19,7 +19,7 @@ idArea          |FK     |SI             |
 idEmpleado      |FK     |SI             |
 fechaEnvio      |DATE   |SI             |
 fechaInvitacion |DATE   |SI             |
-numTelefono     |STRING |NO             |
+idUsuario       |FK     |NO             |
 asunto          |STRING |SI             |
 automovil       |BOOL   |SI             |
 empresa         |STRING |NO             |
@@ -35,7 +35,7 @@ ya que son totalmente necesarios para gestionar las invitaciones.
 - idArea : Clave foranea del area de la empresa a donde se esta invitando.
 - idEmpleado: Empleado que funge como anfitrion, obviamente perteneciente a la empresa donde se esta invitando.
 - fechaEnvio/Invitacion: Fecha y hora de de envio de la invitacion /  Fecha y hora que acontecera la invitacion.
-- numTelefono del invitadio(Usuario). Este sera usado como clave foranea que referencia al usuario que es el invitado.
+- idUsuario: Clave foranea que referencia al usuario que es el invitado.
 - asunto: Asunto a tratar en la visita relativa a la invitacion.
 - automovil: Bandera que indica si el invitado vendra con automovil.
 - empresa: Compañia de donde proviene el visitante.
@@ -45,24 +45,49 @@ ya que son totalmente necesarios para gestionar las invitaciones.
 ### Tabla InvitacionReferido
 InvitacionReferido  | Tipo   | OBLIGATORIO   | 
 --------------------|--------|---------------|
-idInvitacionReferido|        |
+idInvitacionReferido|        |               |
 emailTercero        |EMAIL   |SI             |
 idInvitacion        |FK      |SI             |
 hash_code/LINK      |STRING  |SI             |
 
+Esta tabla cumple con una funcion especial. Se usa cuando se delega el hacer la invitacion aun tercero, externo a la empresa
+invitadora. 
+Al generar un registro en esta tabla, se crea una invitacion pero con un usuario vacio, es decir dicha invitacion no esta vinculada a ningun usuario
+por el momento. Al enviar la invitacion mediante un **emailTercero** solamente hacemos un preregistro con lo que se da de alta una invitacion, 
+el asignar un usuario a esa invitacion se lo delegamos al propietaro del **emailTercero** que es quien completara el registro 100 x 100.
 
+#### Descripcion de los campos
+- idInvitacionReferido: Clave primaria
+- emailTercero: Email de la persona a quien delegamos completar el registro de la invitacion.
+- idInvitacion: Clave foranea de la invitacion con la que se ha creado el preregistro.
+- hascodeLink: Codigo especial que sirve para proteger el enlace que llevara al tercero al formulario para completar el registro de la invitacion(AQUI se crea un usario y se vincula a la invitacion). 
 
+## Casos especiales con las invitaciones
+Las invitaciones siempre estaran vinculadas a un usuario, aunque el campo este como que puede ser nulo, de alguna u otra 
+forma siempre estara vinculado a un usuario. De otra manera la invitacion no tiene razon de ser.
+Las invitaciones siempre estan relacionadas con el usuario mediante su respectivo **idUsuario**.
 
-### Casos
-#### NUMERO TELEFONICO
-Siempre cada invitacion va a estar vinculada a un numero telefonico, siempre sin excepcion.
+Siempre que se intente generar una invitacion siempre 100x100 se tiene que proporcionar un numero telefonico. Dado que el numero telefonico es un campo unico
+e irrepetible, podemos identificar si un usuario ya se ha registrado a la plaforma mediante su numero telefonico :metal .
 
- sin importar si tiene un registro 
-mediante la aplicacion(en este caso el , o si no se 
-ha registrado con la aplicacion se genera un usuario siempre  a partir de su numero telefonico.
-En este caso cuando se hace el registro mediante el numero telefonico  a lo cual llamamos Semiregistro. El semiregistro se tiene que verificar cuando el usuario se ha registrado mediante la aplicacion
-para asi poder actualizar su informacion y realizar un registro completo.
+#### Usuario Registrado
 
+En este caso no existe ninguna anormalidad con las invitaciones, aqui el usuario ya esta registrado en la plataforma
+y al generar una invitacion este se vincula con la invitacion mediante su respectiva relacion  FK- > PK
+
+### El usuario No ha realizado el registro completo.
+
+En este caso el usuario no ha creado su registro pero, como normalmente cada vez que se genera una invitacion dicha 
+invitacion tiene que especificarse un numero telefonico, se tiene que crear un usuario algo asi como semiregistrado
+donde solo especificamos el numero de telefono y el nombre de usario que pasaria a ser su mismo numero de telefono.
+Si el usuario llegase a registrarse en la plataforma entonces tendriamos que verifcar si este ya ha sido registrado automaticamente 
+por el sistema previamente. De ser asi entonces tendriamos que simplemente actualizar dicho usuario con su respectiva informacion.
+
+### Invitacion mediante Referidos(Terceros)
+Aqui se da de alta una invitacion pero sin especificar el usuario, solamente registramos los campos obligatorios de la 
+invitacion realizando un preregistro de la invitacion. Se tiene que especificar un correo electronico que pertenece a un 
+referido o un tercero que es la persona a la que delegamos la tarea de vincular la invitacion creada aun usuario
+completando totalmente el registro de la invitacion.
 
 
 
