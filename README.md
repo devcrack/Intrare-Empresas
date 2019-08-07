@@ -92,6 +92,11 @@ completando totalmente el registro de la invitacion.
 
 ## JSON's para la Creacion de Invitaciones
 
+### Invitaciones REGISTRO COMPLETO
+
+Este tipo de invitaciones son creadas por un usuario de la plataforma, es decir ya sea por un Administrador o un empleado,,
+que hace uso del sistema.
+
 Para que generar una invitacion caso **Administrador** genera la invitacion el json que recibe el  el API es el siguiente:
  ```json
 {
@@ -139,6 +144,10 @@ Como se puede observar es el mismo json que se discutio previamente, con la unic
 ya que este valor se obtiene a traves del token de sesion.
 
 
+### Invitaciones PreRegistro/Referidos-Terceros
+
+Estas invitaciones igualmente son generadas por un usuario del sistema (Administrador/Empleado) pero aqui se le confiere
+la asignacion de un usuario(el invitado) a un tercero que es quien completa el registro del usuario para esta invitacion.
 
 
 
