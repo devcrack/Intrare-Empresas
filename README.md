@@ -1,10 +1,12 @@
 # TODOS
-POR HACER(INMEDIATO)                                                           |HACIENDO                                                  |PLANEAR|
-----------------------------------------------------------------------|-------------------------------------------------------------------|-----------------------------------------------------------------------|
-Vistas con reestructuracion de las invitaciones                       |Restructurando modelos invitaciones para manejar referidos         |Agregar caducidad al link de invitacion por referidos                  |
-Generar link a formulario invitacion por referidos                    |                                                                   | Script para depurar base de datos(Eliminar invitaciones muy viejas)   |
-Vista Accesos                                                         |                                                                   |Como hacer para que el usuario pueda eliminar sus invitaciones         |
-Puta aplicacion de mierda                                             |                                                                   | 
+POR HACER(INMEDIATO)                                                  |HACIENDO                                                           |HECHO                                                           |PLANEAR                                                             |
+----------------------------------------------------------------------|-------------------------------------------------------------------|----------------------------------------------------------------|--------------------------------------------------------------------|
+                                                                      |Vistas con reestructuracion de las invitaciones                    |Restructuracion modelos invitaciones para manejar referidos     |                                                                    |                
+                                                                      |                                                                   |                                                                |Agregar caducidad al link de invitacion por referidos               |
+Generar link a formulario invitacion por referidos                    |                                                                   |                                                                |Script para depurar base de datos(Eliminar invitaciones muy viejas) |
+Vista Accesos                                                         |                                                                   |                                                                |Como hacer para que el usuario pueda eliminar sus invitaciones      |
+Puta aplicacion de mierda                                             |                                                                   |                                                                |                                                                    |
+
 
 ## Acerca de las invitaciones
 
