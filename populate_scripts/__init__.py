@@ -62,14 +62,10 @@ def add_user1(*args):
         args[2](str): email of user.
         args[3](str): Password.
     """
+
     full_name = faker.name()
-    email = faker.email()
-    password = faker.password()
-    if len(args) > 2:
-        email = unique_id()
-        email += args[2]
-        if len(args) > 3:
-            password = args[3]
+    email = unique_id() + args[2]
+    password = args[3]
     list = full_name.split()
     name = list[0]
     last_name = list[1]
