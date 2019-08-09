@@ -13,14 +13,14 @@ class json_invit_admin():
     invitations by Administrators.
     """
     def __init__(self, areaId, employeeId, dateInv, cellNumber, subject, secEquip, vehicle, companyFrom, notes):
-        self.areaId = areaId,
-        self.employeeId = employeeId,
-        self.dateInv = dateInv,
-        self.cellNumber = cellNumber,
-        self.subject = subject,
-        self.secEquip = secEquip,
-        self.vehicle = vehicle,
-        self.companyFrom = companyFrom,
+        self.areaId = areaId
+        self.employeeId = employeeId
+        self.dateInv = dateInv
+        self.cellNumber = cellNumber
+        self.subject = subject
+        self.secEquip = secEquip
+        self.vehicle = vehicle
+        self.companyFrom = companyFrom
         self.notes = notes
 
 
@@ -28,10 +28,11 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     """
     Serializer Class for create and validates Invitations created by an ADMIN
     """
-    areaId = serializers.IntegerField(),
-    employeeId = serializers.IntegerField(),
+    areaId = serializers.IntegerField()
+    employeeId = serializers.IntegerField()
     dateInv = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
     cellNumber = serializers.IntegerField()
+    subject = serializers.CharField(max_length=400)
     secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
     vehicle = serializers.BooleanField()
     companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
