@@ -34,7 +34,9 @@ class EquipoSeguridadList(generics.ListCreateAPIView):
     queryset = EquipoSeguridad.objects.all()
     serializer_class = EquipoSeguridadSerializers
 
-
+"""
+Usada para listar las invitaciones por usuario.
+"""
 class Invitacion_List(viewsets.ModelViewSet):
     permission_classes = (IsAdmin | IsEmployee,)  # The user logged have to be and admin or an employee
     serializer_class = InvitacionSerializers  # Used for validate and deserializing input, and for serializing output.
@@ -58,84 +60,19 @@ class Invitacion_List(viewsets.ModelViewSet):
 
 class InvitationCreate(generics.CreateAPIView):
     permission_classes = (IsAdmin | IsEmployee,)
-    # serializer_class = InvitacionCreateSerializer
 
     def create(self, request, *args, **kwargs):
         usr = self.request.user
         security_equipment = None
-
+        # self.preprocessJson(request.data)
         if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
             print('Logged as Administrator\n')
-            adm_company = Administrador.objects.filter(id_usuario=usr)[0]
-            id_company = adm_company.id_empresa
-            # usr_employee = CustomUser.objects.filter(n)
             self.serializer_class = InvitationCreateSerializerAdmin
-            serializer = self.serializer_class(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                # _first_name = serializer.data['employee_first_name']  # First name employee provided
-                # _last_name = serializer.data['employee_last_name']  # Last name employee provided
-                # area_name = serializer.data['area']
-                sec_equip_name = serializer.data['sec_equip']
-                id_employee = serializer.data['employee_id']
-                id_area = serializer.data['area_id']
-
-                """
-                Company Data Validations
-                """
-                error_response, area = self.validate_areas(id_company, id_area)
-                if area:  # Validate if AREA Exist
-                    if sec_equip_name:  # Validate if security equipment Exist.
-                        error_response, security_equipment = self.validate_security_equip(sec_equip_name)
-                        if error_response:
-                            return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
-                    error_response, employee = self.validate_employee(id_company, id_employee)
-                    if employee:  # Validate if EMPLOYEE exist
-
-                        """"
-                        Now we can proceed to create an Invitation 
-                        """
-
-                        user = self.guest_exist(serializer.data['cell_number'])
-                        if user:  # If user guest exist create a normal Invitation.
-                            error_response, invitation = self.create_invitation(serializer.data, id_company, area,
-                                                                                employee, user)
-                            if error_response:
-                                return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
-                            else:
-                                if security_equipment:
-                                    error_response = self.EquiposporInvitacion_add(security_equipment, invitation)
-                                    if error_response:
-                                        return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
-                            #Se envia la notificacion para una invitacion normal
-                            self.send_email(serializer, invitation, id_company)
-                        else:  # If user not exist create an USER and Temporal Invitation.
-                            user = self.create_user(serializer.data['cell_number'])
-                            if user:
-                                error_response, invitation = self.create_temporal_invitation(serializer.data, id_company, area,
-                                                                                             employee, user.celular)
-                                if error_response:
-                                    return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
-                                else:
-                                    if security_equipment:
-                                        error_response = self.EquipoporInvitacionTemporal_Add(security_equipment, invitation)
-                                        if error_response:
-                                            return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
-                                # Se envia la notificacion para una invitacion temporal
-                                #self.send_email(serializer, invitation, id_company)
-                            else:
-                                error_response = {'Error': 'Error in User Create'}
-                                return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
-                        print('<SUCCESS>!!!!!!!!!!!!!!!!')
-                    else:
-                        return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
-                else:
-                    return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
+            _serializer = self.serializer_class(data=request.data)
+            if(_serializer.is_valid()):
+                return Response(status=status.HTTP_200_OK)
             else:
-                num_errors = len(serializer.errors)
-                print(num_errors)
-                return Response(status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
-            return Response(status=status.HTTP_200_OK)
+                return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
 
         """
         When the logged user is an Employee.
@@ -143,51 +80,7 @@ class InvitationCreate(generics.CreateAPIView):
 
         if usr.roll == settings.EMPLEADO:
             print('Logged as Employee\n')
-            employee = Empleado.objects.filter(id_usuario=usr)[0]
-            id_company = employee.id_empresa
-            self.serializer_class = InvitationCreateSerializerEmployee
-            serializer = self.serializer_class(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                sec_equip_name = serializer.data['sec_equip']
-                print('Security Equipment', sec_equip_name)
-                print('Date ' + str(serializer.data['date']))
-                error_response, area = self.validate_areas(id_company, serializer.data['area'])
-                if area:  # Validate if AREA exist
-                    if sec_equip_name:
-                        error_response, security_equipment = self.validate_security_equip(sec_equip_name)
-                        if error_response:
-                            return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
-                    user = self.guest_exist(serializer.data['cell_number'])
-                    if user: # If user exist just create a normal invitation with the data
-                        error_response, invitation = self.create_invitation(serializer.data, id_company, area, employee, user)
-                        if error_response:
-                            return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
-                        else:
-                            if security_equipment:
-                                error_response = self.EquiposporInvitacion_add(security_equipment, invitation)
-                                if error_response:
-                                    return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
-                    else:
-                        user = self.create_user(serializer.data['cell_number'])
-                        if user:
-                            error_response, invitation = self.create_temporal_invitation(serializer.data,
-                                                                             id_company, area, employee, user.celular)
-                            if error_response:
-                                return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
-                            else:
-                                if security_equipment:
-                                    error_response = self.EquipoporInvitacionTemporal_Add(security_equipment, invitation)
-                                    if error_response:
-                                        return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
-                        else:
-                            error_response = {'Error': 'Can\'t  Create User'}
-                            return Response(data=error_response, status=status.HTTP_400_BAD_REQUEST)
-                    print('<SUCCESS>!!!!!!!!!!!!!!!!')
-                else:
-                    return Response(data=error_response, status=status.HTTP_404_NOT_FOUND)
-            else:
-                return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         return Response(status=status.HTTP_200_OK)
 
     @classmethod
@@ -407,6 +300,15 @@ class InvitationCreate(generics.CreateAPIView):
         except ValueError:
             error_response = {'Error': 'Can\'t create Equipment for invitation'}
         return error_response
+
+    @classmethod
+    def preprocessJson(cls, data):
+        print('Printing Json input data\n')
+        for key, value in data.items():
+            print('Key', key)
+            print('Value', value)
+
+
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
 
