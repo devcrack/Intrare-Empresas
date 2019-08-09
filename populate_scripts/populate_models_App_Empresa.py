@@ -268,13 +268,7 @@ def add_employee_all_areas(*args):
                     _area = _areas[index_area]
                     _area = Area(_area)
                     for num_employee in range(0, args[0]):
-                        if len(args) > 1:
-                            if len(args) > 2:
-                                _user = add_user1(False, settings.EMPLEADO, args[1], args[2])
-                            else:
-                                _user = add_user1(False, settings.EMPLEADO, args[1])
-                        else:
-                            _user = add_user(False, settings.EMPLEADO)
+                        _user = add_user1(False, settings.EMPLEADO, args[1], args[2])
                         _extension = phn()
                         _can_sent = True
                         _id_notify = phn()

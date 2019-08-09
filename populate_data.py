@@ -61,7 +61,7 @@ def add_employees(how_many):
     if len(sys.argv) > 4:
         print("Password")
         print(sys.argv[4])
-        populate_company.add_employee_all_areas(how_many, sys.argv[3], sys.argv[4])
+        company.add_employee_all_areas(how_many, sys.argv[3], sys.argv[4])
     else:
         populate_company.add_employee_all_areas(how_many)
 
@@ -129,6 +129,13 @@ def addAreas():
     else :
         print('Andas pedo, ingresa bien los argumentos porfitas ueee!')
 
+def addEmployees():
+    print('Add employees...\n')
+    if len(sys.argv) == 5:
+        _nEmployees = int(sys.argv[2])
+        company.add_employee_all_areas(_nEmployees, sys.argv[3], sys.argv[4])
+    else:
+        print('Andas pedo, ingresa bien los argumentos porfitas ueee!')
 
 def main():
     """Entrada principal para llevar a cabo la ejecucion de este script
@@ -152,7 +159,7 @@ def main():
         'add_users': add_users,
         'add_areas': addAreas,        #2
         'add_casetas': add_casetas,
-        'add_employee': add_employees,
+        'add_employee': addEmployees,
         'add_invitation': add_invitations,
         'add_access': add_access,
         'add_tmp_invitation': add_tmp_inv,
