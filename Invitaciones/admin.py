@@ -1,7 +1,8 @@
 from django.contrib import admin
 
-from .models import EquipoSeguridad, EquiposporInvitacion
-from .models import Invitacion
+from .models import *
+
 admin.site.register(Invitacion)
 admin.site.register(EquipoSeguridad)
 admin.site.register(EquiposporInvitacion)
+admin.site.register(InvitacionReferido)
