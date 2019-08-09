@@ -69,7 +69,23 @@ class InvitationCreate(generics.CreateAPIView):
             print('Logged as Administrator\n')
             self.serializer_class = InvitationCreateSerializerAdmin
             _serializer = self.serializer_class(data=request.data)
-            if(_serializer.is_valid()):
+            if _serializer.is_valid():
+                _serializer.save()
+                _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
+                _idCompany = _admCompany.id_empresa
+                _areaId = _serializer.data['areaId']
+                _listSecEquip = _serializer.data['secEquip']
+                _arraySecEquip = _listSecEquip.split(',')
+                _cellNumberUser = _serializer.data['cellNumber']
+
+                """
+                Validating if Area exist
+                """
+                _errorResponse, _area = self.validate_areas(_idCompany, _areaId)
+                if _area:
+                    print('Validate Data\n')
+                else:
+                    return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
                 return Response(status=status.HTTP_200_OK)
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
@@ -227,16 +243,15 @@ class InvitationCreate(generics.CreateAPIView):
                 tuple:data error message and area if is found it.
         """
         id_company = args[0]
-        id_area= args[1]
+        id_area = args[1]
         area = None
         error_response = None
 
         area_s = Area.objects.filter(id_empresa=id_company, id=id_area)
         if area_s:
             area = area_s[0]
-            print('Area FOUND: ', area.nombre)
         else:
-            error_response = {'Error': 'NO areas found with data provided'}
+            error_response = {'Error': 'No existen areas con el Id proporcionado'}
         return error_response, area
 
     @classmethod
