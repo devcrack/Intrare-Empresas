@@ -11,20 +11,20 @@ Puta aplicacion de mierda                           |                           
 Existe solo un tipo de invitacion y tiene una sola variacion en su funcionamiento.
 
 ### Tabla invitaciones
-Invitacion      |Tipo   | OBLIGATORIO   | 
-----------------|-------|---------------|           
-idInvitacion    |PK     |               |  
-idEmpresa       |FK     |SI             |
-idArea          |FK     |SI             |
-idEmpleado      |FK     |SI             |
-fechaEnvio      |DATE   |SI             |
-fechaInvitacion |DATE   |SI             |
-idUsuario       |FK     |NO             |
-asunto          |STRING |SI             |
-automovil       |BOOL   |SI             |
-empresa         |STRING |NO             |
-notas           |STRING |NO             |
-LEIDA           |BOOL   |SI/AUTO        |
+| Invitacion      | Tipo   | OBLIGATORIO |
+| --------------- | ------ | ----------- |
+| idInvitacion    | PK     |             |
+| idEmpresa       | FK     | SI          |
+| idArea          | FK     | SI          |
+| idEmpleado      | FK     | SI          |
+| fechaEnvio      | DATE   | SI          |
+| fechaInvitacion | DATE   | SI          |
+| idUsuario       | FK     | NO          |
+| asunto          | STRING | SI          |
+| automovil       | BOOL   | SI          |
+| empresa         | STRING | NO          |
+| notas           | STRING | NO          |
+| LEIDA           | BOOL   | SI/AUTO     |
 
 Cada Invitacion tiene que cubrir con los campos que son marcados como obligatorios sin excepcion,
 ya que son totalmente necesarios para gestionar las invitaciones.
@@ -152,78 +152,51 @@ la asignacion de un usuario(el invitado) a un tercero que es quien completa el r
 
 
 
+# Notas del Desarrollador(JAHA-DEVCRACK)
+# Creacion Invitaciones.
 
+JSON Usado para la creacion de las invitaciones.
 
-
-
-
-
-
-
-
-
-
-
-
-# NUEVO JSON 
-  ```json
-  {
-	"employee_id":2,
-	"cell_number":3008269546,
-	"email":"leila@example.com",
-	"area_id":2,
-	"business":"Junta de trabajo con el gerente",
-	"sec_equip":"Macana",
-	"vehicle":true,
-	"company":"Red Sparrow Techologies",
-	"date":"2016-01-27 12:05",
-	"notes":"foo bar"
+```json
+{
+ "areaId": 3,
+ "employeeId":2,
+ "dateInv": "2016-01-27 12:05",
+ "numCell": 4443424829,
+ "subject": "Algun asunto de la visita",
+ "secEquip": "1,3,6",
+ "vehicle": false,
+ "companyFrom": "Edison Effect",
+ "notes": "Notas de relativas a la invitacion"
 }
-  ```
-# Tipos de Usuario 
-* Super Administrador
-* Administradores
-  * Administradores (Empresa)
-  * Administradores Parque.
-* Empleado
-* Vigilante Empresa, Vigilante Parque
+```
+
+Informacion necesaria para crear las invitaciones
 
 
-## Acciones por cada tipo de Usuario
-### Super Administrador
-- [ ] Altas de Parque
-- [ ] Modificaciones de Parque
-- [ ] Consultas de Parque
-    * Despliega listado de todas las empresas 
-       y despliega un mayor detalle de la empresa seleccionada ya sea para consulta o modificacion. 
-       Ver sistema para mas detalles.
-- [ ] Altas de Empresa 
-- [ ] Modificaciones de Empresa 
-- [ ] Consultas de Empresas
-     * Despliega listado de todas las empresas 
-       y despliega un mayor detalle de la empresa seleccionada ya sea para consulta o modificacion. 
-       Ver sistema para mas detalles.
+-  areaId
+- idEmpresa
+- idEmpleado
+- fechaInvitacion
+- idUsuario....Este campo puede estar vacio
+- asunto
+- automovil
+- empresa
+- notas
 
-### Administrador 
-- [ ] Altas Empleado
-- [ ] Modificaciones Empleado
-- [ ] Consultas de Empleado
-      * Despliega listado de todos los empleados
-       y despliega un mayor detalle del empleado seleccionado ya sea para consulta o modificacion. 
-       Ver sistema para mas detalles.
-- [ ] Consulta Invitaciones. Ver sistema para mas detalles. **Nota** Puede filtrar invitaciones por fecha.
-- [ ] Consulta Accesos. Ver sistema para mas     detalles.
-- [ ] Consulta Bitacora. Ver sistema para mas detalles.
-- [ ] Genera un tipo de invitacion llamada Invitacion 
-      Personal. En el backend una invitacion empresarial.
-- [ ] Puede firmar pase de salida(Autorizar accesos).
-- [ ] Configura el color de las areas.
-- [ ] Alta de Caseta
-- [ ] Modificaciones de Caseta.
-- [ ] Despliega listado de todas las casetas de la empresa y despliega con mayor detalle de la inforamcion de la caseta seleccionada ya sea para consulta o modificacion. 
-- [ ] Alta de Vigilante
-- [ ] Modificaciones de Vigilante.
-- [ ] Despliega listado de todas las casetas de la empresa y despliega con mayor detalle de la inforamcion de la caseta seleccionada ya sea para consulta o modificacion. 
-- [ ] Envia mensaje de emergencia.
-- 
+## Tareas devcrack.
+- [X] Cambiar validador de json
+- [ ] Crear Invitaciones como administrador
 
+## sheet Terminator
+
+### Dividir Horizontalmente
+Shitf + Ctrl + O
+### Dividir Verticalmente
+Shitf + Ctrl + E
+### Editar Titulo Pestaña
+Ctrl + Alt + A
+### Editar Titutlo Terminal
+Ctrl + Alt + X
+### Editar Titulo Ventana
+Ctrl + Altf + W
