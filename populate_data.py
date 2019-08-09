@@ -46,15 +46,6 @@ def add_security_equp(how_many):
     print('Adding security equipment...\n')
     inv.add_security_equipment(how_many)
 
-def add_area(how_many):
-    """
-    Agrega áreas a cada Empresa.
-    :param how_many: Número de Áreas por Empresa a agregar.
-    Nota: how_many no debe ser mayor a 10.
-    """
-    print('Adding areas....\n')
-    populate_company.add_areas(how_many)
-
 def add_casetas(how_many):
     """
     Agrega Casetas a cada Empresa.
@@ -130,6 +121,14 @@ def addCompanies():
     else:
         print("Los argumentos son incorrectos, debes de proporcionar:\n- #Numero de Registros a generar\n"
               "- Email Administrador Empresa\n- Contraseña Administrador Empresa\n")
+def addAreas():
+    print('Adding areas....\n')
+    if len(sys.argv) == 3:
+        _nAreas = int(sys.argv[2])
+        company.add_areas(_nAreas)
+    else :
+        print('Andas pedo, ingresa bien los argumentos porfitas ueee!')
+
 
 def main():
     """Entrada principal para llevar a cabo la ejecucion de este script
@@ -151,7 +150,7 @@ def main():
     jobs = {
         'add_company': addCompanies, #1
         'add_users': add_users,
-        'add_areas': add_area,        #2
+        'add_areas': addAreas,        #2
         'add_casetas': add_casetas,
         'add_employee': add_employees,
         'add_invitation': add_invitations,
