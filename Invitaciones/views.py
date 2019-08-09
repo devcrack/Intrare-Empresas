@@ -17,7 +17,7 @@ from rest_framework import status
 
 from django.core.mail import send_mail
 from django.conf import settings
-
+from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 
 from string import Template
@@ -73,17 +73,54 @@ class InvitationCreate(generics.CreateAPIView):
                 _serializer.save()
                 _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
                 _idCompany = _admCompany.id_empresa
+
+                """
+                Reading data from serializer
+                """
+
                 _areaId = _serializer.data['areaId']
                 _listSecEquip = _serializer.data['secEquip']
                 _arraySecEquip = _listSecEquip.split(',')
                 _cellNumberUser = _serializer.data['cellNumber']
-
+                _employeeId = _serializer.data['employeeId']
+                _dateInv = _serializer.data['dateInv']
+                _subject = _serializer.data['subject']
+                _vehicle = _serializer.data['vehicle']
+                _notes = _serializer.data['notes']
+                _companyFrom = _serializer.data['companyFrom']
                 """
                 Validating if Area exist
                 """
                 _errorResponse, _area = self.validate_areas(_idCompany, _areaId)
                 if _area:
                     print('Validate Data\n')
+
+                    """
+                    Validating if Security Equipment Exist
+                    """
+                    _securityEqu, _errorResponse = self.validateSecEqu(_arraySecEquip)
+                    if _errorResponse:
+                        return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+
+                    """
+                    Validating Employee
+                    """
+                    _errorResponse, _employee = self.validate_employee(_idCompany, _employeeId)
+                    if _employee:
+                        """
+                        Try to Create an Invitation
+                        """
+                        _errorResponse, invitation = self.create_invitation(_cellNumberUser, _idCompany, _area,
+                                                                            _employee, _dateInv, _subject, _vehicle,
+                                                                            _notes, _companyFrom)
+                        if _errorResponse:
+                            return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+                        else:
+                            if _securityEqu:
+                                _errorResponse = self.add_sec_equ_by_inv(_securityEqu, invitation)
+                            # self.send_email(_serializer, invitation, _idCompany)
+                    else:
+                        return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
                 else:
                     return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
                 return Response(status=status.HTTP_200_OK)
@@ -124,10 +161,13 @@ class InvitationCreate(generics.CreateAPIView):
         if user:
             print('User Exist with NUMBER PHONE: ', user[0].celular)
             return user[0]
-        return None
+        else:
+            print('User with this number phone NOT EXIST: ')
+            return None
 
     @classmethod
-    def create_invitation(cls, *args):
+    def create_invitation(cls, cell_phone_number, id_company, id_area, id_employee , date_inv, subject, vehicle,
+                          notes, from_company):
         """
         Args:
             args[0]: serializer data
@@ -136,25 +176,30 @@ class InvitationCreate(generics.CreateAPIView):
             args[3]: id employee
             args[4]: user
         """
-        data = args[0]
-        id_company = args[1]
-        _area = args[2]
-        _employee = args[3]
-        user = args[4]
-        date_inv = data['date']
-        business = data['business']
-        vehicle = data['vehicle']
-        notes = data['notes']
-        from_company = data['company']
-        error_response = None
 
+        error_response = None
+        _idUser = cls.guest_exist(cell_phone_number)
+        if _idUser is None:
+            error_response, _idUser = cls.create_user(cell_phone_number)
+            if error_response:
+                return error_response, None
+        print('Data to commit in Invitation\n')
+        print('\tCompany Id: ', id_company)
+        print('\tArea Id :', id_area)
+        print('\tUser Id: ', _idUser)
+        print('\tEmploye Id:', id_employee)
+        print('\tInvitation Date: ', date_inv)
+        print('\tsubject: ', subject)
+        print('\tvehicle: ', vehicle)
+        print('\tnotes: ', notes)
+        print('\tfromCompany: ', from_company)
         nw_invitation = Invitacion(
             id_empresa=id_company,
-            id_area=_area,
-            id_usuario=user,
-            id_empleado=_employee,
+            id_area=id_area,
+            id_usuario=_idUser,
+            id_empleado=id_employee,
             fecha_hora_invitacion=date_inv,
-            asunto=business,
+            asunto=subject,
             automovil=vehicle,
             notas=notes,
             empresa=from_company,
@@ -275,6 +320,7 @@ class InvitationCreate(generics.CreateAPIView):
               args[1]: user name in this case is the number phone too.
 
         """
+        _errorResponse = None
         number_phone = args[0]
         user = args[0]
         _password = 'pass'
@@ -283,10 +329,10 @@ class InvitationCreate(generics.CreateAPIView):
         try:
             nw_user.save()
             print(nw_user.id, ' USER CREATED 200_OK')
-            return nw_user
+            return None, nw_user
         except ValueError:
-            print('CAN\'T SAVE USER')
-            return None
+            _errorResponse = {'Error': 'Error in User Create'}
+            return _errorResponse, None
 
     @classmethod
     def EquiposporInvitacion_add(cls, *args):
@@ -322,6 +368,34 @@ class InvitationCreate(generics.CreateAPIView):
         for key, value in data.items():
             print('Key', key)
             print('Value', value)
+
+    @classmethod
+    def validateSecEqu(cls, listSecEq):
+        _idSecEqList = []
+        for i in listSecEq:
+            if i !='':
+                print(i)
+                _idSecEq = int(i)
+                try:
+                    _secEqu = EquipoSeguridad.objects.get(id=_idSecEq)
+                    _idSecEqList.append(_secEqu)
+                except ObjectDoesNotExist:
+                    return None, {'Error': 'Error with Security Equipment supplied, please check it'}
+        return _idSecEqList, None
+
+
+    @classmethod
+    def add_sec_equ_by_inv(cls, list_equipment_security, inv):
+        error_response = None
+        for i in list_equipment_security:
+            _eqInv = EquiposporInvitacion(id_equipo_seguridad=i, id_invitacion=inv)
+            try:
+                _eqInv.save()
+                print('Equipment by Invitation Created 200_OK')
+            except ValueError:
+                error_response = {'Error': 'Can\'t create Equipment for invitation'}
+                return error_response
+        return error_response
 
 
 # How the fuck document p
