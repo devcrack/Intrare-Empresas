@@ -64,12 +64,12 @@ def add_user1(*args):
     """
 
     full_name = faker.name()
-    email = unique_id() + args[2]
+    _email = unique_id() + args[2]
     password = args[3]
     list = full_name.split()
     name = list[0]
     last_name = list[1]
-    username_pre = email.split("@")
+    username_pre = _email.split("@")
     username = username_pre[0] + unique_id()
     is_staff = False
     is_active = True
@@ -81,7 +81,7 @@ def add_user1(*args):
         first_name=name,
         last_name=last_name,
         username=username,
-        email=email,
+        email=_email,
         is_staff=is_staff,
         is_active=is_active,
         is_superuser=is_superuser,
@@ -92,7 +92,7 @@ def add_user1(*args):
         )
     user.save()
     print('USER CREATED wit mail  =')
-    print(email)
+    print(_email)
     print(' And Password  =')
     print(password)
 
