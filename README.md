@@ -70,12 +70,12 @@ Las invitaciones siempre estan relacionadas con el usuario mediante su respectiv
 Siempre que se intente generar una invitacion siempre 100x100 se tiene que proporcionar un numero telefonico. Dado que el numero telefonico es un campo unico
 e irrepetible, podemos identificar si un usuario ya se ha registrado a la plaforma mediante su numero telefonico :metal .
 
-#### Usuario Registrado
+#### Usuario Registrado INVITACIONES TIPO 0
 
 En este caso no existe ninguna anormalidad con las invitaciones, aqui el usuario ya esta registrado en la plataforma
 y al generar una invitacion este se vincula con la invitacion mediante su respectiva relacion  FK- > PK
 
-### El usuario No ha realizado el registro completo.
+### El usuario No ha realizado el registro completo. 
 
 En este caso el usuario no ha creado su registro pero, como normalmente cada vez que se genera una invitacion dicha 
 invitacion tiene que especificarse un numero telefonico, se tiene que crear un usuario algo asi como semiregistrado
@@ -83,7 +83,7 @@ donde solo especificamos el numero de telefono y el nombre de usario que pasaria
 Si el usuario llegase a registrarse en la plataforma entonces tendriamos que verifcar si este ya ha sido registrado automaticamente 
 por el sistema previamente. De ser asi entonces tendriamos que simplemente actualizar dicho usuario con su respectiva informacion.
 
-### Invitacion mediante Referidos(Terceros)
+### Invitacion mediante Referidos(Terceros) INVITACIONES TIPO 1
 Aqui se da de alta una invitacion pero sin especificar el usuario, solamente registramos los campos obligatorios de la 
 invitacion realizando un preregistro de la invitacion. Se tiene que especificar un correo electronico que pertenece a un 
 referido o un tercero que es la persona a la que delegamos la tarea de vincular la invitacion creada aun usuario
@@ -200,3 +200,8 @@ Ctrl + Alt + A
 Ctrl + Alt + X
 ### Editar Titulo Ventana
 Ctrl + Altf + W
+
+## Django Docs
+
+### About Models
+https://docs.djangoproject.com/en/2.2/ref/models/
