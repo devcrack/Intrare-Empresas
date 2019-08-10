@@ -63,78 +63,71 @@ class InvitationCreate(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         usr = self.request.user
-        security_equipment = None
         # self.preprocessJson(request.data)
-        if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
-            print('Logged as Administrator\n')
-            self.serializer_class = InvitationCreateSerializerAdmin
-            _serializer = self.serializer_class(data=request.data)
-            if _serializer.is_valid():
-                _serializer.save()
+        self.serializer_class = InvitationCreateSerializerAdmin
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save()
+            _idCompany = None
+            _employee = None
+            """
+            Reading data from serializer
+            """
+            _areaId = _serializer.data['areaId']
+            _listSecEquip = _serializer.data['secEquip']
+            _arraySecEquip = _listSecEquip.split(',')
+            _cellNumberUser = _serializer.data['cellNumber']
+            _employeeId = _serializer.data['employeeId']
+            _dateInv = _serializer.data['dateInv']
+            _subject = _serializer.data['subject']
+            _vehicle = _serializer.data['vehicle']
+            _notes = _serializer.data['notes']
+            _companyFrom = _serializer.data['companyFrom']
+
+            if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
+                print('Logged as Administrator\n')
                 _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
                 _idCompany = _admCompany.id_empresa
-
                 """
-                Reading data from serializer
+                Validating Employee
                 """
-
-                _areaId = _serializer.data['areaId']
-                _listSecEquip = _serializer.data['secEquip']
-                _arraySecEquip = _listSecEquip.split(',')
-                _cellNumberUser = _serializer.data['cellNumber']
-                _employeeId = _serializer.data['employeeId']
-                _dateInv = _serializer.data['dateInv']
-                _subject = _serializer.data['subject']
-                _vehicle = _serializer.data['vehicle']
-                _notes = _serializer.data['notes']
-                _companyFrom = _serializer.data['companyFrom']
-                """
-                Validating if Area exist
-                """
-                _errorResponse, _area = self.validate_areas(_idCompany, _areaId)
-                if _area:
-                    print('Validate Data\n')
-
-                    """
-                    Validating if Security Equipment Exist
-                    """
-                    _securityEqu, _errorResponse = self.validateSecEqu(_arraySecEquip)
-                    if _errorResponse:
-                        return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
-
-                    """
-                    Validating Employee
-                    """
-                    _errorResponse, _employee = self.validate_employee(_idCompany, _employeeId)
-                    if _employee:
-                        """
-                        Try to Create an Invitation
-                        """
-                        _errorResponse, invitation = self.create_invitation(_cellNumberUser, _idCompany, _area,
-                                                                            _employee, _dateInv, _subject, _vehicle,
-                                                                            _notes, _companyFrom)
-                        if _errorResponse:
-                            return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
-                        else:
-                            if _securityEqu:
-                                _errorResponse = self.add_sec_equ_by_inv(_securityEqu, invitation)
-                            # self.send_email(_serializer, invitation, _idCompany)
-                    else:
-                        return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
-                return Response(status=status.HTTP_200_OK)
+                _errorResponse, _employee = self.validate_employee(_idCompany, _employeeId)
+                if _errorResponse:
+                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
-
-        """
-        When the logged user is an Employee.
-        """
-
-        if usr.roll == settings.EMPLEADO:
-            print('Logged as Employee\n')
-
+                print('Logged as Employee\n')
+                _employee = Empleado.objects.filter(id_usuario=usr)[0]
+                _idCompany = _employee.id_empresa
+            """
+            Validating if Area exist
+            """
+            print('IDCompany =', _idCompany)
+            _errorResponse, _area = self.validate_areas(_idCompany, _areaId)
+            if _area:
+                """
+                Validating if Security Equipment Exist
+                """
+                _securityEqu, _errorResponse = self.validateSecEqu(_arraySecEquip)
+                if _errorResponse:
+                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+                """
+                Create Invitation
+                """
+                _errorResponse, invitation = self.create_invitation(_cellNumberUser, _idCompany, _area,
+                                                                    _employee, _dateInv, _subject, _vehicle,
+                                                                    _notes, _companyFrom)
+                if _errorResponse:
+                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    if _securityEqu:
+                        _errorResponse = self.add_sec_equ_by_inv(_securityEqu, invitation)
+                        # self.send_email(_serializer, invitation, _idCompany)
+            else:
+                return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_200_OK)
+
 
     @classmethod
     def send_email(cls, _user, _inv, _compy):
