@@ -34,6 +34,7 @@ class AdministradorSerializers(serializers.ModelSerializer):
         usuario.email = id_usuario_data['email']
         usuario.celular = id_usuario_data['celular']
         usuario.set_password(id_usuario_data['password'])
+        usuario.is_active = id_usuario_data['is_active']
         usuario.save()
         instance.id_usuario.username = id_usuario_data['username']
         instance.id_usuario.first_name = id_usuario_data['first_name']
@@ -42,6 +43,7 @@ class AdministradorSerializers(serializers.ModelSerializer):
         instance.id_usuario.celular = id_usuario_data['celular']
         instance.id_usuario.password = usuario.password
         instance.id_empresa = validated_data['id_empresa']
+        instance.id_usuario.is_active = id_usuario_data['is_active']
         instance.save()
         return instance
 
@@ -76,6 +78,7 @@ class VigilanteSerializers(serializers.ModelSerializer):
         usuario.email = id_usuario_data['email']
         usuario.celular = id_usuario_data['celular']
         usuario.set_password(id_usuario_data['password'])
+        usuario.is_active = id_usuario_data['is_active']
         usuario.save()
         instance.id_usuario.username = id_usuario_data['username']
         instance.id_usuario.first_name = id_usuario_data['first_name']
@@ -84,6 +87,7 @@ class VigilanteSerializers(serializers.ModelSerializer):
         instance.id_usuario.celular = id_usuario_data['celular']
         instance.id_usuario.password = usuario.password
         instance.id_empresa = validated_data['id_empresa']
+        instance.id_usuario.is_active = id_usuario_data['is_active']
         instance.save()
         return instance
 
@@ -116,6 +120,7 @@ class EmpleadoSerializers(serializers.ModelSerializer):
         usuario.ine_frente = id_usuario_data['ine_frente']
         usuario.ine_atras = id_usuario_data['ine_atras']
         usuario.set_password(id_usuario_data['password'])
+        usuario.is_active = id_usuario_data['is_active']
         usuario.save()
         instance.id_usuario.username = id_usuario_data['username']
         instance.id_usuario.first_name = id_usuario_data['first_name']
@@ -124,6 +129,7 @@ class EmpleadoSerializers(serializers.ModelSerializer):
         instance.id_usuario.celular = id_usuario_data['celular']
         instance.id_usuario.ine_frente = id_usuario_data['ine_frente']
         instance.id_usuario.ine_atras = id_usuario_data['ine_atras']
+        instance.id_usuario.is_active = id_usuario_data['is_active']
         instance.id_usuario.password = usuario.password
         instance.extension = validated_data['extension']
         instance.puede_enviar = validated_data['puede_enviar']
