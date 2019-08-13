@@ -125,7 +125,6 @@ En donde
 
 Generar una invitacion caso **Empleado** genera la invitacion el json que recibe el  el API es el siguiente:
 
-Para que generar una invitacion caso **Administrador** genera la invitacion el json que recibe el  el API es el siguiente:
  
  ```json
 {
@@ -148,6 +147,22 @@ ya que este valor se obtiene a traves del token de sesion.
 
 Estas invitaciones igualmente son generadas por un usuario del sistema (Administrador/Empleado) pero aqui se le confiere
 la asignacion de un usuario(el invitado) a un tercero que es quien completa el registro del usuario para esta invitacion.
+
+
+### Json Invitacion por Referidos **Administrador**:
+ ```json
+{
+  "areaId": 3,
+  "employeeId":2,
+  "dateInv": "2016-01-27 12:05",
+  "subject": "Algun asunto de la visita",
+  "secEquip": "1,3,6",
+  "vehicle": false,
+  "companyFrom": "Edison Effect",
+  "notes": "Notas de relativas a la invitacion"
+}
+```  
+
 
 
 
