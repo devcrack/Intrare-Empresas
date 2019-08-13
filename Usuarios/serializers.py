@@ -124,6 +124,61 @@ class UserEmployeeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Ya existe un usuario con ese Nombre de Usuario.')
         return value
 
+class UserVigilanteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+        extra_kwargs = {
+            'celular': {
+                'validators': []
+            },
+            'email': {
+                'validators': []
+            },
+            'username': {
+                'validators': []
+            }
+        }
+
+    def validate_celular(self, value):
+        check_query = CustomUser.objects.filter(celular=value)
+        if self.instance:
+            check_query = check_query.exclude(pk=self.instance.id_usuario.pk)
+
+        if self.parent is not None and self.parent.instance is not None:
+            celular = getattr(self.parent.instance, self.field_name)
+            check_query = check_query.exclude(pk=celular.pk)
+
+        if check_query.exists():
+            raise serializers.ValidationError('Ya existe un celular con ese número.')
+        return value
+
+    def validate_email(self, value):
+        check_query = CustomUser.objects.filter(email=value)
+        if self.instance:
+            check_query = check_query.exclude(pk=self.instance.id_usuario.pk)
+
+        if self.parent is not None and self.parent.instance is not None:
+            email = getattr(self.parent.instance, self.field_name)
+            check_query = check_query.exclude(pk=email.pk)
+
+        if check_query.exists():
+            raise serializers.ValidationError('Ya existe un usuario con ese E-Mail.')
+        return value
+
+
+    def validate_username(self, value):
+        check_query = CustomUser.objects.filter(username=value)
+        if self.instance:
+            check_query = check_query.exclude(pk=self.instance.id_usuario.pk)
+
+        if self.parent is not None and self.parent.instance is not None:
+            username = getattr(self.parent.instance, self.field_name)
+            check_query = check_query.exclude(pk=username.pk)
+
+        if check_query.exists():
+            raise serializers.ValidationError('Ya existe un usuario con ese Nombre de Usuario.')
+        return value
 
 
 

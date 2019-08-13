@@ -1,3 +1,4 @@
+from django.utils import regex_helper
 from rest_framework import serializers
 
 from .models import *
@@ -11,48 +12,31 @@ class json_invit_admin():
     Object Class for render the input for the creation of
     invitations by Administrators.
     """
-    def __init__(
-            self,
-            employee_id,
-            cell_number,
-            email,
-            area_id,
-            business,
-            sec_equip,
-            vehicle,
-            company,
-            notes,
-            date):
-
-        self.employee_id = employee_id
-        self.cell_number = cell_number
-        self.email = email
-        self.area_id = area_id
-        self.business = business
-        self.sec_equip = sec_equip
+    def __init__(self, areaId, employeeId, dateInv, cellNumber, subject, secEquip, vehicle, companyFrom, notes):
+        self.areaId = areaId
+        self.employeeId = employeeId
+        self.dateInv = dateInv
+        self.cellNumber = cellNumber
+        self.subject = subject
+        self.secEquip = secEquip
         self.vehicle = vehicle
-        self.company = company
+        self.companyFrom = companyFrom
         self.notes = notes
-        self.date = date
 
 
 class InvitationCreateSerializerAdmin(serializers.Serializer):
     """
     Serializer Class for create and validates Invitations created by an ADMIN
     """
-    # employee_first_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)  # Not accept words with accent
-    # employee_last_name = serializers.RegexField(regex=r'^[A-Za-z\s]+$', max_length=600)   # Not accept words with accent
-    employee_id = serializers.IntegerField()
-    cell_number = serializers.IntegerField(allow_null=True)
-    email = serializers.EmailField(allow_blank=True)
-    # area = serializers.CharField(max_length=100)
-    area_id = serializers.IntegerField()
-    business = serializers.CharField(max_length=300)
-    sec_equip = serializers.CharField(max_length=300, allow_blank=True)
+    areaId = serializers.IntegerField()
+    employeeId = serializers.IntegerField()
+    dateInv = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
+    cellNumber = serializers.IntegerField()
+    subject = serializers.CharField(max_length=400)
+    secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
     vehicle = serializers.BooleanField()
-    company = serializers.CharField(max_length=200)
-    notes = serializers.CharField(max_length=300, allow_blank=True)
-    date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
+    companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
+    notes = serializers.CharField(max_length=300, allow_blank=True, allow_null=True)
 
     def create(self, validated_data):
         return json_invit_admin(**validated_data)
@@ -84,7 +68,7 @@ class InvitationCreateSerializerEmployee(serializers.Serializer):
     # area = serializers.CharField(max_length=100)
     area = serializers.IntegerField()
     business = serializers.CharField(max_length=300)
-    sec_equip = serializers.CharField(max_length=300, allow_blank=True)
+    sec_equip = serializers.CharField(max_length=300, allow_null=True)
     vehicle = serializers.BooleanField()
     company = serializers.CharField(max_length=200)
     notes = serializers.CharField(max_length=300, allow_blank=True)
@@ -129,12 +113,6 @@ class InvitacionSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         print(validated_data)
 
-
-class InvitationTmpSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = InvitacionTemporal
-        fields = '__all__'
 
 class EquipoSeguridadSerializers(serializers.ModelSerializer):
 

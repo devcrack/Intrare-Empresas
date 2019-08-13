@@ -7,7 +7,7 @@ import sys
 from builtins import print
 
 import populate_scripts.fill_table_user as populate_user
-import populate_scripts.populate_models_App_Empresa as populate_company
+import populate_scripts.populate_models_App_Empresa as company
 import populate_scripts.pupulate_models_app_Parques as populate_parks
 import populate_scripts.populate_models_app_Grupo as populate_groups
 import populate_scripts.populate_models_app_invitaciones as inv
@@ -26,20 +26,6 @@ def add_users(how_many):
     for entry in range(how_many):
         populate_company.add_user(False, 2)
 
-
-def add_companies(how_many):
-    """Agrega registros fake para la tabla Empresa de la aplicacion Empresa.
-
-    Args:
-        how_many(int): Numero de registro que desea agregar a la base de datos.
-    """
-    print('Adding companies....\n')
-    if len(sys.argv) > 4:
-        print("Password")
-        print(sys.argv[4])
-        populate_company.add_companies(how_many, sys.argv[3], sys.argv[4])
-    else:
-        populate_company.add_companies(how_many)
 
 def add_invitations(how_many):
     """Agrega un determinado numero de invitaciones
@@ -60,15 +46,6 @@ def add_security_equp(how_many):
     print('Adding security equipment...\n')
     inv.add_security_equipment(how_many)
 
-def add_area(how_many):
-    """
-    Agrega áreas a cada Empresa.
-    :param how_many: Número de Áreas por Empresa a agregar.
-    Nota: how_many no debe ser mayor a 10.
-    """
-    print('Adding areas....\n')
-    populate_company.add_areas(how_many)
-
 def add_casetas(how_many):
     """
     Agrega Casetas a cada Empresa.
@@ -84,7 +61,7 @@ def add_employees(how_many):
     if len(sys.argv) > 4:
         print("Password")
         print(sys.argv[4])
-        populate_company.add_employee_all_areas(how_many, sys.argv[3], sys.argv[4])
+        company.add_employee_all_areas(how_many, sys.argv[3], sys.argv[4])
     else:
         populate_company.add_employee_all_areas(how_many)
 
@@ -134,6 +111,32 @@ def  add_invitation_from_user(how_many):
     inv.employee_add_invitation(how_many, sys.argv[3])
 
 
+def addCompanies():
+    if len(sys.argv) == 5:
+        print('Numero registros a generar = ', sys.argv[2])
+        print('Email Adminitrador: ', sys.argv[3])
+        print('Password Proporcionada:', sys.argv[4])
+        _numReg = int(sys.argv[2])
+        company.addCompany(_numReg, sys.argv[3], sys.argv[4])
+    else:
+        print("Los argumentos son incorrectos, debes de proporcionar:\n- #Numero de Registros a generar\n"
+              "- Email Administrador Empresa\n- Contraseña Administrador Empresa\n")
+def addAreas():
+    print('Adding areas....\n')
+    if len(sys.argv) == 3:
+        _nAreas = int(sys.argv[2])
+        company.add_areas(_nAreas)
+    else :
+        print('Andas pedo, ingresa bien los argumentos porfitas ueee!')
+
+def addEmployees():
+    print('Add employees...\n')
+    if len(sys.argv) == 5:
+        _nEmployees = int(sys.argv[2])
+        company.add_employee_all_areas(_nEmployees, sys.argv[3], sys.argv[4])
+    else:
+        print('Andas pedo, ingresa bien los argumentos porfitas ueee!')
+
 def main():
     """Entrada principal para llevar a cabo la ejecucion de este script
 
@@ -151,14 +154,12 @@ def main():
         Ejecucion del script para generar 200 registros a la tabla Empresa.
         >>python populate_data.py add_company 200
     """
-
-
     jobs = {
-        'add_company': add_companies, #1
+        'add_company': addCompanies, #1
         'add_users': add_users,
-        'add_areas': add_area,        #2
+        'add_areas': addAreas,        #2
         'add_casetas': add_casetas,
-        'add_employee': add_employees,
+        'add_employee': addEmployees,
         'add_invitation': add_invitations,
         'add_access': add_access,
         'add_tmp_invitation': add_tmp_inv,
@@ -172,11 +173,12 @@ def main():
     }
 
     option = sys.argv[1]
-    if len(sys.argv) > 2:
-        hw_many = sys.argv[2]
-    else:
-        hw_many = 1
-    jobs[option](int(hw_many))
+    print('OPCION', option)
+    # if len(sys.argv) > 2:
+    #     hw_many = sys.argv[2]
+    # else:
+    #     hw_many = 1
+    jobs[option]()
 
     
 if __name__ == '__main__':

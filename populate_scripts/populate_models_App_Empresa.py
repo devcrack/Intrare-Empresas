@@ -268,13 +268,7 @@ def add_employee_all_areas(*args):
                     _area = _areas[index_area]
                     _area = Area(_area)
                     for num_employee in range(0, args[0]):
-                        if len(args) > 1:
-                            if len(args) > 2:
-                                _user = add_user1(False, settings.EMPLEADO, args[1], args[2])
-                            else:
-                                _user = add_user1(False, settings.EMPLEADO, args[1])
-                        else:
-                            _user = add_user(False, settings.EMPLEADO)
+                        _user = add_user1(False, settings.EMPLEADO, args[1], args[2])
                         _extension = phn()
                         _can_sent = True
                         _id_notify = phn()
@@ -318,3 +312,52 @@ def add_guard(N=1):
         print('Add some companies first of all\n')
         return 0
 
+def addCompany(*args):
+    """
+    Args:
+        args[0]:Number of companies to insert in database.
+        args[1]:Email of manager company.
+        args[2]:Password of manager company.
+    :return:
+    Todo:
+        * Generar un Administrador del sistema para cada Compañia/Empresa.
+    """
+    num_parques = len(Parque.objects.all())
+    if num_parques > 0:
+        parque = Parque.objects.all()[random.randint(1, num_parques - 1)]
+    else:
+        parque = None
+
+    for entry in range(args[0]):
+        sys_admin = add_user1(True, settings.ADMIN, args[1], args[2])
+        fake_empresa = faker.company()
+        fake_address = faker.street_address()
+        fake_numer_phone = phn()
+        fake_mail = faker.email()
+        fake_logo = faker.company_suffix()
+        fake_web_page = faker.domain_name()
+        fake_scian = random.randint(1, 30)
+        fake_classification = faker.job()
+        fake_latitude = faker.latitude()
+        fake_longitude = faker.longitude()
+        fake_url_map = faker.uri()
+        fake_validity = faker.date_time()
+        fake_empresa = Empresa.objects.get_or_create(
+            custom_user=sys_admin,
+            id_parque=parque,
+            name=fake_empresa,
+            address=fake_address,
+            telephone=fake_numer_phone,
+            email=fake_mail,
+            logo=fake_logo,
+            web_page=fake_web_page,
+            scian=fake_scian,
+            classification=fake_classification,
+            latitude=fake_latitude,
+            longitude=fake_longitude,
+            url_map=fake_url_map,
+            validity=fake_validity
+        )[0]
+        fake_empresa.save()
+        fake_manager = Administrador.objects.get_or_create(id_empresa=fake_empresa, id_usuario=sys_admin)[0]
+        fake_manager.save()
