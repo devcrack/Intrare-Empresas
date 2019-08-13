@@ -159,11 +159,26 @@ la asignacion de un usuario(el invitado) a un tercero que es quien completa el r
   "secEquip": "1,3,6",
   "vehicle": false,
   "companyFrom": "Edison Effect",
-  "notes": "Notas de relativas a la invitacion"
+  "notes": "Notas de relativas a la invitacion",
+  "mail": "dir@mail.com"
 }
 ```  
 
 
+### Json Invitacion por Referidos **Empleado**:
+ ```json
+{
+  "areaId": 3,
+  "employeeId":null,
+  "dateInv": "2016-01-27 12:05",
+  "subject": "Algun asunto de la visita",
+  "secEquip": "1,3,6",
+  "vehicle": false,
+  "companyFrom": "Edison Effect",
+  "notes": "Notas de relativas a la invitacion",
+  "mail": "dir@mail.com"
+}
+```  
 
 
 
@@ -219,4 +234,3 @@ Ctrl + Altf + W
 ## Django Docs
 
 ### About Models
-https://docs.djangoproject.com/en/2.2/ref/models/
