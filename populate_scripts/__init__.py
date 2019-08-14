@@ -15,6 +15,28 @@ from .random_numbers import *
 faker = Faker()
 
 
+def addSimpleUser(*args):
+    _nReg = args[0]
+    for i in range(_nReg):
+        _name = faker.name()
+        _email = unique_id() + args[1]
+        _password = args[2]
+        username_pre = _email.split("@")
+        _username = username_pre[0] + unique_id()
+        _cellphone = phn()
+        _list = _name.split()
+        _firstName = _list[0]
+        _lastName = _list[1]
+        
+        user = CustomUser.objects.create(first_name=_firstName, last_name=_lastName, username=_username, email=_email,
+                                         password=_password, celular=_cellphone)
+        user.save()
+        print('USER CREATED wit mail  =')
+        print(_email)
+        print(' And Password  =')
+        print(_password)
+
+
 def add_user(_is_superuser, type_rol):
     """Creates a non Staff User.
     Args:

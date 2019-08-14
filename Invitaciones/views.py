@@ -37,7 +37,9 @@ class EquipoSeguridadList(generics.ListCreateAPIView):
 """
 Usada para listar las invitaciones por usuario.
 """
-class Invitacion_List(viewsets.ModelViewSet):
+
+
+class InvitationListAdminEmployee(viewsets.ModelViewSet):
     permission_classes = (IsAdmin | IsEmployee,)  # The user logged have to be and admin or an employee
     serializer_class = InvitacionSerializers  # Used for validate and deserializing input, and for serializing output.
 
@@ -56,6 +58,14 @@ class Invitacion_List(viewsets.ModelViewSet):
         queryset = self.queryset = invitations
         serializer = InvitacionSerializers(queryset, many=True)
         return Response(serializer.data)
+
+
+
+class InvitationListUser(viewsets.ModelViewSet):
+    permission_classes = (IsUser,)
+
+    def list(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_200_OK)
 
 
 class InvitationCreate(generics.CreateAPIView):

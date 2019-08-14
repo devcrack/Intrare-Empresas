@@ -6,25 +6,24 @@
 import sys
 from builtins import print
 
-import populate_scripts.fill_table_user as populate_user
+from populate_scripts import *
 import populate_scripts.populate_models_App_Empresa as company
 import populate_scripts.pupulate_models_app_Parques as populate_parks
 import populate_scripts.populate_models_app_Grupo as populate_groups
 import populate_scripts.populate_models_app_invitaciones as inv
+
 # def create_users():
 #     populate_user.fill_table_user()
 
-def add_users(how_many):
-    """Agrega registros fake para la tabla Usuarios de la aplicacion Empresa.
+def addUsers():
+    print('Add Users...\n')
+    if len(sys.argv) == 5:
+        _nEmployees = int(sys.argv[2])
+        addSimpleUser(_nEmployees, sys.argv[3], sys.argv[4])
+    else:
+        print('Andas pedo, ingresa bien los argumentos porfitas ueee!')
 
 
-    Args:
-        how_many(int): Numero de registro que desea agregar a la base de datos.
-
-    """
-    print('Adding users....\n')
-    for entry in range(how_many):
-        populate_company.add_user(False, 2)
 
 
 def add_invitations(how_many):
@@ -156,7 +155,7 @@ def main():
     """
     jobs = {
         'add_company': addCompanies, #1
-        'add_users': add_users,
+        'add_users': addUsers,
         'add_areas': addAreas,        #2
         'add_casetas': add_casetas,
         'add_employee': addEmployees,
