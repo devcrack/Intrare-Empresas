@@ -106,8 +106,14 @@ def add_group_has_contacts(how_many):
     populate_groups.add_group_has_contact(how_many)
 
 
-def  add_invitation_from_user(how_many):
-    inv.employee_add_invitation(how_many, sys.argv[3])
+def add_invitation_from_user():
+    if len(sys.argv) == 4:
+        how_many = int(sys.argv[2])
+        inv.employee_add_invitation(how_many, sys.argv[3])
+    else:
+        print('ARGUMENTOS incorrectos papason')
+
+
 
 
 def addCompanies():
@@ -154,12 +160,11 @@ def main():
         >>python populate_data.py add_company 200
     """
     jobs = {
-        'add_company': addCompanies, #1
-        'add_users': addUsers,
-        'add_areas': addAreas,        #2
+        'add_company': addCompanies, # FIX
+        'add_users': addUsers, #FIX
+        'add_areas': addAreas,        #FIX
         'add_casetas': add_casetas,
-        'add_employee': addEmployees,
-        'add_invitation': add_invitations,
+        'add_employee': addEmployees, #FIX
         'add_access': add_access,
         'add_tmp_invitation': add_tmp_inv,
         'add_parques': add_parks,
@@ -168,7 +173,7 @@ def main():
         'add_groups': add_groups,
         'add_group_has_contacts': add_group_has_contacts,
         'add_security_equipment': add_security_equp,
-        'add_inv': add_invitation_from_user
+        'add_inv': add_invitation_from_user # FIX
     }
 
     option = sys.argv[1]
