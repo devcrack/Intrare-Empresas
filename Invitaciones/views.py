@@ -60,12 +60,20 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-
-class InvitationListUser(viewsets.ModelViewSet):
+class InvitationListToSimpleUser(viewsets.ModelViewSet):
     permission_classes = (IsUser,)
 
     def list(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_200_OK)
+        self.queryset = Invitacion.objects.filter(id_usuario=self.request.user.id)
+        _nReg = len(self.queryset)
+
+        if _nReg > 0:
+            print('nReg=', _nReg)
+            queryset = self.queryset
+            _serializer = InvitationToSimpleUserSerializer(queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class InvitationCreate(generics.CreateAPIView):
