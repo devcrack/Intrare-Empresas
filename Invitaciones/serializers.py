@@ -119,3 +119,16 @@ class EquipoSeguridadSerializers(serializers.ModelSerializer):
     class Meta:
         model = EquipoSeguridad
         fields = '__all__'
+
+
+class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
+
+    companyName = serializers.CharField(source='id_empresa.name')
+    areaName = serializers.CharField(source='id_area.nombre')
+    hostFirstName = serializers.CharField(source='id_empleado.id_usuario.first_name')
+    hostLastName = serializers.CharField(source='id_empleado.id_usuario.last_name')
+
+    class Meta:
+        model = Invitacion
+        fields = ('companyName', 'areaName', 'hostFirstName', 'hostLastName', 'fecha_hora_invitacion', 'asunto',
+                  'automovil')
