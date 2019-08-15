@@ -86,28 +86,30 @@ def employee_add_invitation(*args):
                     _area = areas[index_area]
                     _area = Area(_area)
                     for entry in range(n):
-                        _user = add_user(False, 0)
-                        _business = faker.text(max_nb_chars=250, ext_word_list=None)
-                        _watched = False
-                        _from_company = faker.company()
-                        _notes = faker.text(max_nb_chars=100, ext_word_list=None)
-                        _car = bool(random.getrandbits(1))
-                        _date_sent = faker.date_between(start_date='now', end_date='+0d')
-                        _date_invitation = faker.date_between(start_date='now', end_date='+1m')
-                        _invitation = Invitacion.objects.get_or_create(
-                            id_empresa=id_company, id_area=_area.id,
-                            id_empleado=employee, id_usuario=_user,
-                            leida=_watched, empresa=_from_company,
-                            notas=_notes, automovil=_car, asunto=_business,
-                            fecha_hora_invitacion=_date_invitation,
-                            fecha_hora_envio=_date_sent
-                        )[0]
-                        _invitation.save()
-                        print('Invitation #' + str(entry + 1) + 'Created\n')
-                        print('FROM COMPANY=' + str(id_company) + '\n')
-                        print('AREA=' + str(_area.id) + '\n')
-                        print('EMPLOYEE that sent Invitation=' + str(employee.id_usuario) + '\n')
-                        num_inv += 1
+                        _user = get_random_user()
+                        if _user:
+                            _business = faker.text(max_nb_chars=250, ext_word_list=None)
+                            _watched = False
+                            _from_company = faker.company()
+                            _notes = faker.text(max_nb_chars=100, ext_word_list=None)
+                            _car = bool(random.getrandbits(1))
+                            _date_invitation = faker.date_between(start_date='now', end_date='+1m')
+                            _invitation = Invitacion.objects.get_or_create(
+                                id_empresa=id_company, id_area=_area.id,
+                                id_empleado=employee, id_usuario=_user,
+                                leida=_watched, empresa=_from_company,
+                                notas=_notes, automovil=_car, asunto=_business,
+                                fecha_hora_invitacion=_date_invitation,
+                            )[0]
+                            _invitation.save()
+                            print('Invitation #' + str(entry + 1) + 'Created\n')
+                            print('FROM COMPANY=' + str(id_company) + '\n')
+                            print('AREA=' + str(_area.id) + '\n')
+                            print('EMPLOYEE that sent Invitation=' + str(employee.id_usuario) + '\n')
+                            num_inv += 1
+                        else:
+                            print('########ERROR CREATE INVITATION add simple users')
+                            return None
             else:
                 print('This Company not have areas\n')
         else:
@@ -116,6 +118,13 @@ def employee_add_invitation(*args):
         print('Add some USER')
     print('\n\nTOTAL INVITATIONS = ' + str(num_inv))
 
+
+def get_random_user():
+    users = CustomUser.objects.filter(roll=0, is_staff=False)
+    _nUsers = len(users)
+    if _nUsers > 0:
+        return users[random.randrange(_nUsers)]
+    return None
 
 def add_temp_invitation(n=1):
     """Add Temporal invitations to all companies all areas generates by its employees.
