@@ -1,9 +1,9 @@
 # TODOS
-POR HACER(INMEDIATO)                                |HACIENDO                                       |HECHO                                                       |PLANEAR                                                             |
-----------------------------------------------------|-----------------------------------------------|------------------------------------------------------------|--------------------------------------------------------------------|
-Generar link a formulario invitacion por referidos  |Vistas con reestructuracion de las invitaciones|Restructuracion modelos invitaciones para manejar referidos |Agregar caducidad al link de invitacion por referidos               |
-Vista accesos                                       |                                               |                                                            |Script para depurar base de datos(Eliminar invitaciones muy viejas) |
-Puta aplicacion de mierda                           |                                               |                                                            |Como hacer para que el usuario pueda eliminar sus invitaciones      |
+| POR HACER(INMEDIATO)                               | HACIENDO                                        | HECHO                                                       | PLANEAR                                                             |
+| -------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------- |
+| Generar link a formulario invitacion por referidos | Vistas con reestructuracion de las invitaciones | Restructuracion modelos invitaciones para manejar referidos | Agregar caducidad al link de invitacion por referidos               |
+| Vista accesos                                      |                                                 |                                                             | Script para depurar base de datos(Eliminar invitaciones muy viejas) |
+| Puta aplicacion de mierda                          |                                                 |                                                             | Como hacer para que el usuario pueda eliminar sus invitaciones      |
 
 
 # Acerca de las invitaciones
@@ -12,7 +12,7 @@ Existe solo un tipo de invitacion y tiene una sola variacion en su funcionamient
 
 ### Tabla invitaciones
 | Invitacion      | Tipo   | OBLIGATORIO |
-| --------------- | ------ | ----------- |
+|-----------------|--------|-------------|
 | idInvitacion    | PK     |             |
 | idEmpresa       | FK     | SI          |
 | idArea          | FK     | SI          |
@@ -43,12 +43,12 @@ ya que son totalmente necesarios para gestionar las invitaciones.
 - LEIDA : Bandera que indica si el invitado a verificado la invitacion.
 
 ### Tabla InvitacionReferido
-InvitacionReferido  | Tipo   | OBLIGATORIO   | 
---------------------|--------|---------------|
-idInvitacionReferido|        |               |
-emailTercero        |EMAIL   |SI             |
-idInvitacion        |FK      |SI             |
-hash_code/LINK      |STRING  |SI             |
+| InvitacionReferido   | Tipo   | OBLIGATORIO |
+|----------------------|--------|-------------|
+| idInvitacionReferido |        |             |
+| emailTercero         | EMAIL  | SI          |
+| idInvitacion         | FK     | SI          |
+| hash_code/LINK       | STRING | SI          |
 
 Esta tabla cumple con una funcion especial. Se usa cuando se delega el hacer la invitacion aun tercero, externo a la empresa
 invitadora. 
@@ -180,10 +180,27 @@ la asignacion de un usuario(el invitado) a un tercero que es quien completa el r
 }
 ```  
 
+## EndPoints 
+#### URL_HOST/get_inv/user
 
+Return all invitations that a simple user has.
+
+Example Json obtained from this EndPoint.
+
+```json
+ {
+    "companyName": "Ross Group",
+    "areaName": "Gerencia",
+    "hostFirstName": "Brent",
+    "hostLastName": "Lewis",
+    "fecha_hora_invitacion": "2019-08-18T00:00:00-05:00",
+    "asunto": "Recently example executive minute despite value. National action team do chance.\nImage person rest boy. Despite final watch imagine blood win. Though serve business follow nothing before.",
+    "automovil": false
+  }
+```
 
 # Notas del Desarrollador(JAHA-DEVCRACK)
-# Creacion Invitaciones.
+## Creacion Invitaciones.
 
 JSON Usado para la creacion de las invitaciones.
 
@@ -216,7 +233,7 @@ Informacion necesaria para crear las invitaciones
 
 ## Tareas devcrack.
 - [X] Cambiar validador de json
-- [ ] Crear Invitaciones como administrador
+- [X] Crear Invitaciones como administrador
 
 ## sheet Terminator
 
@@ -234,3 +251,22 @@ Ctrl + Altf + W
 ## Django Docs
 
 ### About Models
+
+## About API
+### Types of users
+
+- Roll 5: Administrador Empresa 
+- Roll 4 : Administrador Parque
+- Roll 3 : Vigilante Parque.
+- Roll 2: Simple Vigilante.
+- Roll 1: Empleado.
+- Roll 0, Staff & SuperUser = False : Simple User.
+
+## Credencials api 
+
+### Asus Rog
+
+|email                     |token                                        |typeUser  |
+|--------------------------|---------------------------------------------|----------|
+|16bdaempleado@mail.com    | eebd94cb84f227632520acc44fa4373d3bac8b0e     |Empleado  |
+|d3e42simple_user@mail.com | efb4e287751d855eba8a212d00ff506ce425fa72     |SimpleUser|
