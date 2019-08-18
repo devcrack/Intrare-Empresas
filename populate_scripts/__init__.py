@@ -16,6 +16,12 @@ faker = Faker()
 
 
 def addSimpleUser(*args):
+    """
+    args:
+        args[0] : Register number wished.
+        args[1]: email.
+        args[2]: password.
+    """
     _nReg = args[0]
     for i in range(_nReg):
         _name = faker.name()
