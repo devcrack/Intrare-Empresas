@@ -131,4 +131,4 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitacion
         fields = ('companyName', 'areaName', 'hostFirstName', 'hostLastName', 'fecha_hora_invitacion', 'asunto',
-                  'automovil')
+                  'automovil', 'qr_code')
