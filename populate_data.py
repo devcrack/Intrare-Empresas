@@ -21,7 +21,7 @@ def addUsers():
         _nEmployees = int(sys.argv[2])
         addSimpleUser(_nEmployees, sys.argv[3], sys.argv[4])
     else:
-        print('Andas pedo, ingresa bien los argumentos porfitas ueee!')
+        print('Andas pedo, ingresa bien los argumentos porfitas ueee\n#Registros\nemail base\npassword\n!')
 
 
 
@@ -111,7 +111,7 @@ def add_invitation_from_user():
         how_many = int(sys.argv[2])
         inv.employee_add_invitation(how_many, sys.argv[3])
     else:
-        print('ARGUMENTOS incorrectos papason')
+        print('ARGUMENTOS incorrectos papason\n#Invitaciones\nemail empleado que envia invitacion\'s')
 
 
 
@@ -132,7 +132,7 @@ def addAreas():
         _nAreas = int(sys.argv[2])
         company.add_areas(_nAreas)
     else :
-        print('Andas pedo, ingresa bien los argumentos porfitas ueee!')
+        print('Andas pedo, ingresa bien los argumentos porfitas ueee!\n #NUMERO AREAS')
 
 def addEmployees():
     print('Add employees...\n')
@@ -140,7 +140,7 @@ def addEmployees():
         _nEmployees = int(sys.argv[2])
         company.add_employee_all_areas(_nEmployees, sys.argv[3], sys.argv[4])
     else:
-        print('Andas pedo, ingresa bien los argumentos porfitas ueee!')
+        print('Andas pedo, ingresa bien los argumentos porfitas ueee!\n#De empleados a registrar\nemail Base\npassword\n')
 
 def main():
     """Entrada principal para llevar a cabo la ejecucion de este script
