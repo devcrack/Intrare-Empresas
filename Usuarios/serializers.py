@@ -2,6 +2,7 @@ from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework.exceptions import ValidationError
+from django.utils import translation
 
 from .models import *
 
@@ -37,7 +38,10 @@ class UserAdminSerializer(serializers.ModelSerializer):
             check_query = check_query.exclude(pk=celular.pk)
 
         if check_query.exists():
-            raise serializers.ValidationError('Ya existe un celular con ese número.')
+            if translation.get_language() == 'es':
+                raise serializers.ValidationError('Ya existe un celular con ese número.')
+            if translation.get_language() == 'en':
+                raise serializers.ValidationError('There is already a cell phone with that number.')
         return value
 
     def validate_email(self, value):
@@ -50,7 +54,10 @@ class UserAdminSerializer(serializers.ModelSerializer):
             check_query = check_query.exclude(pk=email.pk)
 
         if check_query.exists():
-            raise serializers.ValidationError('Ya existe un usuario con ese E-Mail.')
+            if translation.get_language() == 'es':
+                raise serializers.ValidationError('Ya existe un usuario con ese E-Mail.')
+            if translation.get_language() == 'en':
+                raise serializers.ValidationError('A user with that E-Mail already exists.')
         return value
 
 
@@ -64,7 +71,10 @@ class UserAdminSerializer(serializers.ModelSerializer):
             check_query = check_query.exclude(pk=username.pk)
 
         if check_query.exists():
-            raise serializers.ValidationError('Ya existe un usuario con ese Nombre de Usuario.')
+            if translation.get_language() == 'es':
+                raise serializers.ValidationError('Ya existe un usuario con ese Nombre de Usuario.')
+            if translation.get_language() == 'en':
+                raise serializers.ValidationError('A user with that User Name already exists.')
         return value
 
 
@@ -94,7 +104,10 @@ class UserEmployeeSerializer(serializers.ModelSerializer):
             check_query = check_query.exclude(pk=celular.pk)
 
         if check_query.exists():
-            raise serializers.ValidationError('Ya existe un celular con ese número.')
+            if translation.get_language() == 'es':
+                raise serializers.ValidationError('Ya existe un celular con ese número.')
+            if translation.get_language() == 'en':
+                raise serializers.ValidationError('There is already a cell phone with that number.')
         return value
 
     def validate_email(self, value):
@@ -107,7 +120,10 @@ class UserEmployeeSerializer(serializers.ModelSerializer):
             check_query = check_query.exclude(pk=email.pk)
 
         if check_query.exists():
-            raise serializers.ValidationError('Ya existe un usuario con ese E-Mail.')
+            if translation.get_language() == 'es':
+                raise serializers.ValidationError('Ya existe un usuario con ese E-Mail.')
+            if translation.get_language() == 'en':
+                raise serializers.ValidationError('A user with that E-Mail already exists.')
         return value
 
 
@@ -121,8 +137,12 @@ class UserEmployeeSerializer(serializers.ModelSerializer):
             check_query = check_query.exclude(pk=username.pk)
 
         if check_query.exists():
-            raise serializers.ValidationError('Ya existe un usuario con ese Nombre de Usuario.')
+            if translation.get_language() == 'es':
+                raise serializers.ValidationError('Ya existe un usuario con ese Nombre de Usuario.')
+            if translation.get_language() == 'en':
+                raise serializers.ValidationError('A user with that User Name already exists.')
         return value
+
 
 class UserVigilanteSerializer(serializers.ModelSerializer):
     class Meta:
@@ -150,7 +170,10 @@ class UserVigilanteSerializer(serializers.ModelSerializer):
             check_query = check_query.exclude(pk=celular.pk)
 
         if check_query.exists():
-            raise serializers.ValidationError('Ya existe un celular con ese número.')
+            if translation.get_language() == 'es':
+                raise serializers.ValidationError('Ya existe un celular con ese número.')
+            if translation.get_language() == 'en':
+                raise serializers.ValidationError('There is already a cell phone with that number.')
         return value
 
     def validate_email(self, value):
@@ -163,7 +186,10 @@ class UserVigilanteSerializer(serializers.ModelSerializer):
             check_query = check_query.exclude(pk=email.pk)
 
         if check_query.exists():
-            raise serializers.ValidationError('Ya existe un usuario con ese E-Mail.')
+            if translation.get_language() == 'es':
+                raise serializers.ValidationError('Ya existe un usuario con ese E-Mail.')
+            if translation.get_language() == 'en':
+                raise serializers.ValidationError('A user with that E-Mail already exists.')
         return value
 
 
@@ -177,7 +203,10 @@ class UserVigilanteSerializer(serializers.ModelSerializer):
             check_query = check_query.exclude(pk=username.pk)
 
         if check_query.exists():
-            raise serializers.ValidationError('Ya existe un usuario con ese Nombre de Usuario.')
+            if translation.get_language() == 'es':
+                raise serializers.ValidationError('Ya existe un usuario con ese Nombre de Usuario.')
+            if translation.get_language() == 'en':
+                raise serializers.ValidationError('A user with that User Name already exists.')
         return value
 
 
