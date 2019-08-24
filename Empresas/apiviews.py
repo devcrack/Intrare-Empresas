@@ -4,7 +4,9 @@ from .serializers import *
 from Usuarios.permissions import *
 from rest_framework.permissions import IsAdminUser
 
-
+"""
+Crea o Lista  una empresa
+"""
 class EmpresaList(generics.ListCreateAPIView):
     """
     Clase EmpresaList, lista todas las Empresas.
