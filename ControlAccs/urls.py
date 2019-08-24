@@ -28,7 +28,8 @@ urlpatterns = [
 
     path('', include('Empresas.urls')),
     path('', include('Invitaciones.urls')),
-    path('', include('Parques.urls'))
+    path('', include('Parques.urls')),
+    path('', include('Usuarios.urls'))
 ]
 
 if settings.DEBUG:
