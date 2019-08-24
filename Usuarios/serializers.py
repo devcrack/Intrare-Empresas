@@ -160,6 +160,7 @@ class UserVigilanteSerializer(serializers.ModelSerializer):
             }
         }
 
+
     def validate_celular(self, value):
         check_query = CustomUser.objects.filter(celular=value)
         if self.instance:
@@ -208,6 +209,21 @@ class UserVigilanteSerializer(serializers.ModelSerializer):
             if translation.get_language() == 'en':
                 raise serializers.ValidationError('A user with that User Name already exists.')
         return value
+
+
+class UserPlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = (
+            'password',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'celular',
+            'ine_frente',
+            'ine_atras',
+        )
 
 
 
