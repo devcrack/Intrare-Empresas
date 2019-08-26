@@ -182,6 +182,14 @@ class UserVigilanteSerializer(serializers.ModelSerializer):
             }
         }
 
+    def __init__(self, *args, **kwargs):
+        self.fields['first_name'] = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+        self.fields['last_name'] = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+        self.fields['username'] = serializers.CharField(required=False, allow_null=False, allow_blank=False)
+        self.fields['password'] = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+        self.fields['email'] = serializers.EmailField(required=True, allow_null=False, allow_blank=False)
+        self.fields['celular'] = serializers.CharField(max_length=30, allow_null=False, allow_blank=False)
+        return super(UserVigilanteSerializer, self).__init__(*args, **kwargs)
 
     def validate_celular(self, value):
         check_query = CustomUser.objects.filter(celular=value)
