@@ -119,7 +119,8 @@ class EmpleadoSerializers(serializers.ModelSerializer):
         usuario.celular = id_usuario_data['celular']
         usuario.ine_frente = id_usuario_data['ine_frente']
         usuario.ine_atras = id_usuario_data['ine_atras']
-        usuario.set_password(id_usuario_data['password'])
+        if id_usuario_data['password'] != '':
+            usuario.set_password(id_usuario_data['password'])
         usuario.is_active = id_usuario_data['is_active']
         usuario.save()
         instance.id_usuario.username = id_usuario_data['username']

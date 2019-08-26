@@ -79,9 +79,22 @@ class UserAdminSerializer(serializers.ModelSerializer):
 
 
 class UserEmployeeSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = (
+            'first_name',
+            'last_name',
+            'email',
+            'is_active',
+            'celular',
+            'roll',
+            'ine_frente',
+            'ine_atras',
+            'groups',
+            'user_permissions',
+            'password'
+        )
         extra_kwargs = {
             'celular': {
                 'validators': []
@@ -91,8 +104,17 @@ class UserEmployeeSerializer(serializers.ModelSerializer):
             },
             'username': {
                 'validators': []
-            }
+            },
+            'password': {'write_only': True}
         }
+
+    def __init__(self, *args, **kwargs):
+        self.fields['first_name'] = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+        self.fields['last_name'] = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+        self.fields['username'] = serializers.CharField(required=False, allow_null=False, allow_blank=False)
+        self.fields['password'] = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+        self.fields['email'] = serializers.EmailField(required=True, allow_null=False, allow_blank=False)
+        return super(UserEmployeeSerializer, self).__init__(*args, **kwargs)
 
     def validate_celular(self, value):
         check_query = CustomUser.objects.filter(celular=value)
@@ -224,7 +246,6 @@ class UserPlatformSerializer(serializers.ModelSerializer):
             'ine_frente',
             'ine_atras',
         )
-
 
 
 
