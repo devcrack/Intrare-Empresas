@@ -33,7 +33,8 @@ class AdministradorSerializers(serializers.ModelSerializer):
         usuario.last_name = id_usuario_data['last_name']
         usuario.email = id_usuario_data['email']
         usuario.celular = id_usuario_data['celular']
-        usuario.set_password(id_usuario_data['password'])
+        if id_usuario_data['password'] != '':
+            usuario.set_password(id_usuario_data['password'])
         usuario.is_active = id_usuario_data['is_active']
         usuario.save()
         instance.id_usuario.username = id_usuario_data['username']
