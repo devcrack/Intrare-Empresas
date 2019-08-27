@@ -32,6 +32,8 @@ urlpatterns = [
     path('empresas/casetas/<int:pk>/update/', CasetaUpdate.as_view(), name='caseta_update'),
 
     path('empresas/<int:pk>/area/<int:pk_area>/empleados/', EmpleadoEmpresaXArea.as_view(), name='empleado_empresa_area_list'),
+
+    path("empresas/accesos/", AccesoList.as_view(), name="accesos_list"),
 ]
 
 urlpatterns += router.urls

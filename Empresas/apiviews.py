@@ -273,3 +273,9 @@ class CasetaUpdate(generics.UpdateAPIView):
             queryset = Caseta.objects.filter(id_empresa=id_company)
         return queryset
     lookup_field = 'pk'
+
+
+class AccesoList(generics.ListCreateAPIView):
+    permission_classes = (isAdmin, )
+    queryset = Acceso.objects.all()
+    serializer_class = AccesoSerializers

@@ -147,3 +147,9 @@ class CasetaSerializers(serializers.ModelSerializer):
     class Meta:
         model = Caseta
         fields = '__all__'
+
+
+class AccesoSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Acceso
+        fields = '__all__'
