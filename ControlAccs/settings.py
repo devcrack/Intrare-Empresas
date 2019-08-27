@@ -28,7 +28,7 @@ SECRET_KEY = 'q1!a)g2djh=pw^v$()_!cf0m1ijwbk&(y*yd8kqzxe0enne-y!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1']
 
 # Aquí le decimos a django que utilice nuestra clase de user tuneada xD
 AUTH_USER_MODEL = 'Usuarios.CustomUser'
