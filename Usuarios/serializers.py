@@ -2,6 +2,8 @@ from djoser.serializers import UserSerializer as BaseUserSerializer
 from rest_framework import serializers
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework.exceptions import ValidationError
+from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
+
 from django.utils import translation
 
 from .models import *
@@ -250,8 +252,8 @@ class UserVigilanteSerializer(serializers.ModelSerializer):
         return value
 
 
-class UserPlatformSerializer(serializers.ModelSerializer):
-    class Meta:
+class UserPlatformSerializer(BaseUserRegistrationSerializer):
+    class Meta(BaseUserRegistrationSerializer.Meta):
         model = CustomUser
         fields = (
             'password',
