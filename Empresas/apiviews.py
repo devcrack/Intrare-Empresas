@@ -2,7 +2,9 @@ from rest_framework import generics
 from rest_framework import viewsets
 from .serializers import *
 from Usuarios.permissions import *
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
+from django.conf import settings
+
 
 """
 Crea o Lista  una empresa
@@ -70,16 +72,23 @@ class AreaListAll(generics.ListCreateAPIView):
     que Lista todos los Administradores.
     Nota: Solo usuarios com permiso Staff pueden consumirla.
     """
-    permission_classes = (isAdmin, )
+    permission_classes = (IsAuthenticated, )
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
             queryset = Area.objects.all()
         else:
-            admin_company = Administrador.objects.filter(id_usuario=user)[0]
-            id_company = admin_company.id_empresa
-            print("id Company = " + str(id_company))
-            queryset = Area.objects.filter(id_empresa=id_company)
+            if user.roll == settings.ADMIN:
+                admin_company = Administrador.objects.filter(id_usuario=user)[0]
+                id_company = admin_company.id_empresa
+                print("id Company = " + str(id_company))
+                queryset = Area.objects.filter(id_empresa=id_company)
+            else:
+                if user.roll == settings.EMPLEADO:
+                    admin_company = Empleado.objects.filter(id_usuario=user)[0]
+                    id_company = admin_company.id_empresa
+                    print("id Company = " + str(id_company))
+                    queryset = Area.objects.filter(id_empresa=id_company)
         return queryset
     serializer_class = AreaSerializers
 
