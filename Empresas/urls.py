@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('empresas/administradores/', AdministradorList.as_view(), name='administradores_list'),
     path('empresas/administradores/<int:pk>/', AdministradorDetail.as_view(), name='administrador_detail'),
+    path('empresas/administradores/user/<int:pk_user>/', AdministradorDetailUser.as_view(), name='administrador_detail_user'),
     path('empresas/administradores/<int:pk>/update/', AdministradorUpdate.as_view(), name='administrador_update'),
 
     path('empresas/areas/', AreaListAll.as_view(), name='areas_list'),
