@@ -8,6 +8,5 @@ from django.shortcuts import render
 
 
 class UserPlatformCreateOrList(generics.CreateAPIView):
-    permission_classes = (isSuperAdmin | isEmployee,)
     queryset = CustomUser.objects.all()
     serializer_class = UserPlatformSerializer
