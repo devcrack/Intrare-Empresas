@@ -148,7 +148,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitacion
         fields = ('areaName', 'hostFirstName', 'hostLastName', 'guestFirstName', 'guestLastName', 'fecha_hora_invitacion', 'asunto',
-                  'automovil', 'qr_code')
+                  'empresa','automovil', 'qr_code')
 
 class InvitationSimpleSerializer(serializers.ModelSerializer):
     class Meta:
