@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import *
 from Usuarios.serializers import UserAdminSerializer, UserEmployeeSerializer, UserVigilanteSerializer
 from Usuarios.models import CustomUser
-
+from Invitaciones.models import Invitacion
 
 class EmpresaSerializers(serializers.ModelSerializer):
     class Meta:
@@ -172,3 +172,14 @@ class AccessCreateSerializer(serializers.Serializer):
         return jsonAcceso(**validated_data)
 
 
+class AccessDetail(serializers.ModelSerializer):
+    guestFName = serializers.CharField(source='id_invitacion.id_usuario.first_name')
+    guestLName = serializers.CharField(source='id_invitacion.id_usuario.last_name')
+    companyName = serializers.CharField(source='id_invitacion.empresa')
+    hostFirstName = serializers.CharField(source='id_invitacion.id_empleado.id_usuario.first_name')
+    hostLastName = serializers.CharField(source='id_invitacion.id_empleado.id_usuario.last_name')
+
+    class Meta:
+        model = Invitacion
+        fields = ('guestFName', 'guestLName', 'companyName' ,'fecha_hora_acceso', 'fecha_hora_salida', 'hostFirstName',
+                  'hostLastName')

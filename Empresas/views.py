@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime
@@ -7,6 +7,7 @@ from Empresas.models import Acceso
 from Usuarios.permissions import *
 from .serializers import AccessCreateSerializer
 from .serializers import AccesUpdateSerializer
+from .serializers import AccessDetail
 
 from Invitaciones.models import Invitacion
 from Empresas.models import Vigilante
@@ -98,3 +99,25 @@ class AccessUpdateData(generics.UpdateAPIView):
         instance.comentarios_VE = request.data.get('comentarios_VE')
         instance.save()
         return Response(status=status.HTTP_202_ACCEPTED)
+
+class AccessListGet(viewsets.ModelViewSet):
+    # permission_classes = (IsAdmin | IsEmployee|isGuard,)  # The user logged have to be and admin or an employee
+    permission_classes = (isGuard,)
+
+    def list(self, request, *args, **kwargs):
+        usr = self.request.user
+        guard = Vigilante.objects.filter(id_usuario=usr)[0]
+        company = guard.id_empresa
+
+        self.queryset = Acceso.objects.filter(id_vigilante_ent__id_empresa=company)
+
+        _nReg = len(self.queryset)
+
+        if _nReg > 0:
+            queryset=self.queryset
+            _serializer = AccessDetail(queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
