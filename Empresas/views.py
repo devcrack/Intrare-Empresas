@@ -1,6 +1,7 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
+from datetime import datetime
 
 from Empresas.models import Acceso
 from Usuarios.permissions import *
@@ -37,7 +38,7 @@ class AccessCreate(generics.CreateAPIView):
     @classmethod
     def createAcces(cls, _guard_ent, _id_inv, _vehicleData, _qr_code):
         _errorResponse = None
-        nwAccess = Acceso(id_vigilante_ent=_guard_ent, id_invitacion=_id_inv, datos_coche=_id_inv, qr_code=_qr_code)
+        nwAccess = Acceso(id_vigilante_ent=_guard_ent, id_invitacion=_id_inv, datos_coche=_vehicleData, qr_code=_qr_code)
         nwAccess.save()
 
 
@@ -49,6 +50,7 @@ class AccessUpdateExitPass(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         """
+        JSON
         {
 	        "pase_salida":false
         }
@@ -62,3 +64,28 @@ class AccessUpdateExitPass(generics.UpdateAPIView):
         # self.perform_update(serializer)
         #
         # return Response(serializer.data)
+
+class AccessUpdateData(generics.UpdateAPIView):
+    """
+    JSON
+    {
+	    "estado":2,
+	    "motivo_no_firma":null,
+	    "comentarios_VE":"todo bien"
+    }
+    """
+    queryset = Acceso.objects.all()
+    serializer_class = AccesUpdateSerializer
+    lookup_field = 'qr_code'
+    permission_classes = (isGuard,)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        _guard_exit = Vigilante.objects.filter(id_usuario=self.request.user)[0]
+        instance.id_vigilante_sal = _guard_exit
+        instance.fecha_hora_salida = datetime.now()
+        instance.estado = request.data.get('estado')
+        instance.motivo_no_firma = request.data.get('motivo_no_firma')
+        instance.comentarios_VE = request.data.get('comentarios_VE')
+        instance.save()
+        return Response(status=status.HTTP_202_ACCEPTED)

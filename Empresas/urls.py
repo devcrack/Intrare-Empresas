@@ -4,6 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .apiviews import EmpresaViewSet
 from .views import AccessCreate
 from .views import AccessUpdateExitPass
+from .views import AccessUpdateData
 
 router = DefaultRouter()
 router.register('empresas', EmpresaViewSet, base_name='empresas')
@@ -38,7 +39,9 @@ urlpatterns = [
 
     path("empresas/accesos/", AccesoList.as_view(), name="accesos_list"),
     path('empresas/access/create', AccessCreate.as_view(), name='_createacces'),
-    path('empresas/access/update/exitpass/<int:pk>/', AccessUpdateExitPass.as_view(), name='accessUpdate1')
+    path('empresas/access/update/exitpass/<int:pk>/', AccessUpdateExitPass.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
+    path('empresas/access/update/forExit/<qr_code>/', AccessUpdateData.as_view(), name='accessUpdate1') #Actualiza el pase de salida del acceso.
+
 ]
 
 urlpatterns += router.urls
