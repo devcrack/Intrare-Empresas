@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from datetime import datetime
 
+
 class Empresa(models.Model):
     """Modelo Empresa
 

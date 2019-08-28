@@ -133,6 +133,23 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
         fields = ('companyName', 'areaName', 'hostFirstName', 'hostLastName', 'fecha_hora_invitacion', 'asunto',
                   'automovil', 'qr_code')
 
+
+
+class InvitationToGuardSerializer(serializers.ModelSerializer):
+    """
+    Para listar la invitacion al guardia en el acceso
+    """
+    areaName =serializers.CharField(source='id_area.nombre')
+    hostFirstName = serializers.CharField(source='id_empleado.id_usuario.first_name')
+    hostLastName = serializers.CharField(source='id_empleado.id_usuario.last_name')
+    guestFirstName = serializers.CharField(source='id_usuario.first_name')
+    guestLastName = serializers.CharField(source='id_usuario.last_name')
+
+    class Meta:
+        model = Invitacion
+        fields = ('areaName', 'hostFirstName', 'hostLastName', 'guestFirstName', 'guestLastName', 'fecha_hora_invitacion', 'asunto',
+                  'automovil', 'qr_code')
+
 class InvitationSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitacion
