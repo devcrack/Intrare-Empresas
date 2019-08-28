@@ -5,6 +5,8 @@ from rest_framework import status
 from Empresas.models import Acceso
 from Usuarios.permissions import *
 from .serializers import AccessCreateSerializer
+from .serializers import AccesUpdateSerializer
+
 from Invitaciones.models import Invitacion
 from Empresas.models import Vigilante
 class AccessCreate(generics.CreateAPIView):
@@ -37,3 +39,21 @@ class AccessCreate(generics.CreateAPIView):
         _errorResponse = None
         nwAccess = Acceso(id_vigilante_ent=_guard_ent, id_invitacion=_id_inv, datos_coche=_id_inv, qr_code=_qr_code)
         nwAccess.save()
+
+
+class AccessUpdateExitPass(generics.UpdateAPIView):
+    queryset = Acceso.objects.all()
+    serializer_class = AccesUpdateSerializer
+    lookup_field = 'pk'
+
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.pase_salida = request.data.get('pase_salida')
+        instance.save()
+        return Response(status=status.HTTP_202_ACCEPTED)
+        # serializer = self.get_serializer(instance)
+        # serializer.is_valid(raise_exception=True)
+        # self.perform_update(serializer)
+        #
+        # return Response(serializer.data)

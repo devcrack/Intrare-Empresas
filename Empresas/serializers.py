@@ -149,10 +149,9 @@ class CasetaSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AccesoSerializers(serializers.ModelSerializer):
+class AccesUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Acceso
-        fields = '__all__'
 
 class jsonAcceso():
     def __init__(self, datos_coche, qr_code):
