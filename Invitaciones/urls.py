@@ -18,5 +18,5 @@ urlpatterns = [
     path('get_inv/user', InvitationListToSimpleUser.as_view({'get': 'list'}), name='get_inv_user'),
     path('create_inv/', InvitationCreate.as_view(), name='create_invitations_url'),  # path(route, view, kwargs, name= None
     path('equipo_seguridad/', EquipoSeguridadList.as_view(), name='equipo_seguridad_list'),
-    path('get_inv/qr/<qrcode>/', InvitationbyQRCode.as_view(), name='getInv_qrCode'),
+    path('get_inv/qr/<qrcode>/', InvitationbyQRCode.as_view(), name='getInv_qrCode'),  # Get only one invitation by QR_CODE
 ]
