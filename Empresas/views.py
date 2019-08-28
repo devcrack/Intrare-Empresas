@@ -15,11 +15,18 @@ class AccessCreate(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         """
+        POST
         Creamos una invitacion a partir de los siguientes parametros:
             - id_invitacion: Viene en el cuerpo del json
             - id_vigilante_ent: Se obtiene de la session actual
             - datos_coche: Puede ser Nulo
             - qr_code : No puede ser nulo
+
+        JSON
+        {
+            "datos_coche":null,
+            "qr_code": "4fa0d6e85e5011be"
+        }
         """
         self.serializer_class = AccessCreateSerializer
         _serializer = self.serializer_class(data=request.data)
@@ -50,6 +57,7 @@ class AccessUpdateExitPass(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         """
+        PATCH
         JSON
         {
 	        "pase_salida":false
@@ -67,6 +75,7 @@ class AccessUpdateExitPass(generics.UpdateAPIView):
 
 class AccessUpdateData(generics.UpdateAPIView):
     """
+    PATCH
     JSON
     {
 	    "estado":2,
