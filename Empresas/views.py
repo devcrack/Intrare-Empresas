@@ -48,6 +48,11 @@ class AccessUpdateExitPass(generics.UpdateAPIView):
 
 
     def update(self, request, *args, **kwargs):
+        """
+        {
+	        "pase_salida":false
+        }
+        """
         instance = self.get_object()
         instance.pase_salida = request.data.get('pase_salida')
         instance.save()
