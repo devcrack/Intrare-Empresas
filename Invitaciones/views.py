@@ -64,8 +64,8 @@ class InvitationListToGuard(viewsets.ModelViewSet):
     permission_classes = (isGuard,)
 
     def list(self, request, *args, **kwargs):
-        _qr_code = self.kwargs['qrcode']
-        self.queryset = Invitacion.objects.filter(qr_code=_qr_code)
+        qr_code = self.kwargs['qr_code']
+        self.queryset = Invitacion.objects.filter(qr_code=qr_code)
         _nReg = len(self.queryset)
         if _nReg > 0:
             print('nReg=', _nReg)
