@@ -412,3 +412,13 @@ class InvitationCreate(generics.CreateAPIView):
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
 
+class InvitationbyQRCode(generics.ListAPIView):
+    serializer_class = InvitationSimpleSerializer
+
+    def get_queryset(self):
+        queryset = Invitacion.objects.all()
+        self.request.data;
+        _qrCode = self.kwargs['qrcode']
+        if _qrCode is not None:
+            queryset = queryset.filter(qr_code=_qrCode)
+        return queryset

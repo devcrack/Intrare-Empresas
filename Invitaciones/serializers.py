@@ -132,3 +132,8 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
         model = Invitacion
         fields = ('companyName', 'areaName', 'hostFirstName', 'hostLastName', 'fecha_hora_invitacion', 'asunto',
                   'automovil', 'qr_code')
+
+class InvitationSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invitacion
+        fields = '__all__'
