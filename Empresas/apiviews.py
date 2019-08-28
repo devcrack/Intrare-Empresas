@@ -286,4 +286,4 @@ class CasetaUpdate(generics.UpdateAPIView):
 class AccesoList(generics.ListCreateAPIView):
     permission_classes = (isAdmin, )
     queryset = Acceso.objects.all()
-    serializer_class = AccesUpdateSerializer
+    serializer_class = AccessSerializer
