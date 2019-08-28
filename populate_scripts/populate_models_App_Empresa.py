@@ -306,7 +306,7 @@ def add_guard(N=1):
         for i in range(0, num_companies):
             _company = Empresa.objects.all()[i]
             for j in range(N):
-                _user = add_user(False,settings.VIGILANTE)
+                _user = add_user1(False,settings.VIGILANTE, 'guardia@mail.com', 'mientras123')
                 _new_guard = Vigilante.objects.get_or_create(id_empresa=_company, id_usuario=_user)
     else:
         print('Add some companies first of all\n')

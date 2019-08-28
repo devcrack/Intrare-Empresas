@@ -137,6 +137,7 @@ class InvitationCreate(generics.CreateAPIView):
                 if _errorResponse:
                     return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
                 else:
+                    self.send_email(_serializer, invitation, _idCompany)
                     if _securityEqu:
                         _errorResponse = self.add_sec_equ_by_inv(_securityEqu, invitation)
                         # self.send_email(_serializer, invitation, _idCompany)
@@ -144,7 +145,7 @@ class InvitationCreate(generics.CreateAPIView):
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_201_CREATED)
 
 
     @classmethod

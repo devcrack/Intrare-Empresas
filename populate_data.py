@@ -65,9 +65,10 @@ def add_employees(how_many):
         populate_company.add_employee_all_areas(how_many)
 
 
-def add_guards(how_many):
+def add_guards():
     print('Adding  guards..\n')
-    populate_company.add_guard(how_many)
+    how_many = int(sys.argv[2])
+    company.add_guard(how_many)
 
 def add_access(how_many):
     print('Adding access')

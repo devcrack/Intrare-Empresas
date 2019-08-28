@@ -153,3 +153,19 @@ class AccesoSerializers(serializers.ModelSerializer):
     class Meta:
         model = Acceso
         fields = '__all__'
+
+class jsonAcceso():
+    def __init__(self, datos_coche, qr_code):
+        self.datos_coche = datos_coche
+        self.qr_code = qr_code
+
+
+class AccessCreateSerializer(serializers.Serializer):
+    datos_coche = serializers.CharField(max_length=300, allow_blank=True, allow_null=True)
+    qr_code = serializers.CharField(max_length=16)
+
+
+    def create(self, validated_data):
+        return jsonAcceso(**validated_data)
+
+

@@ -2,6 +2,7 @@ from django.urls import path
 from .apiviews import *
 from rest_framework.routers import DefaultRouter
 from .apiviews import EmpresaViewSet
+from .views import AccessCreate
 
 router = DefaultRouter()
 router.register('empresas', EmpresaViewSet, base_name='empresas')
@@ -35,6 +36,7 @@ urlpatterns = [
     path('empresas/<int:pk>/area/<int:pk_area>/empleados/', EmpleadoEmpresaXArea.as_view(), name='empleado_empresa_area_list'),
 
     path("empresas/accesos/", AccesoList.as_view(), name="accesos_list"),
+    path('empresas/access/create', AccessCreate.as_view(), name='_createacces'),
 ]
 
 urlpatterns += router.urls

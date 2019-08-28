@@ -109,6 +109,12 @@ class IsUser(permissions.BasePermission):
         return False
 
 
+class isGuard(permissions.BasePermission):
+    """By: DEVCRACK
+    Determine if the current Logged User is a Guard
+    """""
+    def has_permission(self, request, view):
+        return request.user.roll == settings.VIGILANTE
 
 
 class IsEmployee(permissions.BasePermission):

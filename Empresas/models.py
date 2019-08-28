@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-
+from datetime import datetime
 
 class Empresa(models.Model):
     """Modelo Empresa
@@ -320,25 +320,23 @@ class Acceso(models.Model):
                                                                            un empleado? NO.
 
     """
-    id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
-    id_empleado = models.ForeignKey('Empleado', on_delete=models.CASCADE)
     id_invitacion = models.ForeignKey('Invitaciones.Invitacion', on_delete=models.CASCADE)
     id_vigilante_ent = models.ForeignKey('Vigilante', on_delete=models.CASCADE, related_name='entrada')
-    id_vigilante_sal = models.ForeignKey('Vigilante', on_delete=models.CASCADE, related_name='salida')
-    id_area = models.ForeignKey('Area', on_delete=models.CASCADE)
-    fecha_hora_acceso = models.DateTimeField(auto_now_add=True, null=False, blank=False)  # Automaticamente se genera al crear el registro
-    fecha_hora_salida = models.DateTimeField(null=True, blank=True)  # Temporalmente esta vacio, posteriormente se actualizara el terminar la visita.
-    estado = models.IntegerField(default=1,null=False, blank=False)  # 1 = Entrada, 2 = Salida
+    id_vigilante_sal = models.ForeignKey('Vigilante', on_delete=models.CASCADE, related_name='salida',
+                                         blank=True, null=True, default=None)
+    fecha_hora_acceso = models.DateTimeField(default=datetime.now, null=False, blank=False)  # Automaticamente se genera al crear el registro
+    fecha_hora_salida = models.DateTimeField(default=None, null=True, blank=True)  # Temporalmente esta vacio, posteriormente se actualizara el terminar la visita.
+    estado = models.IntegerField(default=1, null=False, blank=False)  # 1 = Entrada, 2 = Salida
     pase_salida = models.BooleanField(default=False, null=False, blank=True)  # Check que valida que se ha efectuado la visita, ya sea con el empleado o con el amdinistrador.
     motivo_no_firma = models.TextField(null=True, blank=True , max_length=400)  # Este campo es utilizado en caso de que el pase de salida se mantenga en False.
-    comentarios_VE = models.TextField(null=True, blank=True)  # No siempre se da el caso de haber comentarios.
+    comentarios_VE = models.TextField(null=True, blank=True, max_length=300)  # No siempre se da el caso de haber comentarios.
     datos_coche = models.TextField(null=True, blank=True)  # No siempre el visitante trae un coche
-    equipo = models.TextField(null=False, blank=False)
-    qr_code = models.CharField(max_length=16, null=False, blank=True, unique=True)  # Para no hacer una doble consulta y evitar estresar la base de datos.
+    equipo = models.TextField(null=True, blank=True, default=None)
+    qr_code = models.CharField(max_length=16, null=False, blank=False, unique=True)  # Para no hacer una doble consulta y evitar estresar la base de datos.
 
     def __str__(self):
         """
         Método que retorna el nombre de usuario.
         :return: id_empleado.id_usuario.username
         """
-        return self.id_empleado.id_usuario.username
+        return f'Id_Acc={self.id} qrCode:{self.qr_code}'
