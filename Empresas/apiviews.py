@@ -58,6 +58,14 @@ class AdministradorDetail(generics.RetrieveDestroyAPIView):
     serializer_class = AdministradorSerializers
 
 
+class AdministradorDetailUser(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        queryset = Administrador.objects.filter(id_usuario=self.kwargs["pk_user"])
+        return queryset
+    serializer_class = AdministradorSerializers
+
+
 class AdministradorUpdate(generics.UpdateAPIView):
     permission_classes = (isSuperAdmin, )
     queryset = Administrador.objects.all()
