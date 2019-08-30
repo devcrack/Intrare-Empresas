@@ -144,11 +144,12 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     hostLastName = serializers.CharField(source='id_empleado.id_usuario.last_name')
     guestFirstName = serializers.CharField(source='id_usuario.first_name')
     guestLastName = serializers.CharField(source='id_usuario.last_name')
+    guestCellPhone = serializers.CharField(source='id_usuario.celular')
 
     class Meta:
         model = Invitacion
-        fields = ('areaName', 'hostFirstName', 'hostLastName', 'guestFirstName', 'guestLastName', 'fecha_hora_invitacion', 'asunto',
-                  'empresa','automovil', 'qr_code')
+        fields = ('id', 'areaName', 'hostFirstName', 'hostLastName', 'guestFirstName', 'guestLastName', 'fecha_hora_invitacion', 'asunto',
+                  'empresa','automovil', 'qr_code', 'guestCellPhone')
 
 class InvitationSimpleSerializer(serializers.ModelSerializer):
     class Meta:
