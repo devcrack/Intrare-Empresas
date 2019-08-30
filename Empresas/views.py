@@ -101,20 +101,14 @@ class AccessUpdateData(generics.UpdateAPIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
 class AccessListGet(viewsets.ModelViewSet):
-    # permission_classes = (IsAdmin | IsEmployee|isGuard,)  # The user logged have to be and admin or an employee
-    permission_classes = (isGuard,)
+    permission_classes = (IsAdmin | IsEmployee | isGuard,)  # The user logged have to be and admin, employee or Guard
 
     def list(self, request, *args, **kwargs):
-        usr = self.request.user
-        guard = Vigilante.objects.filter(id_usuario=usr)[0]
-        company = guard.id_empresa
-
-        self.queryset = Acceso.objects.filter(id_vigilante_ent__id_empresa=company)
-
+        self.queryset = Acceso.objects.all()
         _nReg = len(self.queryset)
 
         if _nReg > 0:
-            queryset=self.queryset
+            queryset = self.queryset
             _serializer = AccessDetail(queryset, many=True)
             return Response(_serializer.data)
         else:

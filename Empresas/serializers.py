@@ -180,6 +180,6 @@ class AccessDetail(serializers.ModelSerializer):
     hostLastName = serializers.CharField(source='id_invitacion.id_empleado.id_usuario.last_name')
 
     class Meta:
-        model = Invitacion
-        fields = ('guestFName', 'guestLName', 'companyName' ,'fecha_hora_acceso', 'fecha_hora_salida', 'hostFirstName',
+        model = Acceso
+        fields = ('id', 'guestFName', 'guestLName', 'companyName', 'fecha_hora_acceso', 'fecha_hora_salida', 'hostFirstName',
                   'hostLastName')
