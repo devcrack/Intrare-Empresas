@@ -31,6 +31,7 @@ urlpatterns = [
 
     path('empresas/empleados/', EmpleadoListAll.as_view(), name='empleados_list'),
     path('empresas/empleados/<int:pk>/', EmpleadoDetail.as_view(), name='empleado_detail'),
+    path('empresas/empleados/user/<int:pk_user>/', EmpleadoDetailUser.as_view(), name='empleado_detail_user'),
     path('empresas/empleados/<int:pk>/update/', EmpleadoUpdate.as_view(), name='empleado_update'),
 
     path('empresas/casetas/', CasetaListAll.as_view(), name='casetas_list'),

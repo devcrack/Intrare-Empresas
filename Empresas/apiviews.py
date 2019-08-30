@@ -230,6 +230,14 @@ class EmpleadoDetail(generics.RetrieveDestroyAPIView):
     serializer_class = EmpleadoSerializers
 
 
+class EmpleadoDetailUser(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        queryset = Empleado.objects.filter(id_usuario=self.kwargs["pk_user"])
+        return queryset
+    serializer_class = EmpleadoSerializers
+
+
 class EmpleadoUpdate(generics.UpdateAPIView):
     permission_classes = (isAdmin, )    
     
