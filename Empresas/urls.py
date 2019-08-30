@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('empresas/vigilantes/', VigilanteListAll.as_view(), name='vigilantes_list'),
     path('empresas/vigilantes/<int:pk>/', VigilanteDetail.as_view(), name='vigilante_detail'),
+    path('empresas/vigilante/user/<int:pk_user>/', VigilanteDetailUser.as_view(), name='vigilante_detail_user'),
     path('empresas/vigilantes/<int:pk>/update/', VigilanteUpdate.as_view(), name='vigilante_update'),
 
     path('empresas/empleados/', EmpleadoListAll.as_view(), name='empleados_list'),
@@ -42,7 +43,7 @@ urlpatterns = [
     path('empresas/access/create', AccessCreate.as_view(), name='_createacces'),
     path('empresas/access/update/exitpass/<int:pk>/', AccessUpdateExitPass.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
     path('empresas/access/update/forExit/<qr_code>/', AccessUpdateData.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
-    path('empresas/access/getAccs/', AccessListGet.as_view(), name='getAccSession'),
+    path('empresas/access/getAccs/', AccessListGet.as_view({'get': 'list'}), name='getAccSession'),
 
 ]
 
