@@ -5,10 +5,7 @@ from datetime import datetime
 
 from Empresas.models import Acceso
 from Usuarios.permissions import *
-from .serializers import AccessCreateSerializer
-from .serializers import AccesUpdateSerializer
-from .serializers import AccessDetail
-from .serializers import AccessSerializer
+from .serializers import *
 
 from Invitaciones.models import Invitacion
 from Empresas.models import Vigilante
@@ -119,8 +116,8 @@ class AccessListGet(viewsets.ModelViewSet):
 
 class get_accestoEnterByDate(viewsets.ModelViewSet):
 
-    def list(self, request, *args, **kwargs):
-        return self.queryset;
+    # def list(self, request, *args, **kwargs):
+    #         _serializer =
 
     def get_queryset(self):
         y = self.request.data['year']
@@ -128,10 +125,12 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
         d = self.request.data['d']
 
 
-        qs = Acceso.objects.filter(fecha_hora_acceso__year=y,
+        queryset = Acceso.objects.filter(fecha_hora_acceso__year=y,
                                    fecha_hora_acceso__month=m,
                                    fecha_hora_acceso__day=d)
-        return qs;
+        return queryset;
+
+    serializer_class = AccesUpdateSerializer
 
 
 class AccessListToGuard(viewsets.ModelViewSet):
