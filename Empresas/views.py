@@ -118,8 +118,7 @@ class AccessListGet(viewsets.ModelViewSet):
 
 class get_accestoEnterByDate(viewsets.ModelViewSet):
 
-    # def list(self, request, *args, **kwargs):
-    #         _serializer =
+    permission_classes = (IsAdmin | IsEmployee | isGuard,)
 
     def get_queryset(self):
         usr = self.request.user
@@ -152,10 +151,19 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
         #
         return queryset
 
-    queryset = get_queryset()
-    serializer_class = AccessDetail(queryset, many=True)
-    permission_classes = (IsAdmin | IsEmployee | isGuard,)
+    # serializer_class = AccessSerializer #op1
+    # permission_classes = (IsAdmin | IsEmployee | isGuard,) #op2
+    # serializer_class = AccessDetail(get_queryset(), many=True)
 
+    def list(self, request, *args, **kwargs):
+        _queryset = self.get_queryset()
+        _nReg = len(_queryset)
+
+        if _nReg > 0:
+            _serializer = AccessDetail(_queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AccessListToGuard(viewsets.ModelViewSet):
