@@ -9,6 +9,8 @@ from .serializers import *
 
 from Invitaciones.models import Invitacion
 from Empresas.models import Vigilante
+
+
 class AccessCreate(generics.CreateAPIView):
     permission_classes = (isGuard,)
 
@@ -120,17 +122,37 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
     #         _serializer =
 
     def get_queryset(self):
+        usr = self.request.user
+        _idCompany = None
+
+        if usr.roll == settings.ADMIN:
+            _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
+            _idCompany = _admCompany.id_empresa
+        if usr.roll == settings.EMPLEADO:
+            _employee = Empleado.objects.filter(id_usuario=usr)[0]
+            _idCompany = _employee.id_empresa
+        if usr.roll == settings.VIGILANTE:
+            _guard = Vigilante.objects.filter(id_usuario=usr)[0]
+            _idCompany = _guard.id_empresa
+        queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany)
+
         y = self.request.data['year']
         m = self.request.data['month']
-        d = self.request.data['d']
+        d = self.request.data['day']
 
-
-        queryset = Acceso.objects.filter(fecha_hora_acceso__year=y,
+        queryset = queryset.filter(fecha_hora_acceso__year=y,
                                    fecha_hora_acceso__month=m,
                                    fecha_hora_acceso__day=d)
+        # queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany).filter(fecha_hora_acceso__year=y,
+        #                            fecha_hora_acceso__month=m,
+        #                            fecha_hora_acceso__day=d)
+        # queryset = Acceso.objects.filter(fecha_hora_acceso__year=y,
+        #                            fecha_hora_acceso__month=m,
+        #                            fecha_hora_acceso__day=d)
+        #
         return queryset
 
-    serializer_class = AccesUpdateSerializer
+    serializer_class = AccessSerializer
     permission_classes = (IsAdmin | IsEmployee | isGuard,)
 
 
