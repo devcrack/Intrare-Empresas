@@ -162,6 +162,14 @@ class VigilanteDetail(generics.RetrieveDestroyAPIView):
     serializer_class = VigilanteSerializers
 
 
+class VigilanteDetailUser(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        queryset = Vigilante.objects.filter(id_usuario=self.kwargs["pk_user"])
+        return queryset
+    serializer_class = VigilanteSerializers
+
+
 class VigilanteUpdate(generics.UpdateAPIView):
     permission_classes = (isAdmin, )    
     
@@ -218,6 +226,14 @@ class EmpleadoDetail(generics.RetrieveDestroyAPIView):
             admin_company = Administrador.objects.filter(id_usuario=user)[0]
             id_company = admin_company.id_empresa
             queryset = Empleado.objects.filter(id_empresa=id_company)
+        return queryset
+    serializer_class = EmpleadoSerializers
+
+
+class EmpleadoDetailUser(generics.ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    def get_queryset(self):
+        queryset = Empleado.objects.filter(id_usuario=self.kwargs["pk_user"])
         return queryset
     serializer_class = EmpleadoSerializers
 

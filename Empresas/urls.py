@@ -5,6 +5,7 @@ from .apiviews import EmpresaViewSet
 from .views import *
 
 
+
 router = DefaultRouter()
 router.register('empresas', EmpresaViewSet, base_name='empresas')
 
@@ -24,10 +25,12 @@ urlpatterns = [
 
     path('empresas/vigilantes/', VigilanteListAll.as_view(), name='vigilantes_list'),
     path('empresas/vigilantes/<int:pk>/', VigilanteDetail.as_view(), name='vigilante_detail'),
+    path('empresas/vigilante/user/<int:pk_user>/', VigilanteDetailUser.as_view(), name='vigilante_detail_user'),
     path('empresas/vigilantes/<int:pk>/update/', VigilanteUpdate.as_view(), name='vigilante_update'),
 
     path('empresas/empleados/', EmpleadoListAll.as_view(), name='empleados_list'),
     path('empresas/empleados/<int:pk>/', EmpleadoDetail.as_view(), name='empleado_detail'),
+    path('empresas/empleados/user/<int:pk_user>/', EmpleadoDetailUser.as_view(), name='empleado_detail_user'),
     path('empresas/empleados/<int:pk>/update/', EmpleadoUpdate.as_view(), name='empleado_update'),
 
     path('empresas/casetas/', CasetaListAll.as_view(), name='casetas_list'),
@@ -37,10 +40,12 @@ urlpatterns = [
     path('empresas/<int:pk>/area/<int:pk_area>/empleados/', EmpleadoEmpresaXArea.as_view(), name='empleado_empresa_area_list'),
 
     path("empresas/accesos/", AccesoList.as_view(), name="accesos_list"),
+    path('empresas/accesos/search/<str:qr_code>/', AccessListToGuard.as_view({'get': 'list'}), name='get_inv_qrcode_guard'),
     path('empresas/access/create', AccessCreate.as_view(), name='_createacces'),
     path('empresas/access/update/exitpass/<int:pk>/', AccessUpdateExitPass.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
     path('empresas/access/update/forExit/<qr_code>/', AccessUpdateData.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
-    path('empresas/access/getAcc/by/date/', get_accestoEnterByDate.as_view(), name='getAccessbyDate')
+    path('empresas/access/getAcc/by/date/', get_accestoEnterByDate.as_view(), name='getAccessbyDate'),
+    path('empresas/access/getAccs/', AccessListGet.as_view({'get': 'list'}), name='getAccSession')
 ]
 
 urlpatterns += router.urls

@@ -8,6 +8,7 @@ from Usuarios.permissions import *
 from .serializers import AccessCreateSerializer
 from .serializers import AccesUpdateSerializer
 from .serializers import AccessDetail
+from .serializers import AccessSerializer
 
 from Invitaciones.models import Invitacion
 from Empresas.models import Vigilante
@@ -101,24 +102,19 @@ class AccessUpdateData(generics.UpdateAPIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
 class AccessListGet(viewsets.ModelViewSet):
-    # permission_classes = (IsAdmin | IsEmployee|isGuard,)  # The user logged have to be and admin or an employee
-    permission_classes = (isGuard,)
+    permission_classes = (IsAdmin | IsEmployee | isGuard,)  # The user logged have to be and admin, employee or Guard
 
     def list(self, request, *args, **kwargs):
-        usr = self.request.user
-        guard = Vigilante.objects.filter(id_usuario=usr)[0]
-        company = guard.id_empresa
-
-        self.queryset = Acceso.objects.filter(id_vigilante_ent__id_empresa=company)
-
+        self.queryset = Acceso.objects.all()
         _nReg = len(self.queryset)
 
         if _nReg > 0:
-            queryset=self.queryset
+            queryset = self.queryset
             _serializer = AccessDetail(queryset, many=True)
             return Response(_serializer.data)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 
 class get_accestoEnterByDate(viewsets.ModelViewSet):
@@ -136,3 +132,20 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
                                    fecha_hora_acceso__month=m,
                                    fecha_hora_acceso__day=d)
         return qs;
+
+
+class AccessListToGuard(viewsets.ModelViewSet):
+    permission_classes = (isGuard,)
+
+    def list(self, request, *args, **kwargs):
+        qr_code = self.kwargs['qr_code']
+        self.queryset = Acceso.objects.filter(qr_code=qr_code)
+        _nReg = len(self.queryset)
+        if _nReg > 0:
+            print('nReg=', _nReg)
+            queryset = self.queryset
+            _serializer = AccessSerializer(queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
