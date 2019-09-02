@@ -122,15 +122,15 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
     def get_queryset(self):
         y = self.request.data['year']
         m = self.request.data['month']
-        d = self.request.data['d']
+        d = self.request.data['day']
 
 
         queryset = Acceso.objects.filter(fecha_hora_acceso__year=y,
                                    fecha_hora_acceso__month=m,
                                    fecha_hora_acceso__day=d)
-        return queryset;
+        return queryset
 
-    serializer_class = AccesUpdateSerializer
+    serializer_class = AccessSerializer
 
 
 class AccessListToGuard(viewsets.ModelViewSet):
