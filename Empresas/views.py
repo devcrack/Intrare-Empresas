@@ -152,7 +152,8 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
         #
         return queryset
 
-    serializer_class = AccessSerializer
+    queryset = get_queryset()
+    serializer_class = AccessDetail(queryset, many=True)
     permission_classes = (IsAdmin | IsEmployee | isGuard,)
 
 
