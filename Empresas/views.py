@@ -128,9 +128,11 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
         queryset = Acceso.objects.filter(fecha_hora_acceso__year=y,
                                    fecha_hora_acceso__month=m,
                                    fecha_hora_acceso__day=d)
-        return queryset;
+        return queryset
 
     serializer_class = AccesUpdateSerializer
+    permission_classes = (IsAdmin | IsEmployee | isGuard,)
+
 
 
 class AccessListToGuard(viewsets.ModelViewSet):
