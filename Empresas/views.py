@@ -8,6 +8,7 @@ from Usuarios.permissions import *
 from .serializers import AccessCreateSerializer
 from .serializers import AccesUpdateSerializer
 from .serializers import AccessDetail
+from .serializers import AccessSerializer
 
 from Invitaciones.models import Invitacion
 from Empresas.models import Vigilante
@@ -115,3 +116,17 @@ class AccessListGet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class AccessListToGuard(viewsets.ModelViewSet):
+    permission_classes = (isGuard,)
+
+    def list(self, request, *args, **kwargs):
+        qr_code = self.kwargs['qr_code']
+        self.queryset = Acceso.objects.filter(qr_code=qr_code)
+        _nReg = len(self.queryset)
+        if _nReg > 0:
+            print('nReg=', _nReg)
+            queryset = self.queryset
+            _serializer = AccessSerializer(queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)

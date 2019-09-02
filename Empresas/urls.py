@@ -6,6 +6,7 @@ from .views import AccessCreate
 from .views import AccessUpdateExitPass
 from .views import AccessUpdateData
 from .views import AccessListGet
+from .views import AccessListToGuard
 
 router = DefaultRouter()
 router.register('empresas', EmpresaViewSet, base_name='empresas')
@@ -41,6 +42,7 @@ urlpatterns = [
     path('empresas/<int:pk>/area/<int:pk_area>/empleados/', EmpleadoEmpresaXArea.as_view(), name='empleado_empresa_area_list'),
 
     path("empresas/accesos/", AccesoList.as_view(), name="accesos_list"),
+    path('empresas/accesos/search/<str:qr_code>/', AccessListToGuard.as_view({'get': 'list'}), name='get_inv_qrcode_guard'),
     path('empresas/access/create', AccessCreate.as_view(), name='_createacces'),
     path('empresas/access/update/exitpass/<int:pk>/', AccessUpdateExitPass.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
     path('empresas/access/update/forExit/<qr_code>/', AccessUpdateData.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
