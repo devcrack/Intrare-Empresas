@@ -121,3 +121,18 @@ class AccessListGet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class get_accestoEnterByDate(viewsets.ModelViewSet):
+
+    def list(self, request, *args, **kwargs):
+        return self.queryset;
+
+    def get_queryset(self):
+        y = self.request.data['year']
+        m = self.request.data['month']
+        d = self.request.data['d']
+
+
+        qs = Acceso.objects.filter(fecha_hora_acceso__year=y,
+                                   fecha_hora_acceso__month=m,
+                                   fecha_hora_acceso__day=d)
+        return qs;

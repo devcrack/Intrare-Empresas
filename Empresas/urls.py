@@ -2,10 +2,8 @@ from django.urls import path
 from .apiviews import *
 from rest_framework.routers import DefaultRouter
 from .apiviews import EmpresaViewSet
-from .views import AccessCreate
-from .views import AccessUpdateExitPass
-from .views import AccessUpdateData
-from .views import AccessListGet
+from .views import *
+
 
 router = DefaultRouter()
 router.register('empresas', EmpresaViewSet, base_name='empresas')
@@ -42,8 +40,7 @@ urlpatterns = [
     path('empresas/access/create', AccessCreate.as_view(), name='_createacces'),
     path('empresas/access/update/exitpass/<int:pk>/', AccessUpdateExitPass.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
     path('empresas/access/update/forExit/<qr_code>/', AccessUpdateData.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
-    path('empresas/access/getAccs/', AccessListGet.as_view(), name='getAccSession'),
-
+    path('empresas/access/getAcc/by/date/', get_accestoEnterByDate.as_view(), name='getAccessbyDate')
 ]
 
 urlpatterns += router.urls
