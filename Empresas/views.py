@@ -135,25 +135,17 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
             _idCompany = _guard.id_empresa
         queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany)
 
-        y = self.request.data['year']
-        m = self.request.data['month']
-        d = self.request.data['day']
-
+        # y = self.request.data['year']
+        # m = self.request.data['month']
+        # d = self.request.data['day']
+        y = self.kwargs['year']
+        m = self.kwargs['month']
+        d = self.kwargs['day']
         queryset = queryset.filter(fecha_hora_acceso__year=y,
                                    fecha_hora_acceso__month=m,
                                    fecha_hora_acceso__day=d)
-        # queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany).filter(fecha_hora_acceso__year=y,
-        #                            fecha_hora_acceso__month=m,
-        #                            fecha_hora_acceso__day=d)
-        # queryset = Acceso.objects.filter(fecha_hora_acceso__year=y,
-        #                            fecha_hora_acceso__month=m,
-        #                            fecha_hora_acceso__day=d)
-        #
         return queryset
 
-    # serializer_class = AccessSerializer #op1
-    # permission_classes = (IsAdmin | IsEmployee | isGuard,) #op2
-    # serializer_class = AccessDetail(get_queryset(), many=True)
 
     def list(self, request, *args, **kwargs):
         _queryset = self.get_queryset()

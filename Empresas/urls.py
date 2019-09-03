@@ -45,7 +45,8 @@ urlpatterns = [
     path('empresas/access/update/exitpass/<int:pk>/', AccessUpdateExitPass.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
     path('empresas/access/update/forExit/<qr_code>/', AccessUpdateData.as_view(), name='accessUpdate1'), #Actualiza el pase de salida del acceso.
     path('empresas/access/getAcc/by/date/', get_accestoEnterByDate.as_view({'get': 'list'}), name='getAccessbyDate'),
-    path('empresas/access/getAccs/', AccessListGet.as_view({'get': 'list'}), name='getAccSession')
+    path('empresas/access/getAccs/<year>/<month>/<day>/', AccessListGet.as_view({'get': 'list'}), name='getAccSession')
+    # path('empresas/access/getAccs/', AccessListGet.as_view({'get': 'list'}), name='getAccSession')
 ]
 
 urlpatterns += router.urls
