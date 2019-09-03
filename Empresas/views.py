@@ -5,12 +5,12 @@ from datetime import datetime
 
 from Empresas.models import Acceso
 from Usuarios.permissions import *
-from .serializers import AccessCreateSerializer
-from .serializers import AccesUpdateSerializer
-from .serializers import AccessDetail
+from .serializers import *
 
 from Invitaciones.models import Invitacion
 from Empresas.models import Vigilante
+
+
 class AccessCreate(generics.CreateAPIView):
     permission_classes = (isGuard,)
 
@@ -114,4 +114,70 @@ class AccessListGet(viewsets.ModelViewSet):
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+
+class get_accestoEnterByDate(viewsets.ModelViewSet):
+
+    permission_classes = (IsAdmin | IsEmployee | isGuard,)
+
+    def get_queryset(self):
+        usr = self.request.user
+        _idCompany = None
+
+        if usr.roll == settings.ADMIN:
+            _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
+            _idCompany = _admCompany.id_empresa
+        if usr.roll == settings.EMPLEADO:
+            _employee = Empleado.objects.filter(id_usuario=usr)[0]
+            _idCompany = _employee.id_empresa
+        if usr.roll == settings.VIGILANTE:
+            _guard = Vigilante.objects.filter(id_usuario=usr)[0]
+            _idCompany = _guard.id_empresa
+        queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany)
+
+        y = self.request.data['year']
+        m = self.request.data['month']
+        d = self.request.data['day']
+
+        queryset = queryset.filter(fecha_hora_acceso__year=y,
+                                   fecha_hora_acceso__month=m,
+                                   fecha_hora_acceso__day=d)
+        # queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany).filter(fecha_hora_acceso__year=y,
+        #                            fecha_hora_acceso__month=m,
+        #                            fecha_hora_acceso__day=d)
+        # queryset = Acceso.objects.filter(fecha_hora_acceso__year=y,
+        #                            fecha_hora_acceso__month=m,
+        #                            fecha_hora_acceso__day=d)
+        #
+        return queryset
+
+    # serializer_class = AccessSerializer #op1
+    # permission_classes = (IsAdmin | IsEmployee | isGuard,) #op2
+    # serializer_class = AccessDetail(get_queryset(), many=True)
+
+    def list(self, request, *args, **kwargs):
+        _queryset = self.get_queryset()
+        _nReg = len(_queryset)
+
+        if _nReg > 0:
+            _serializer = AccessDetail(_queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AccessListToGuard(viewsets.ModelViewSet):
+    permission_classes = (isGuard,)
+
+    def list(self, request, *args, **kwargs):
+        qr_code = self.kwargs['qr_code']
+        self.queryset = Acceso.objects.filter(qr_code=qr_code)
+        _nReg = len(self.queryset)
+        if _nReg > 0:
+            print('nReg=', _nReg)
+            queryset = self.queryset
+            _serializer = AccessSerializer(queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
