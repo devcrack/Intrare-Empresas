@@ -20,6 +20,8 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 
+from clx import xms
+
 from string import Template
 import os
 
@@ -162,15 +164,30 @@ class InvitationCreate(generics.CreateAPIView):
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+        self.send_sms(invitation)
+        self.send_email(invitation)
         return Response(status=status.HTTP_201_CREATED)
 
+    @classmethod
+    def send_sms(cls, _inv):
+        num = '+52' + _inv.id_usuario.celular
+        cliente = xms.Client(
+            'cae6b012c7604d65afbef33cda8b163d',
+            '1b1b2163b1924c7fa2aba0e63d3ea492',
+        )
+        batch_params = xms.api.MtBatchTextSmsCreate()
+        batch_params.sender = '447537432321'
+        batch_params.recipients = {num}
+        batch_params.body = 'Intrare industrial: haz recibido una nueva invitación. Para mas información consulta tu email o directamente desde la aplicación: Link'
+
+        result = cliente.create_batch(batch_params)
+        print(result)
 
     @classmethod
-    def send_email(cls, _user, _inv, _compy):
+    def send_email(cls, _inv):
 
         subject = 'Intrare Industrial - Invitación'
 
-        #html_message = eml.generate(_inv.empresa, _inv.fecha_hora_invitacion, _inv.qr_code)
         html_message = render_to_string('email.html',
                                         {'empresa': _inv.empresa,
                                          'fecha': _inv.fecha_hora_invitacion,
@@ -178,7 +195,7 @@ class InvitationCreate(generics.CreateAPIView):
                                         )
         message = ''
         email_from = settings.EMAIL_HOST_USER
-        recipient_list = [_user.data['email'], ]
+        recipient_list = [_inv.id_usuario.email, ]
 
         send_mail(subject=subject, message=message, from_email=email_from, recipient_list=recipient_list, html_message=html_message)
 
@@ -239,7 +256,6 @@ class InvitationCreate(generics.CreateAPIView):
             error_response = {'Error': 'Can\'t create an Invitation'}
             nw_invitation = None
 
-            qr_code = nw_invitation
         print(nw_invitation.id, ' INVITATION CREATED  200_OK')
         return error_response, nw_invitation
 
