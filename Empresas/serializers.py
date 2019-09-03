@@ -178,6 +178,8 @@ class AccessDetail(serializers.ModelSerializer):
     companyName = serializers.CharField(source='id_invitacion.empresa')
     hostFirstName = serializers.CharField(source='id_invitacion.id_empleado.id_usuario.first_name')
     hostLastName = serializers.CharField(source='id_invitacion.id_empleado.id_usuario.last_name')
+    fecha_hora_acceso = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
+    fecha_hora_salida = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
 
     class Meta:
         model = Acceso

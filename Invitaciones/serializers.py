@@ -145,6 +145,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     guestFirstName = serializers.CharField(source='id_usuario.first_name')
     guestLastName = serializers.CharField(source='id_usuario.last_name')
     guestCellPhone = serializers.CharField(source='id_usuario.celular')
+    fecha_hora_invitacion = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
 
     class Meta:
         model = Invitacion
