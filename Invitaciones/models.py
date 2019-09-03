@@ -9,6 +9,7 @@ from django.db import models
 
 from django.conf import settings
 from secrets import token_hex
+from datetime import datetime
 import qrcode
 
 
@@ -20,7 +21,7 @@ class Invitacion(models.Model):
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)
     id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE, blank=True, null=True)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None)
-    fecha_hora_envio = models.DateTimeField(auto_now_add=True, null=False, blank=False)
+    fecha_hora_envio = models.DateTimeField(default=datetime.now, null=False, blank=False)
     fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
