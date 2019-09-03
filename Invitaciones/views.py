@@ -172,13 +172,13 @@ class InvitationCreate(generics.CreateAPIView):
     def send_sms(cls, _inv):
         num = '+52' + _inv.id_usuario.celular
         cliente = xms.Client(
-            'cae6b012c7604d65afbef33cda8b163d',
-            '1b1b2163b1924c7fa2aba0e63d3ea492',
+            'c2811649ffa2408eb78ab92d2660a494',
+            '06676539d84f46ae842a78b045131e2d',
         )
         batch_params = xms.api.MtBatchTextSmsCreate()
         batch_params.sender = '447537432321'
         batch_params.recipients = {num}
-        batch_params.body = 'Intrare industrial: haz recibido una nueva invitación. Para mas información consulta tu email o directamente desde la aplicación: Link'
+        batch_params.body = 'Intrare, haz recibido una nueva invitacion. Para mas info consulta tu email o desde la app'
 
         result = cliente.create_batch(batch_params)
         print(result)
