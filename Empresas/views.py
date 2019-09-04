@@ -127,13 +127,16 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
         if usr.roll == settings.ADMIN:
             _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
             _idCompany = _admCompany.id_empresa
+            queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany)
         if usr.roll == settings.EMPLEADO:
             _employee = Empleado.objects.filter(id_usuario=usr)[0]
             _idCompany = _employee.id_empresa
+            queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany,
+                                             id_invitacion__id_empleado=_employee.id)
         if usr.roll == settings.VIGILANTE:
             _guard = Vigilante.objects.filter(id_usuario=usr)[0]
             _idCompany = _guard.id_empresa
-        queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany)
+            queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany)
 
         # y = self.request.data['year']
         # m = self.request.data['month']
