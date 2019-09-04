@@ -14,7 +14,7 @@ from .views import *
     route   
 """
 urlpatterns = [
-    path('get_inv/', InvitationListAdminEmployee.as_view({'get': 'list'}), name='get_invitations_url'),  # path(route, view, kwargs, name= None)]
+    path('get_inv/<year>/<month>/<day>/', InvitationListAdminEmployee.as_view({'get': 'list'}), name='get_invitations_url'),  # path(route, view, kwargs, name= None)]
     path('get_inv/user', InvitationListToSimpleUser.as_view({'get': 'list'}), name='get_inv_user'),
     path('create_inv/', InvitationCreate.as_view(), name='create_invitations_url'),  # path(route, view, kwargs, name= None
     path('equipo_seguridad/', EquipoSeguridadList.as_view(), name='equipo_seguridad_list'),

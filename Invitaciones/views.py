@@ -46,17 +46,24 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet):
     serializer_class = InvitacionSerializers  # Used for validate and deserializing input, and for serializing output.
 
     def list(self, request, *args, **kwargs):
+        y = self.kwargs['year']
+        m = self.kwargs['month']
+        d = self.kwargs['day']
         usr = self.request.user
         invitations = None
         if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
             print('IS an ADMINISTRATOR')
             adm_company = Administrador.objects.filter(id_usuario=usr)[0]
             id_company = adm_company.id_empresa
-            invitations = Invitacion.objects.filter(id_empresa=id_company)
+            invitations = Invitacion.objects.filter(id_empresa=id_company, fecha_hora_invitacion__year=y,
+                                                    fecha_hora_invitacion__month=m,
+                                                    fecha_hora_invitacion__day=d)
         if usr.roll == settings.EMPLEADO:
             print('IS an EMPLOYEE')
             employee = Empleado.objects.filter(id_usuario=usr)[0]
-            invitations = Invitacion.objects.filter(id_empleado=employee.id)
+            invitations = Invitacion.objects.filter(id_empleado=employee.id, fecha_hora_invitacion__year=y,
+                                                    fecha_hora_invitacion__month=m,
+                                                    fecha_hora_invitacion__day=d)
         queryset = self.queryset = invitations
         serializer = InvitationToGuardSerializer(queryset, many=True)
         return Response(serializer.data)
