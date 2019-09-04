@@ -184,4 +184,4 @@ class AccessDetail(serializers.ModelSerializer):
     class Meta:
         model = Acceso
         fields = ('id', 'guestFName', 'guestLName', 'companyName', 'fecha_hora_acceso', 'fecha_hora_salida', 'hostFirstName',
-                  'hostLastName')
+                  'hostLastName', 'pase_salida')
