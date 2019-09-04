@@ -171,7 +171,7 @@ class InvitationCreate(generics.CreateAPIView):
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
-        # self.send_sms(invitation)
+        self.send_sms(invitation)
         self.send_email(invitation)
         return Response(status=status.HTTP_201_CREATED)
 
