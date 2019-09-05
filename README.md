@@ -270,3 +270,76 @@ Ctrl + Altf + W
 |--------------------------|---------------------------------------------|----------|
 |16bdaempleado@mail.com    | eebd94cb84f227632520acc44fa4373d3bac8b0e     |Empleado  |
 |d3e42simple_user@mail.com | efb4e287751d855eba8a212d00ff506ce425fa72     |SimpleUser|
+
+
+# EndPoints 
+
+- Creacion de Usuario
+
+    **HEADER** 
+
+    none
+
+    **URL**
+
+    host_url/UserPlatformCreate/
+
+    **JSON**
+
+    ```json
+    {
+	  "username":"prueba1@mail.com",
+	  "password":"mientras123",
+	  "first_name":"aurelio",
+	  "last_name":"hernandez",
+	  "celular":1234532,
+	  "email": "aurelio.hdz.aguilar@gmai.com"
+  }
+    ```
+
+    Tipo Request: Post
+
+- Actualizacion de Usuario
+
+    **HEADER**
+
+     Authorization Token #"$
+
+    **URL**
+
+    host_url/UserPlatformUpdate/
+
+    **JSON**
+
+    ```json
+    {
+        "email": "newValue",
+        "username": "newValue",
+        "first_name": "newValue",
+        "last_name": "newValue",
+        "celular": newValue
+    }
+    ```
+
+    Tipo Request: Patch
+
+- Actualizacion de Password
+
+
+    **HEADER**
+
+     Authorization Token #"$
+
+    **URL**
+
+    host_url/UserPasswordUpdate/
+
+    **JSON**
+
+    ```json
+    {
+      "password": "newValue"
+    }
+    ```
+
+    Tipo Request: Patch
