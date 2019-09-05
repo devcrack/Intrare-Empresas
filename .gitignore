@@ -302,3 +302,14 @@ pip-selfcheck.json
 .history
 
 # End of https://www.gitignore.io/api/venv,django,python,pycharm,virtualenv,visualstudiocode
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
