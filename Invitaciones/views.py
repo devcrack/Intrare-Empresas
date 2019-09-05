@@ -196,7 +196,7 @@ class InvitationCreate(generics.CreateAPIView):
         subject = 'Intrare Industrial - Invitación'
 
         html_message = render_to_string('email.html',
-                                        {'empresa': _inv.empresa,
+                                        {'empresa': _inv.id_empresa.name,
                                          'fecha': _inv.fecha_hora_invitacion,
                                          'codigo': _inv.qr_code}
                                         )
