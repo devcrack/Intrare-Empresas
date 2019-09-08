@@ -14,7 +14,6 @@ from rest_framework.response import Response
 from .serializers import *
 from Usuarios.permissions import *
 from rest_framework import status
-
 from django.core.mail import send_mail
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -462,8 +461,7 @@ class InvitationCreate(generics.CreateAPIView):
         return error_response
 
 
-# How the fuck document p
-# https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
+
 
 class InvitationbyQRCode(generics.ListAPIView):
     serializer_class = InvitationSimpleSerializer
@@ -475,3 +473,7 @@ class InvitationbyQRCode(generics.ListAPIView):
         if _qrCode is not None:
             queryset = queryset.filter(qr_code=_qrCode)
         return queryset
+
+
+# How the fuck document p
+# https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
