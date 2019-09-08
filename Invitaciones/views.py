@@ -475,5 +475,12 @@ class InvitationbyQRCode(generics.ListAPIView):
         return queryset
 
 
+class MassiveInvitationCreate(generics.CreateAPIView):
+    permission_classes = (IsAdmin | IsEmployee,)
+
+    def create(self, request, *args, **kwargs):
+        _queVergahay = request.data.get('guests') # En guest llegan todos los numeo de telefono de los invitados
+        print(_queVergahay)
+
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html

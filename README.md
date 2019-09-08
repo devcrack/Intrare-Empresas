@@ -343,3 +343,28 @@ Ctrl + Altf + W
     ```
 
     Tipo Request: Patch
+
+
+# Invitaciones Masivas
+
+## JSON 
+
+```json
+{
+ "areaId": 3,
+ "employeeId":2,
+ "dateInv": "2016-01-27 12:05",
+ "guests": 
+  [
+    "numCell": 4443424829,
+    "numCell": 4443424829,
+    "numCell": 4443424829,
+    "numCell": 4443424829,
+  ],
+ "subject": "Algun asunto de la visita",
+ "secEquip": "1,3,6",
+ "vehicle": false,
+ "companyFrom": "Edison Effect",
+ "notes": "Notas de relativas a la invitacion"
+}
+```

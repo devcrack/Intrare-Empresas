@@ -20,5 +20,6 @@ urlpatterns = [
     path('equipo_seguridad/', EquipoSeguridadList.as_view(), name='equipo_seguridad_list'),
     path('equipo_seguridad/<id_invitation>/', EquipoSeguridadXInvitacionList.as_view(), name='get_equipoxinvitacion'),
     path('get_inv/qr/<qrcode>/', InvitationbyQRCode.as_view(), name='getInv_qrCode'),  # Get only one invitation by QR_CODE
-    path('get_inv/gaurd/<str:qr_code>/', InvitationListToGuard.as_view({'get': 'list'}), name='get_inv_qrcode_guard')
+    path('get_inv/gaurd/<str:qr_code>/', InvitationListToGuard.as_view({'get': 'list'}), name='get_inv_qrcode_guard'),
+    path('createMassive_inv/', MassiveInvitationCreate.as_view(), name='createMassiveInv'),
 ]
