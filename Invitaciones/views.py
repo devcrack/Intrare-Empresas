@@ -36,6 +36,18 @@ class EquipoSeguridadList(generics.ListCreateAPIView):
     queryset = EquipoSeguridad.objects.all()
     serializer_class = EquipoSeguridadSerializers
 
+
+class EquipoSeguridadXInvitacionList(generics.ListAPIView):
+    def get_queryset(self):
+        """
+        Método que devuelve el equipo de Seguridad por Invitación
+        :return: lista de equipos de seguridad
+        """
+        queryset = EquiposporInvitacion.objects.filter(id_invitacion=self.kwargs["id_invitation"])
+        return queryset
+    serializer_class = EquipoSeguridadXInvitacionSerializers
+
+
 """
 Usada para listar las invitaciones por usuario.
 """
@@ -79,7 +91,7 @@ class InvitationListToGuard(viewsets.ModelViewSet):
         if _nReg > 0:
             print('nReg=', _nReg)
             queryset = self.queryset
-            _serializer = InvitationToGuardSerializer(queryset, many=True)
+            _serializer = InvitationToGuardSerializer(queryset, many=True, context={"request": request})
             return Response(_serializer.data)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)

@@ -153,10 +153,16 @@ class AccesUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Acceso
 
+
 class AccessSerializer(serializers.ModelSerializer):
+    fecha_hora_acceso = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
+    fecha_hora_salida = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
+
     class Meta:
         model = Acceso
         fields = '__all__'
+
+
 class jsonAcceso():
     def __init__(self, datos_coche, qr_code):
         self.datos_coche = datos_coche
