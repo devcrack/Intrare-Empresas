@@ -148,6 +148,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     Para listar la invitacion al guardia en el acceso
     """
     areaName =serializers.CharField(source='id_area.nombre')
+    areaColor = serializers.CharField(source='id_area.color')
     hostFirstName = serializers.CharField(source='id_empleado.id_usuario.first_name')
     hostLastName = serializers.CharField(source='id_empleado.id_usuario.last_name')
     host_ine_frente = serializers.ImageField(source='id_empleado.id_usuario.ine_frente')
@@ -167,6 +168,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'areaName',
+            'areaColor',
             'hostFirstName',
             'hostLastName',
             'host_ine_frente',
