@@ -148,6 +148,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     Para listar la invitacion al guardia en el acceso
     """
     areaName =serializers.CharField(source='id_area.nombre')
+    areaColor = serializers.CharField(source='id_area.color')
     hostFirstName = serializers.CharField(source='id_empleado.id_usuario.first_name')
     hostLastName = serializers.CharField(source='id_empleado.id_usuario.last_name')
     host_ine_frente = serializers.ImageField(source='id_empleado.id_usuario.ine_frente')
@@ -161,12 +162,14 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     guest_celular = serializers.CharField(source='id_usuario.celular')
     guestCellPhone = serializers.CharField(source='id_usuario.celular')
     fecha_hora_invitacion = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
+    logoEmpresa = serializers.CharField(source='id_empleado.id_empresa.logo')
 
     class Meta:
         model = Invitacion
         fields = (
             'id',
             'areaName',
+            'areaColor',
             'hostFirstName',
             'hostLastName',
             'host_ine_frente',
@@ -184,7 +187,8 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'automovil',
             'qr_code',
             'guestCellPhone',
-            'notas'
+            'notas',
+            'logoEmpresa'
         )
 
 class InvitationSimpleSerializer(serializers.ModelSerializer):
