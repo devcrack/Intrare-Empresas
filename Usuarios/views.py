@@ -42,10 +42,10 @@ class UserUpdateParcial(generics.UpdateAPIView):
         _numberPhone = request.data.get('celular')
         _set = CustomUser.objects.filter(email=_email)
         if len(set) > 0: # Determinamos si algun usuario ya tiene el correo electronico con el que se desea actualizar
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data={'Error': 'El Email ya existe'})
         _set = CustomUser.objects.filter(celular=_numberPhone)
         if len(set) > 0: # Determinamos si algun usuario ya tiene el numero celular con el que se desea actualizar
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data={'Error': 'El numero de movíl ya existe'})
         instance.email = request.data.get('email')
         instance.celular = request.data.get('celular')
         instance.username = request.data.get('username')
