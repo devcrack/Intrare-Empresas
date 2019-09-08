@@ -162,6 +162,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     guest_celular = serializers.CharField(source='id_usuario.celular')
     guestCellPhone = serializers.CharField(source='id_usuario.celular')
     fecha_hora_invitacion = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
+    logoEmpresa = serializers.CharField(source='id_empleado.id_empresa.logo')
 
     class Meta:
         model = Invitacion
@@ -186,7 +187,8 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'automovil',
             'qr_code',
             'guestCellPhone',
-            'notas'
+            'notas',
+            'logoEmpresa'
         )
 
 class InvitationSimpleSerializer(serializers.ModelSerializer):
