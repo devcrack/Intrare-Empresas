@@ -29,7 +29,7 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     Serializer Class for create and validates Invitations created by an ADMIN
     """
     areaId = serializers.IntegerField()
-    employeeId = serializers.IntegerField()
+    employeeId = serializers.IntegerField(allow_null=True)
     dateInv = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
     cellNumber = serializers.IntegerField()
     subject = serializers.CharField(max_length=400)
