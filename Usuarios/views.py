@@ -30,9 +30,8 @@ class UserUpdateParcial(generics.UpdateAPIView):
         "last_name": "newValue",
         "celular": newValue
     }
-
-    Realiza un update parcialmente a un determinado Usuario. El usuario lo obtenemos desde el request
-    ya que este viene autentificado, de otra manera es imposible realizar la peticion.
+    Realiza update parcialmente a un determinado Usuario. El usuario se obtiene desde el request
+    si es que esta autentificado.
     """
     permission_classes = [IsAuthenticated]
 
@@ -76,3 +75,33 @@ class UserPasswordUpdate(generics.UpdateAPIView):
         # Performing Update
         instance.save()
         return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class UserImgUpdate(generics.UpdateAPIView):
+    """
+    Actualizacion de imagenes de usuario IneFrente y Atras.
+    Tipo de Peticion : PATCH.
+    Header :
+        - multipart/form-data
+        - Authorization Token #"$
+    Body Content:
+        imgFront: 'pathFile'
+        imgBack: 'pathFile'
+
+    """
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        self.serializer_class = UpdateIneSerializser
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save()
+            instance = self.request.user
+            _imageFieldFront = _serializer.validated_data['imgFront']
+            _imageFieldBack = _serializer.validated_data['imgBack']
+            instance.ine_frente = _imageFieldFront
+            instance.ine_atras = _imageFieldBack
+            instance.save()
+            return Response(status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)

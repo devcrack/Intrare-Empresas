@@ -267,6 +267,22 @@ class UserPlatformSerializer(BaseUserRegistrationSerializer):
         )
 
 
+class validatorImg():
+
+    def __init__(self, imgFront, imgBack):
+        self.imgFront = imgFront
+        self.imgBack = imgBack
+
+class UpdateIneSerializser(serializers.Serializer):
+    imgFront = serializers.ImageField(allow_null=False)
+    imgBack = serializers.ImageField(allow_null=False)
+
+    def create(self, validated_data):
+        return validatorImg(**validated_data)
+
+
+
+
 
 
 
