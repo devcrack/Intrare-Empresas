@@ -40,10 +40,10 @@ class UserUpdateParcial(generics.UpdateAPIView):
         _email = request.data.get('email')
         _numberPhone = request.data.get('celular')
         _set = CustomUser.objects.filter(email=_email)
-        if len(set) > 0: # Determinamos si algun usuario ya tiene el correo electronico con el que se desea actualizar
+        if len(_set) > 0: # Determinamos si algun usuario ya tiene el correo electronico con el que se desea actualizar
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data={'Error': 'El Email ya existe'})
         _set = CustomUser.objects.filter(celular=_numberPhone)
-        if len(set) > 0: # Determinamos si algun usuario ya tiene el numero celular con el que se desea actualizar
+        if len(_set) > 0: # Determinamos si algun usuario ya tiene el numero celular con el que se desea actualizar
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data={'Error': 'El numero de movíl ya existe'})
         instance.email = request.data.get('email')
         instance.celular = request.data.get('celular')
@@ -87,7 +87,6 @@ class UserImgUpdate(generics.UpdateAPIView):
     Body Content:
         imgFront: 'pathFile'
         imgBack: 'pathFile'
-
     """
     permission_classes = [IsAuthenticated]
 
@@ -105,3 +104,21 @@ class UserImgUpdate(generics.UpdateAPIView):
             return Response(status=status.HTTP_202_ACCEPTED)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+
+
+class UserAvatarUpdate(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        self.serializer_class = UpdateOneIMGSerializser
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save()
+            instance = self.request.user
+            _img = _serializer.validated_data['img']
+            instance.avatar = _img
+            instance.save()
+            return Response(status=status.HTTP_202_ACCEPTED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+

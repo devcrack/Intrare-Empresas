@@ -11,7 +11,7 @@ from .models import *
 
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
-        fields = ('id', 'email', 'username', 'roll', 'first_name', 'last_name', 'celular', 'is_staff', 'is_superuser')
+        fields = ('id', 'email', 'username', 'roll', 'first_name', 'last_name', 'celular', 'is_staff', 'is_superuser', 'avatar')
 
 
 class UserAdminSerializer(serializers.ModelSerializer):
@@ -279,6 +279,17 @@ class UpdateIneSerializser(serializers.Serializer):
 
     def create(self, validated_data):
         return validatorImg(**validated_data)
+
+class validatorONEImg():
+
+    def __init__(self, img):
+        self.img = img
+
+class UpdateOneIMGSerializser(serializers.Serializer):
+    img = serializers.ImageField(allow_null=False,  allow_empty_file=False)
+
+    def create(self, validated_data):
+        return validatorONEImg(**validated_data)
 
 
 

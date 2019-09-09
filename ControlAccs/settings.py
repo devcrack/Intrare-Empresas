@@ -45,6 +45,9 @@ REST_FRAMEWORK = {
 DJOSER = {
     'SERIALIZERS': {
          'user': 'Usuarios.serializers.UserSerializer'
+    },
+    'PERMISSIONS': {
+         'user': ('Usuarios.permissions.IsGetRequest',),
     }
 }
 
