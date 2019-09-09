@@ -195,3 +195,4 @@ class InvitationSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitacion
         fields = '__all__'
+
