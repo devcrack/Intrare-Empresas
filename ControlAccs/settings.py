@@ -47,7 +47,7 @@ DJOSER = {
          'user': 'Usuarios.serializers.UserSerializer'
     },
     'PERMISSIONS': {
-         'user': 'Usuarios.permissions.IsGetRequest'
+         'user': ('Usuarios.permissions.IsGetRequest',),
     }
 }
 
