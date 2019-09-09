@@ -325,46 +325,43 @@ Ctrl + Altf + W
 
 - Actualizacion de Password
 
+  **HEADER**
 
-    **HEADER**
+  Authorization Token #"$
 
-     Authorization Token #"$
+  **URL**
 
-    **URL**
+  host_url/UserPasswordUpdate/
 
-    host_url/UserPasswordUpdate/
+  **JSON**
 
-    **JSON**
-
-    ```json
-    {
-      "password": "newValue"
-    }
-    ```
-
-    Tipo Request: Patch
+  ```json
+  {
+	"password": "newValue"
+  }
+  ```
+  
+  Tipo Request: Patch
 
 
-# Invitaciones Masivas
+-  Actualizacion de Usuario Imgen Ine(Frente/Atras)
 
-## JSON 
+   **HEADER**
+   
+   - Authorization Token #"$
 
-```json
-{
- "areaId": 3,
- "employeeId":2,
- "dateInv": "2016-01-27 12:05",
- "guests": 
-  [
-    "numCell": 4443424829,
-    "numCell": 4443424829,
-    "numCell": 4443424829,
-    "numCell": 4443424829,
-  ],
- "subject": "Algun asunto de la visita",
- "secEquip": "1,3,6",
- "vehicle": false,
- "companyFrom": "Edison Effect",
- "notes": "Notas de relativas a la invitacion"
-}
-```
+   - multipart/form-data
+
+   **URL**
+
+   host_url/UserImgUpdate/
+
+   Tipo Request: Patch
+
+   **Body**
+
+   Content type:multipart/form-data
+
+   Fields:
+   - imgFront: 'pathFile'
+   - imgBack: 'pathFile' 
