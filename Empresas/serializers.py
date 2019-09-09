@@ -119,8 +119,10 @@ class EmpleadoSerializers(serializers.ModelSerializer):
         usuario.last_name = id_usuario_data['last_name']
         usuario.email = id_usuario_data['email']
         usuario.celular = id_usuario_data['celular']
-        usuario.ine_frente = id_usuario_data['ine_frente']
-        usuario.ine_atras = id_usuario_data['ine_atras']
+        if id_usuario_data['ine_frente'] != None:
+            usuario.ine_frente = id_usuario_data['ine_frente']
+        if id_usuario_data['ine_atras'] != None:
+            usuario.ine_atras = id_usuario_data['ine_atras']
         if id_usuario_data['password'] != '':
             usuario.set_password(id_usuario_data['password'])
         usuario.is_active = id_usuario_data['is_active']
@@ -130,8 +132,10 @@ class EmpleadoSerializers(serializers.ModelSerializer):
         instance.id_usuario.last_name = id_usuario_data['last_name']
         instance.id_usuario.email = id_usuario_data['email']
         instance.id_usuario.celular = id_usuario_data['celular']
-        instance.id_usuario.ine_frente = id_usuario_data['ine_frente']
-        instance.id_usuario.ine_atras = id_usuario_data['ine_atras']
+        if id_usuario_data['ine_frente'] != '':
+            instance.id_usuario.ine_frente = id_usuario_data['ine_frente']
+        if id_usuario_data['ine_atras'] != '':
+            instance.id_usuario.ine_atras = id_usuario_data['ine_atras']
         instance.id_usuario.is_active = id_usuario_data['is_active']
         instance.id_usuario.password = usuario.password
         instance.extension = validated_data['extension']
