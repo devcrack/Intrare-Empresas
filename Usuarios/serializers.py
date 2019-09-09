@@ -274,8 +274,8 @@ class validatorImg():
         self.imgBack = imgBack
 
 class UpdateIneSerializser(serializers.Serializer):
-    imgFront = serializers.ImageField(allow_null=False)
-    imgBack = serializers.ImageField(allow_null=False)
+    imgFront = serializers.ImageField(allow_null=False,  allow_empty_file=False)
+    imgBack = serializers.ImageField(allow_null=False, allow_empty_file=False)
 
     def create(self, validated_data):
         return validatorImg(**validated_data)
