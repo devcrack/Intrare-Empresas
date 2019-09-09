@@ -22,6 +22,7 @@ class CustomUser(AbstractUser):
     celular = models.CharField(max_length=30, unique=True, null=False, blank=False, name='celular')
     ine_frente = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True)
     ine_atras = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True)
+    avatar = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True, default="avatar.png")
     # ine_frente = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_frente')
     # ine_atras = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_atras')
     roll = models.IntegerField(null=False, default=0, blank=False, name='roll')
