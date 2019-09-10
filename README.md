@@ -368,3 +368,30 @@ Ctrl + Altf + W
 
 ## Actualizacion de Avatar(Profile pic)   
 
+**HEADER**
+   
+   - Authorization Token #"$
+
+   - multipart/form-data
+
+   **URL**
+
+   host_url/AvatarUpdate/
+
+   Tipo Request: Patch
+
+   **Body**
+
+   Content type:multipart/form-data
+
+   Fields:
+   - img: 'pathFile'
+
+
+
+
+
+
+
+
+
