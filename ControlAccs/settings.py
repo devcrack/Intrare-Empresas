@@ -95,7 +95,6 @@ INSTALLED_APPS = [
     'Grupos.apps.GruposConfig',
 
 
-import django_heroku
 
 ]
 
@@ -115,7 +114,7 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
-import django_heroku
+
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000',
 )
