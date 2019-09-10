@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -122,3 +123,15 @@ class UserAvatarUpdate(generics.UpdateAPIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
 
+class UserHaveIne(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        instance = self.request.user
+        ine = instance.ine_frente
+        if not ine:
+            return Response(status=status.HTTP_204_NO_CONTENT, data={'warning': 'Usuario sin imagen INE Frente'})
+        ine = instance.ine_atras
+        if not ine:
+            return Response(status=status.HTTP_204_NO_CONTENT, data={'warning': 'Usuario sin imagen INE Atras'})
+        return Response(status=status.HTTP_200_OK)
