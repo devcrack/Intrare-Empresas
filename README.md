@@ -274,7 +274,7 @@ Ctrl + Altf + W
 
 # EndPoints 
 
-- Creacion de Usuario
+## Creacion de Usuario
 
     **HEADER** 
 
@@ -299,7 +299,7 @@ Ctrl + Altf + W
 
     Tipo Request: Post
 
-- Actualizacion de Usuario
+## Actualizacion de Usuario
 
     **HEADER**
 
@@ -323,7 +323,7 @@ Ctrl + Altf + W
 
     Tipo Request: Patch
 
-- Actualizacion de Password
+## Actualizacion de Password
 
   **HEADER**
 
@@ -344,7 +344,7 @@ Ctrl + Altf + W
   Tipo Request: Patch
 
 
--  Actualizacion de Usuario Imgen Ine(Frente/Atras)
+##  Actualizacion de Usuario Imgen Ine(Frente/Atras)
 
    **HEADER**
    
@@ -365,3 +365,33 @@ Ctrl + Altf + W
    Fields:
    - imgFront: 'pathFile'
    - imgBack: 'pathFile' 
+
+## Actualizacion de Avatar(Profile pic)   
+
+**HEADER**
+   
+   - Authorization Token #"$
+
+   - multipart/form-data
+
+   **URL**
+
+   host_url/AvatarUpdate/
+
+   Tipo Request: Patch
+
+   **Body**
+
+   Content type:multipart/form-data
+
+   Fields:
+   - img: 'pathFile'
+
+
+
+
+
+
+
+
+
