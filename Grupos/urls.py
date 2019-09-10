@@ -13,4 +13,5 @@ urlpatterns = [
 
     path('grupos/contacts_grupo/', ContactosXGrupoCreate.as_view(), name='contactos_x_grupo_create'),
     path('grupos/contacts_grupos/<int:id_grupo>/', ContactosXGrupoList.as_view(), name='contactos_x_grupo_list'),
+    path('grupos/contacts_grupos/delete/<int:pk>/', ContactosXGrupoDelete.as_view(), name='contactos_x_grupo_delete'),
 ]
