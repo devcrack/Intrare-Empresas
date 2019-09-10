@@ -135,6 +135,7 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     areaName = serializers.CharField(source='id_area.nombre')
     hostFirstName = serializers.CharField(source='id_empleado.id_usuario.first_name')
     hostLastName = serializers.CharField(source='id_empleado.id_usuario.last_name')
+    fecha_hora_invitacion = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
 
     class Meta:
         model = Invitacion

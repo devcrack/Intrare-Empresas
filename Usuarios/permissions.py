@@ -129,3 +129,15 @@ class is_staff(permissions.BasePermission):
 
     def has_permission(self, request, view):
         return request.user.is_staff
+
+
+class IsGetRequest(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        # allow all POST requests
+        if request.method == 'GET':
+            return True
+        return False
+        # Otherwise, only allow authenticated requests
+        # Post Django 1.10, 'is_authenticated' is a read-only attribute
+        # return request.user and request.user.is_authenticated
