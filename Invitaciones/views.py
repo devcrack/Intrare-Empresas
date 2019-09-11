@@ -1,6 +1,3 @@
-# TODO En lugar de nombre de usuario ID de usuario.
-#
-
 from hmac import new
 
 from django.db.utils import Error
@@ -17,7 +14,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
-
+from secrets import token_hex
 from clx import xms
 
 from string import Template
@@ -219,14 +216,6 @@ class InvitationCreate(generics.CreateAPIView):
     @classmethod
     def create_invitation(cls, cell_phone_number, id_company, id_area, id_employee , date_inv, subject, vehicle,
                           notes, from_company):
-        """
-        Args:
-            args[0]: serializer data
-            args[1]: id company
-            args[2]: id area
-            args[3]: id employee
-            args[4]: user
-        """
 
         error_response = None
         _idUser = cls.guest_exist(cell_phone_number)
@@ -336,12 +325,12 @@ class InvitationCreate(generics.CreateAPIView):
         """
         _errorResponse = None
         number_phone = args[0]
-        user = args[0]
-        code = token_hex(3)
+        user = args[0]  # El nombre de usuario es igual al numero de telefono proporcionado
+        code = token_hex(3)  # Generamos Token para identificar a este usuario y modificarlo posteriormente.
         _password = 'pass'
         #poner token 5 digitos
         nw_user = CustomUser(
-            celular=number_phone, username=user, password=_password, temporal_token=code)
+            celular=number_phone, username=user, password=_password, temporalToken=code)
         try:
             nw_user.save()
             print(nw_user.id, ' USER CREATED 200_OK')

@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Modelos para las invitaciones.
-
-
-Aqui creamos los modelos correspondientes para cada una de las tablas que comprende esta aplicacion
-"""
-from django.utils import timezone
 from django.db import models
 
 from django.conf import settings
