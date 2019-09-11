@@ -9,7 +9,6 @@ from django.db.utils import Error
 # Create your views here.
 from rest_framework import generics
 from rest_framework import viewsets
-from datetime import date
 from rest_framework.response import Response
 from .serializers import *
 from Usuarios.permissions import *
@@ -45,7 +44,6 @@ class EquipoSeguridadXInvitacionList(generics.ListAPIView):
         queryset = EquiposporInvitacion.objects.filter(id_invitacion=self.kwargs["id_invitation"])
         return queryset
     serializer_class = EquipoSeguridadXInvitacionSerializers
-
 
 """
 Usada para listar las invitaciones por usuario.
@@ -94,7 +92,6 @@ class InvitationListToGuard(viewsets.ModelViewSet):
             return Response(_serializer.data)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 
 class InvitationListToSimpleUser(viewsets.ModelViewSet):
@@ -207,10 +204,7 @@ class InvitationCreate(generics.CreateAPIView):
         message = ''
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [_inv.id_usuario.email, ]
-
         send_mail(subject=subject, message=message, from_email=email_from, recipient_list=recipient_list, html_message=html_message)
-
-
 
     @classmethod
     def guest_exist(cls, _phone_number):
@@ -271,41 +265,6 @@ class InvitationCreate(generics.CreateAPIView):
         return error_response, nw_invitation
 
     @classmethod
-    def create_temporal_invitation(cls, *args):
-        """
-        Args:
-            args[0]: serializer data
-            args[1]: id company
-            args[2]: id area
-            args[3]: id employee
-            args[4]: cell phone number of recently user created
-       """
-        data = args[0]
-        _id_company = args[1]
-        _id_area = args[2]
-        _id_employee = args[3]
-        cellphone_number_user = args[4]
-        date_inv = data['date']
-        business = data['business']
-        vehicle = data['vehicle']
-        notes = data['notes']
-        from_company = data['company']
-        error_response = None
-
-        tmp_invitation = InvitacionTemporal(
-            id_empresa=_id_company, id_area=_id_area,
-            id_empleado=_id_employee, celular_invitado=cellphone_number_user,
-            fecha_hora_invitacion=date_inv, asunto=business, automovil=vehicle, notas=notes, empresa=from_company
-            )
-        try:
-            tmp_invitation.save()
-        except ValueError:
-            error_response = {'Error': 'Can\'t create an Invitation'}
-            tmp_invitation = None
-        print('TEMPORARY INVITATION Created 200_OK')
-        return error_response, tmp_invitation
-
-    @classmethod
     def validate_employee(cls, *args):
         """
         Args:
@@ -331,7 +290,6 @@ class InvitationCreate(generics.CreateAPIView):
             print('Employee NOT FOUND')
             error_response = {'Error': 'The Employee provided do not exist'}
         return error_response, employee
-
 
     @classmethod
     def validate_areas(cls, *args):
@@ -393,41 +351,6 @@ class InvitationCreate(generics.CreateAPIView):
             return _errorResponse, None
 
     @classmethod
-    def EquiposporInvitacion_add(cls, *args):
-        security_equipment = args[0]
-        inv = args[1]
-        error_response = None
-
-        e_s = EquiposporInvitacion(id_equipo_seguridad=security_equipment, id_invitacion=inv)
-        try:
-            e_s.save()
-            print('Equipment by Invitation Created 200_OK')
-        except ValueError:
-            error_response = {'Error': 'Can\'t create Equipment for invitation'}
-        return error_response
-
-    @classmethod
-    def EquipoporInvitacionTemporal_Add(cls, *args):
-        security_equip = args[0]
-        tmp_inv = args[1]
-        error_response = None
-
-        e_s = EquipoporInvitacionTemporal(id_equipo_seguridad=security_equip, id_invitacion_temporal=tmp_inv)
-        try:
-            e_s.save()
-            print('Equipment by Invitation Created 200_OK')
-        except ValueError:
-            error_response = {'Error': 'Can\'t create Equipment for invitation'}
-        return error_response
-
-    @classmethod
-    def preprocessJson(cls, data):
-        print('Printing Json input data\n')
-        for key, value in data.items():
-            print('Key', key)
-            print('Value', value)
-
-    @classmethod
     def validateSecEqu(cls, listSecEq):
         _idSecEqList = []
         for i in listSecEq:
@@ -441,7 +364,6 @@ class InvitationCreate(generics.CreateAPIView):
                     return None, {'Error': 'Error with Security Equipment supplied, please check it'}
         return _idSecEqList, None
 
-
     @classmethod
     def add_sec_equ_by_inv(cls, list_equipment_security, inv):
         error_response = None
@@ -454,8 +376,6 @@ class InvitationCreate(generics.CreateAPIView):
                 error_response = {'Error': 'Can\'t create Equipment for invitation'}
                 return error_response
         return error_response
-
-
 
 
 class InvitationbyQRCode(generics.ListAPIView):
