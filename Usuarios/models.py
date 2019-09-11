@@ -13,8 +13,6 @@ class CustomUser(AbstractUser):
     Mas información:
         https://docs.djangoproject.com/en/2.2/topics/auth/customizing/#extending-django-s-default-user
     """
-    #user_perfil = models.ForeignKey('Perfil', on_delete=models.CASCADE, related_name='perfil_user_perfil')
-
     """
     Perfil
     """
@@ -23,10 +21,8 @@ class CustomUser(AbstractUser):
     ine_frente = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True, default=None)
     ine_atras = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True, default=None)
     avatar = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True, default="avatar.png")
-    # ine_frente = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_frente')
-    # ine_atras = models.CharField(max_length=25, default='', null=False, blank=True, name='ine_atras')
     roll = models.IntegerField(null=False, default=0, blank=False, name='roll')
-    temporal_token = models.CharField(max_length=5, default="", null=False, blank=True, unique=True)
+    temporalToken = models.CharField(max_length=5, default="", null=False, blank=True, unique=True)
     plataforma = models.CharField(max_length=25, default='web', name='plataforma')  # Tipo de aplicacion que es el sistema(Web, Android, iOs)
 
     """
