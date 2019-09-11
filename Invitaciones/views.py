@@ -138,7 +138,7 @@ class InvitationCreate(generics.CreateAPIView):
             _notes = _serializer.data['notes']
             _companyFrom = _serializer.data['companyFrom']
 
-            if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
+            if usr.roll == settings.ADMIN:
                 print('Logged as Administrator\n')
                 _employeeId = _serializer.data['employeeId']
                 _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
@@ -172,8 +172,10 @@ class InvitationCreate(generics.CreateAPIView):
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+        #Determinar si es un usuario temporal o uno registrado para el envio de link de registro o la notificacion
         self.send_sms(invitation)  # Detectar los errores de esto
-        self.send_email(invitation) # Detectar los errores de esto
+        self.send_email(invitation)  # Detectar los errores de esto
+        ##################################
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -377,9 +379,11 @@ class InvitationCreate(generics.CreateAPIView):
         _errorResponse = None
         number_phone = args[0]
         user = args[0]
+        code = token_hex(3)
         _password = 'pass'
+        #poner token 5 digitos
         nw_user = CustomUser(
-            celular=number_phone, username=user, password=_password)
+            celular=number_phone, username=user, password=_password, temporal_token=code)
         try:
             nw_user.save()
             print(nw_user.id, ' USER CREATED 200_OK')

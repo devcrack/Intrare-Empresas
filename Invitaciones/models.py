@@ -23,6 +23,7 @@ class Invitacion(models.Model):
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None)
     fecha_hora_envio = models.DateTimeField(default=datetime.now, null=False, blank=False)
     fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
+    ## Invitaciones programadas
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
     notas = models.CharField(max_length=12, null=True, blank=True, default="")
