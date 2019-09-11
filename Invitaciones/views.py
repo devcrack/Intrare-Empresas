@@ -326,7 +326,7 @@ class InvitationCreate(generics.CreateAPIView):
         _errorResponse = None
         number_phone = args[0]
         user = args[0]  # El nombre de usuario es igual al numero de telefono proporcionado
-        code = token_hex(3)  # Generamos Token para identificar a este usuario y modificarlo posteriormente.
+        code = token_hex(4)  # Generamos Token para identificar a este usuario y modificarlo posteriormente.
         _password = 'pass'
         #poner token 5 digitos
         nw_user = CustomUser(
