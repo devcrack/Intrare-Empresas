@@ -388,6 +388,24 @@ Ctrl + Altf + W
    - img: 'pathFile'
 
 
+# Acerca de los usuarios
+
+### Usuario
+| CustomUser    | Tipo              | OBLIGATORIO  |
+|---------------|-------------------|--------------|
+| email         | EmailField        | NO           |
+| celular       | CharField(String) | SI           |
+| ine_atras     | ImageField        | NO           |
+| ine_frete     | ImageField        | NO           |
+| avatar        | ImageField        | NO           |
+| roll          | IntegerField      | SI           |
+| temporalToken | CharField         | NO           |
+| plataform     | CharField(String) | REDUNTANDTE? |
+| username      | CharField(String) | SI           |
+| first_name    | CharField(String) | NO           |
+| last_name     | CharField(String) | NO           |
+| email         | EmailField        | NO           |
+
 
 
 
