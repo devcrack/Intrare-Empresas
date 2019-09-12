@@ -16,9 +16,23 @@ class UserSerializer(BaseUserSerializer):
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+    last_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+    email = serializers.EmailField(allow_blank=False)
+    ine_frente = serializers.ImageField(required=True, allow_empty_file=False)
+
     class Meta:
-        model =CustomUser
-        fields = ['email', 'username', 'first_name', 'last_name', 'celular', 'temporalToken']
+        model = CustomUser
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'username',
+            'celular',
+            'ine_frente',
+            'temporalToken',
+        ]
+
 
 class UserAdminSerializer(serializers.ModelSerializer):
     class Meta:
