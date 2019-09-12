@@ -3,12 +3,11 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.mixins import UpdateModelMixin
 
 from .serializers import *
 from .permissions import *
 
-
-from django.shortcuts import render
 
 # Create your views here.
 
@@ -55,6 +54,18 @@ class UserUpdateParcial(generics.UpdateAPIView):
         # Performing Update
         instance.save()
         return Response(status=status.HTTP_202_ACCEPTED)
+
+
+# class UserUpdateByTemporalToken(generics.UpdateAPIView):
+#
+#
+#     def update(self, request, *args, **kwargs):
+#         _temporalToken = request.data.get('tToken')
+#         _set = CustomUser.objects.filter(temporalToken=_temporalToken)
+#         _setLen = len(_set)
+#         if _setLen != 1:
+#             return Response(status=status.HTTP_304_NOT_MODIFIED, data={'error':'Error con el tokenTemporal'})
+#
 
 
 class UserPasswordUpdate(generics.UpdateAPIView):
@@ -123,6 +134,7 @@ class UserAvatarUpdate(generics.UpdateAPIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
 
+
 class UserHaveIne(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -135,3 +147,13 @@ class UserHaveIne(APIView):
         if not ine:
             return Response(status=status.HTTP_204_NO_CONTENT, data={'warning': 'Usuario sin imagen INE Atras'})
         return Response(status=status.HTTP_200_OK)
+
+
+class UpdateUserPartialByToken(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    lookup_field = 'temporalToken'
+    serializer_class = CustomUserSerializer
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+

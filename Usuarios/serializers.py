@@ -7,12 +7,18 @@ from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSeria
 from django.utils import translation
 
 from .models import *
+from django.contrib.auth import validators
 
 
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
-        fields = ('id', 'email', 'username', 'roll', 'first_name', 'last_name', 'celular', 'is_staff', 'is_superuser', 'avatar')
+        fields = ('id', 'email', 'username', 'roll', 'first_name', 'last_name', 'celular', 'is_staff', 'is_superuser', 'avatar', 'temporalToken')
 
+
+class CustomUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =CustomUser
+        fields = ['email', 'username', 'first_name', 'last_name', 'celular', 'temporalToken']
 
 class UserAdminSerializer(serializers.ModelSerializer):
     class Meta:
@@ -292,8 +298,22 @@ class UpdateOneIMGSerializser(serializers.Serializer):
         return validatorONEImg(**validated_data)
 
 
+class validatorUserUpdate():
 
+    def __init__(self, email, username, first_name, last_name):
+        self.email = email
+        self.username = username
+        self.first_name = first_name
+        self.last_name = last_name
 
+class UpdateUserByTempToken(serializers.Serializer):
+    username_validator = UnicodeUsernameValidator()
+
+    email = serializers.EmailField()
+    username = serializers.CharField(
+        max_length=150,
+        help_text=('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        validators = [username_validator])
 
 
 

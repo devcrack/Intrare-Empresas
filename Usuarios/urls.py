@@ -9,4 +9,5 @@ urlpatterns = [
     path('UserImgUpdate/', UserImgUpdate.as_view(), name='UserImagesUpdate'),
     path('AvatarUpdate/', UserAvatarUpdate.as_view(), name='UserAvatarUpdate'),
     path('haveIneImages/', UserHaveIne.as_view(), name='UserHaveIne'),
+    path('partialUpdateUser/<temporalToken>/', UpdateUserPartialByToken.as_view(), name='partialUpdateUser' )
 ]
