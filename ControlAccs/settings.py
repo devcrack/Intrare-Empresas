@@ -15,7 +15,7 @@ import enum
 import nexmo
 
 
-# import django_heroku
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -204,4 +204,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Servicio de SMS Nexmo
 CLIENT = nexmo.Client(key='532e50a4', secret='7Rh1PbAbDRApW2jw')
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
