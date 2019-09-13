@@ -1,8 +1,9 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from .views import *
 
 urlpatterns = [
+    path('users/filter', UserViewSet.as_view({'get': 'list'})),
     path('UserPlatformCreate/', UserPlatformCreateOrList.as_view(), name='CreateUserPlatform'),
     path('UserPlatformUpdate/', UserUpdateParcial.as_view(), name='UpdateUserPlatform'),
     path('UserPasswordUpdate/', UserPasswordUpdate.as_view(), name='UpdateUserPlatform'),
