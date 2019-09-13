@@ -1,11 +1,6 @@
 from rest_framework import serializers
 from .models import *
-
-
-class ContactoSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Contacto
-        fields = '__all__'
+from Usuarios.models import CustomUser
 
 
 class GrupoSerializers(serializers.ModelSerializer):
@@ -15,12 +10,23 @@ class GrupoSerializers(serializers.ModelSerializer):
 
 
 class ContactosXGrupoSerializers(serializers.ModelSerializer):
-    nombreContacto = serializers.CharField(source='id_contacto.nombre')
-    celularContacto = serializers.CharField(source='id_contacto.telefono')
+    nombre_usuario = serializers.CharField(source='id_contacto.first_name')
+    apellido_usuario = serializers.CharField(source='id_contacto.last_name')
+    celular_usuario = serializers.CharField(source='id_contacto.celular')
+    email_usuario = serializers.CharField(source='id_contacto.email')
+    avatar_usuario = serializers.CharField(source='id_contacto.avatar')
 
     class Meta:
         model = Grupo_has_contacto
-        fields = ('id', 'id_grupo', 'id_contacto', 'nombreContacto', 'celularContacto')
+        fields = ('id',
+                  'id_grupo',
+                  'id_contacto',
+                  'nombre_usuario',
+                  'apellido_usuario',
+                  'celular_usuario',
+                  'email_usuario',
+                  'avatar_usuario',
+                  )
 
 
 class ContactosXGrupoSerializersCreate(serializers.ModelSerializer):
