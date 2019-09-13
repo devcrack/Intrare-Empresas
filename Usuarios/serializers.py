@@ -307,11 +307,11 @@ class UserPlatformSerializer(BaseUserRegistrationSerializer):
         )
 
 
+        
 class validatorImg():
 
-    def __init__(self, imgFront, imgBack):
+    def __init__(self, imgFront):
         self.imgFront = imgFront
-        self.imgBack = imgBack
 
         
 class UpdateIneSerializser(serializers.Serializer):
