@@ -1,6 +1,6 @@
 astroid==2.2.5
 Django==2.2.3
-clx-sdk-xms==1.0.0
+nexmo
 django-cors-headers==3.0.2
 django-templated-mail==1.1.1
 djangorestframework==3.9.4

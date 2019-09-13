@@ -113,7 +113,7 @@ class Administrador(models.Model):
         Método que devuelve en nombre de usuario del Administrador
         :return: id_usuario.username
         """
-        return self.id_usuario.username
+        return f"ADMIN->{self.id}; User->{self.id_usuario.id}{self.id_usuario.first_name} {self.id_usuario.last_name}; Company->{self.id_empresa.name}"
 
     class Meta:
         verbose_name_plural = "Administradores"

@@ -343,7 +343,6 @@ def addCompany(*args):
         fake_url_map = faker.uri()
         fake_validity = faker.date_time()
         fake_empresa = Empresa.objects.get_or_create(
-            custom_user=sys_admin,
             id_parque=parque,
             name=fake_empresa,
             address=fake_address,

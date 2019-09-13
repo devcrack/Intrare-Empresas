@@ -12,11 +12,12 @@ class json_invit_admin():
     Object Class for render the input for the creation of
     invitations by Administrators.
     """
-    def __init__(self, areaId, employeeId, dateInv, cellNumber, subject, secEquip, vehicle, companyFrom, notes):
+    def __init__(self, areaId, employeeId, dateInv, email, cellNumber, subject, secEquip, vehicle, companyFrom, notes):
         self.areaId = areaId
         self.employeeId = employeeId
         self.dateInv = dateInv
         self.cellNumber = cellNumber
+        self.email = email
         self.subject = subject
         self.secEquip = secEquip
         self.vehicle = vehicle
@@ -31,7 +32,8 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     areaId = serializers.IntegerField()
     employeeId = serializers.IntegerField(allow_null=True)
     dateInv = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
-    cellNumber = serializers.IntegerField()
+    email = serializers.EmailField()
+    cellNumber = serializers.IntegerField(allow_null=True)
     subject = serializers.CharField(max_length=400)
     secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
     vehicle = serializers.BooleanField()

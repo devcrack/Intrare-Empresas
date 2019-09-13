@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import enum
+import nexmo
+
 
 # import django_heroku
 
@@ -197,4 +199,6 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Servicio de SMS Nexmo
+CLIENT = nexmo.Client(key='532e50a4', secret='7Rh1PbAbDRApW2jw')
 # django_heroku.settings(locals())

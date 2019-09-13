@@ -11,14 +11,11 @@ from .serializers import *
 from Usuarios.permissions import *
 from rest_framework import status
 from django.core.mail import send_mail
-from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from secrets import token_hex
-from clx import xms
+from  django.conf import  settings
 
-from string import Template
-import os
 
 
 class EquipoSeguridadList(generics.ListCreateAPIView):
@@ -125,6 +122,7 @@ class InvitationCreate(generics.CreateAPIView):
             _areaId = _serializer.data['areaId']
             _listSecEquip = _serializer.data['secEquip']
             _arraySecEquip = _listSecEquip.split(',')
+            _email = _serializer.data['email']
             _cellNumberUser = _serializer.data['cellNumber']
             _dateInv = _serializer.data['dateInv']
             _subject = _serializer.data['subject']
@@ -154,7 +152,7 @@ class InvitationCreate(generics.CreateAPIView):
                     return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
 
                 # Create Invitation
-                _errorResponse, invitation = self.create_invitation(_cellNumberUser, _idCompany, _area,
+                _errorResponse, invitation = self.create_invitation(_email, _cellNumberUser, _idCompany, _area,
                                                                     _employee, _dateInv, _subject, _vehicle,
                                                                     _notes, _companyFrom)
                 if _errorResponse:
@@ -167,26 +165,23 @@ class InvitationCreate(generics.CreateAPIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         #Determinar si es un usuario temporal o uno registrado para el envio de link de registro o la notificacion
-        self.send_sms(invitation)  # Detectar los errores de esto
         self.send_email(invitation)  # Detectar los errores de esto
         ##################################
 
         return Response(status=status.HTTP_201_CREATED)
 
     @classmethod
-    def send_sms(cls, _inv):
-        num = '+52' + _inv.id_usuario.celular
-        cliente = xms.Client(
-            'c2811649ffa2408eb78ab92d2660a494',
-            '06676539d84f46ae842a78b045131e2d',
+    def send_sms(cls, _number, message):
+        to_number = '+52' + str(_number)
+        responseData = settings.CLIENT.send_message(
+            {
+                "from": "Intrare Empresarial",
+                "to": to_number,
+                "text": message,
+            }
         )
-        batch_params = xms.api.MtBatchTextSmsCreate()
-        batch_params.sender = '447537432321'
-        batch_params.recipients = {num}
-        batch_params.body = 'Intrare, haz recibido una nueva invitacion. Para mas info consulta tu email o desde la app'
+        return responseData
 
-        result = cliente.create_batch(batch_params)
-        print(result)
 
     @classmethod
     def send_email(cls, _inv):
@@ -201,28 +196,32 @@ class InvitationCreate(generics.CreateAPIView):
         message = ''
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [_inv.id_usuario.email, ]
-        send_mail(subject=subject, message=message, from_email=email_from, recipient_list=recipient_list, html_message=html_message)
-
+        _res = send_mail(subject=subject, message=message, from_email=email_from, recipient_list=recipient_list, html_message=html_message)
+        print('EMAIL LOGS ',_res)
     @classmethod
-    def guest_exist(cls, _phone_number):
-        user = CustomUser.objects.filter(celular=_phone_number)
+    def guest_exist(cls, _email):
+        user = CustomUser.objects.filter(email=_email)
         if user:
-            print('User Exist with NUMBER PHONE: ', user[0].celular)
+            print('User Exist with email: ', user[0].email)
             return user[0]
         else:
             print('User with this number phone NOT EXIST: ')
             return None
 
     @classmethod
-    def create_invitation(cls, cell_phone_number, id_company, id_area, id_employee , date_inv, subject, vehicle,
+    def create_invitation(cls, email, cell_phone_number, id_company, id_area, id_employee , date_inv, subject, vehicle,
                           notes, from_company):
 
         error_response = None
-        _idUser = cls.guest_exist(cell_phone_number)
+        _idUser = cls.guest_exist(email)
         if _idUser is None:
-            error_response, _idUser = cls.create_user(cell_phone_number)
+            error_response, _idUser = cls.create_user(email, cell_phone_number)
+            _msg = f'Bienvenido a Intratre Empresarial reliza tu registro en https://first-project-vuejs.herokuapp.com/preregistro/{_idUser.temporalToken}/, ' \
+                   f'para Acceder a tus invitaciones'
             if error_response:
                 return error_response, None
+        else:
+            _msg = "Se te ha enviado una invitacion, verifica desde tu correo electronico o la aplicacion"
         print('Data to commit in Invitation\n')
         print('\tCompany Id: ', id_company)
         print('\tArea Id :', id_area)
@@ -249,8 +248,16 @@ class InvitationCreate(generics.CreateAPIView):
         except ValueError:
             error_response = {'Error': 'Can\'t create an Invitation'}
             nw_invitation = None
-
-        print(nw_invitation.id, ' INVITATION CREATED  200_OK')
+        log = None
+        if nw_invitation:
+            _smsResponse = cls.send_sms(_idUser.celular, _msg)
+            if _smsResponse["messages"][0]["status"] == "0":
+                log = 'Mensaje SMS ENVIADO'
+            else:
+                log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+            print('LOGs SMS!! ')
+            print(log)
+            print(nw_invitation.id, ' INVITATION CREATED  200_OK')
         return error_response, nw_invitation
 
     @classmethod
@@ -314,7 +321,7 @@ class InvitationCreate(generics.CreateAPIView):
         return error_response, security_equipment
 
     @classmethod
-    def create_user(cls, *args):
+    def create_user(cls, _aemail, cellphone):
         """
         Create a user with minimum requirements data fill.
 
@@ -324,20 +331,19 @@ class InvitationCreate(generics.CreateAPIView):
 
         """
         _errorResponse = None
-        number_phone = args[0]
-        user = args[0]  # El nombre de usuario es igual al numero de telefono proporcionado
+        _email = _aemail
+        number_phone = cellphone
         code = token_hex(4)  # Generamos Token para identificar a este usuario y modificarlo posteriormente.
         _password = 'pass'
         #poner token 5 digitos
         nw_user = CustomUser(
-            celular=number_phone, username=user, password=_password, temporalToken=code)
+             email=_email, celular=number_phone, username=_email, password=_password, temporalToken=code)
         try:
             nw_user.save()
             print(nw_user.id, ' USER CREATED 200_OK')
-            return None, nw_user
         except ValueError:
             _errorResponse = {'Error': 'Error in User Create'}
-            return _errorResponse, None
+        return _errorResponse, nw_user
 
     @classmethod
     def validateSecEqu(cls, listSecEq):

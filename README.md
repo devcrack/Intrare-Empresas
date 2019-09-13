@@ -17,7 +17,6 @@ Existe solo un tipo de invitacion y tiene una sola variacion en su funcionamient
 | idEmpresa       | FK     | SI          |
 | idArea          | FK     | SI          |
 | idEmpleado      | FK     | SI          |
-| fechaEnvio      | DATE   | SI          |
 | fechaInvitacion | DATE   | SI          |
 | idUsuario       | FK     | NO          |
 | asunto          | STRING | SI          |
@@ -404,7 +403,6 @@ Ctrl + Altf + W
 | username      | CharField(String) | SI           |
 | first_name    | CharField(String) | NO           |
 | last_name     | CharField(String) | NO           |
-| email         | EmailField        | NO           |
 
 
 
