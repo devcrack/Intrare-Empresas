@@ -164,9 +164,6 @@ class InvitationCreate(generics.CreateAPIView):
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
-        #Determinar si es un usuario temporal o uno registrado para el envio de link de registro o la notificacion
-        self.send_email(invitation)  # Detectar los errores de esto
-        ##################################
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -184,20 +181,26 @@ class InvitationCreate(generics.CreateAPIView):
 
 
     @classmethod
-    def send_email(cls, _inv):
+    def sendInv_email(cls, _email, _nameEmpresa, _dateInv, _qrCode):
 
         subject = 'Intrare Industrial - Invitación'
 
         html_message = render_to_string('email.html',
-                                        {'empresa': _inv.id_empresa.name,
-                                         'fecha': _inv.fecha_hora_invitacion,
-                                         'codigo': _inv.qr_code}
+                                        {'empresa': _nameEmpresa,
+                                         'fecha': _dateInv,
+                                         'codigo': _qrCode}
                                         )
-        message = ''
         email_from = settings.EMAIL_HOST_USER
-        recipient_list = [_inv.id_usuario.email, ]
-        _res = send_mail(subject=subject, message=message, from_email=email_from, recipient_list=recipient_list, html_message=html_message)
-        print('EMAIL LOGS ',_res)
+        recipient_list = [_email, ]
+        send_mail(subject=subject, from_email=email_from, recipient_list=recipient_list, html_message=html_message)
+
+    @classmethod
+    def send_register_email(cls, email, msg):
+        subject = 'Intrare Industrial - Invitación'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [email]
+        send_mail(subject=subject, message=msg, from_email=email_from, recipient_list=recipient_list)
+
     @classmethod
     def guest_exist(cls, _email):
         user = CustomUser.objects.filter(email=_email)
@@ -218,6 +221,7 @@ class InvitationCreate(generics.CreateAPIView):
             error_response, _idUser = cls.create_user(email, cell_phone_number)
             _msg = f'Bienvenido a Intratre Empresarial reliza tu registro en https://first-project-vuejs.herokuapp.com/preregistro/{_idUser.temporalToken}/, ' \
                    f'para Acceder a tus invitaciones'
+            cls.send_register_email(_idUser.email, _msg)
             if error_response:
                 return error_response, None
         else:
@@ -250,6 +254,8 @@ class InvitationCreate(generics.CreateAPIView):
             nw_invitation = None
         log = None
         if nw_invitation:
+            cls.sendInv_email(_idUser.email, nw_invitation.id_empresa.name, nw_invitation.fecha_hora_invitacion,
+                              nw_invitation.qr_code)
             _smsResponse = cls.send_sms(_idUser.celular, _msg)
             if _smsResponse["messages"][0]["status"] == "0":
                 log = 'Mensaje SMS ENVIADO'
