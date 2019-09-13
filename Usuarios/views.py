@@ -14,6 +14,7 @@ from .permissions import *
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
     queryset = CustomUser.objects.all()
     serializer_class = CustomFindSerializer
     filter_backends = [filters.SearchFilter]
