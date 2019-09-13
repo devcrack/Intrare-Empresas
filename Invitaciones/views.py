@@ -219,8 +219,8 @@ class InvitationCreate(generics.CreateAPIView):
         _idUser = cls.guest_exist(email)
         if _idUser is None:
             error_response, _idUser = cls.create_user(email, cell_phone_number)
-            _msg = f'Bienvenido a Intratre Empresarial reliza tu registro en https://first-project-vuejs.herokuapp.com/preregistro/{_idUser.temporalToken}/, ' \
-                   f'para Acceder a tus invitaciones'
+            _msg = f'Bienvenido a Intratre. Recibiste una invitacion. Para acceder a ella realiza tu registro en: ' \
+                   f'https://first-project-vuejs.herokuapp.com/preregistro/{_idUser.temporalToken}/'
             cls.send_register_email(_idUser.email, _msg)
             if error_response:
                 return error_response, None
