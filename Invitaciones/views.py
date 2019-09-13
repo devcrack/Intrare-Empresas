@@ -192,7 +192,8 @@ class InvitationCreate(generics.CreateAPIView):
                                         )
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [_email, ]
-        send_mail(subject=subject, from_email=email_from, recipient_list=recipient_list, html_message=html_message)
+        _msg=''
+        send_mail(subject=subject, from_email=email_from,message=_msg, recipient_list=recipient_list, html_message=html_message)
 
     @classmethod
     def send_register_email(cls, email, msg):
