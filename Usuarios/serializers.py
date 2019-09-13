@@ -16,6 +16,9 @@ class UserSerializer(BaseUserSerializer):
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
+    """
+    Este serializador normalmente se va a utilizar si cuando se crea un usuario
+    """
     first_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     last_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     email = serializers.EmailField(allow_blank=False)
