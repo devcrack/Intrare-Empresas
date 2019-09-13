@@ -31,6 +31,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'celular',
             'ine_frente',
             'temporalToken',
+            'password'
         ]
 
 
