@@ -14,6 +14,9 @@ from .permissions import *
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    Filtro para precargar informacion de un usuario.
+    """
     permission_classes = [IsAuthenticated]
     queryset = CustomUser.objects.all()
     serializer_class = CustomFindSerializer
@@ -22,6 +25,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class UserPlatformCreateOrList(generics.CreateAPIView):
+    """
+    Vista para crear un Usuario de la plataforma desde 0.
+    """
     queryset = CustomUser.objects.all()
     serializer_class = UserPlatformSerializer
 
@@ -63,18 +69,6 @@ class UserUpdateParcial(generics.UpdateAPIView):
         # Performing Update
         instance.save()
         return Response(status=status.HTTP_202_ACCEPTED)
-
-
-# class UserUpdateByTemporalToken(generics.UpdateAPIView):
-#
-#
-#     def update(self, request, *args, **kwargs):
-#         _temporalToken = request.data.get('tToken')
-#         _set = CustomUser.objects.filter(temporalToken=_temporalToken)
-#         _setLen = len(_set)
-#         if _setLen != 1:
-#             return Response(status=status.HTTP_304_NOT_MODIFIED, data={'error':'Error con el tokenTemporal'})
-#
 
 
 class UserPasswordUpdate(generics.UpdateAPIView):
