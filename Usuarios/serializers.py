@@ -33,7 +33,16 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'temporalToken',
             'password'
         ]
-
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.pop('first_name')
+        instance.last_name = validated_data.pop('last_name')
+        instance.email = validated_data.pop('email')
+        instance.celular = validated_data.pop('celular')
+        instance.ine_frente = validated_data.pop('ine_frente')
+        instance.temporalToken = validated_data.pop('temporalToken')
+        instance.set_password(validated_data.pop('password'))
+        instance.save()
+        return instance
 
 
 class CustomFindSerializer(serializers.ModelSerializer):

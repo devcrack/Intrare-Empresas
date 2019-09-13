@@ -222,7 +222,7 @@ class InvitationCreate(generics.CreateAPIView):
             error_response, _idUser = cls.create_user(email, cell_phone_number)
             _msg = f'Bienvenido a Intratre. Recibiste una invitacion. Para acceder a ella realiza tu registro en: ' \
                    f'https://first-project-vuejs.herokuapp.com/preregistro/{_idUser.temporalToken}/'
-            cls.send_register_email(_idUser.email, _msg)
+            # cls.send_register_email(_idUser.email, _msg)
             if error_response:
                 return error_response, None
         else:
@@ -255,15 +255,15 @@ class InvitationCreate(generics.CreateAPIView):
             nw_invitation = None
         log = None
         if nw_invitation:
-            cls.sendInv_email(_idUser.email, nw_invitation.id_empresa.name, nw_invitation.fecha_hora_invitacion,
-                              nw_invitation.qr_code)
-            _smsResponse = cls.send_sms(_idUser.celular, _msg)
-            if _smsResponse["messages"][0]["status"] == "0":
-                log = 'Mensaje SMS ENVIADO'
-            else:
-                log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-            print('LOGs SMS!! ')
-            print(log)
+            # cls.sendInv_email(_idUser.email, nw_invitation.id_empresa.name, nw_invitation.fecha_hora_invitacion,
+            #                   nw_invitation.qr_code)
+            # _smsResponse = cls.send_sms(_idUser.celular, _msg)
+            # if _smsResponse["messages"][0]["status"] == "0":
+            #     log = 'Mensaje SMS ENVIADO'
+            # else:
+            #     log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+            # print('LOGs SMS!! ')
+            # print(log)
             print(nw_invitation.id, ' INVITATION CREATED  200_OK')
         return error_response, nw_invitation
 
