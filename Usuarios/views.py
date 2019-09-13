@@ -1,15 +1,23 @@
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
+from rest_framework import filters
 
 from .serializers import *
 from .permissions import *
 
 
 # Create your views here.
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomFindSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['^celular', '^email']
 
 
 class UserPlatformCreateOrList(generics.CreateAPIView):
@@ -143,9 +151,6 @@ class UserHaveIne(APIView):
         ine = instance.ine_frente
         if not ine:
             return Response(status=status.HTTP_204_NO_CONTENT, data={'warning': 'Usuario sin imagen INE Frente'})
-        ine = instance.ine_atras
-        if not ine:
-            return Response(status=status.HTTP_204_NO_CONTENT, data={'warning': 'Usuario sin imagen INE Atras'})
         return Response(status=status.HTTP_200_OK)
 
 

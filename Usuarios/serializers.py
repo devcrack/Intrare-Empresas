@@ -20,6 +20,13 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model =CustomUser
         fields = ['email', 'username', 'first_name', 'last_name', 'celular', 'temporalToken']
 
+
+class CustomFindSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'first_name', 'last_name', 'celular', 'avatar']
+
+
 class UserAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
