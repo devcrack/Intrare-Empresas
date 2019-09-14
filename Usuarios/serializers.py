@@ -3,10 +3,12 @@ from rest_framework import serializers
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework.exceptions import ValidationError
 from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
-
+from secrets import token_hex
 from django.utils import translation
-
+from django.template.loader import render_to_string
+from ControlAccs.utils import send_IntrareEmail
 from .models import *
+from Invitaciones.models import Invitacion
 from django.contrib.auth import validators
 
 
@@ -36,15 +38,26 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'temporalToken',
             'password'
         ]
+
     def update(self, instance, validated_data):
+        _tmpPassword = token_hex(3)
         instance.first_name = validated_data.pop('first_name')
         instance.last_name = validated_data.pop('last_name')
         instance.email = validated_data.pop('email')
         instance.celular = validated_data.pop('celular')
         instance.ine_frente = validated_data.pop('ine_frente')
         instance.temporalToken = validated_data.pop('temporalToken')
-        instance.set_password(validated_data.pop('password'))
+        instance.set_password(_tmpPassword)
         instance.save()
+        html_message = render_to_string('passwordMail.html', {'password': _tmpPassword})
+        send_IntrareEmail(html_message, instance.email)
+        inv = Invitacion.objects.filter(id_usuario=instance)[0]
+        html_message = render_to_string('email.html',
+                                        {'empresa': inv.id_empresa.name,
+                                         'fecha': inv.fecha_hora_invitacion,
+                                         'codigo': inv.qr_code}
+                                        )
+        send_IntrareEmail(html_message, instance.email)
         return instance
 
 
