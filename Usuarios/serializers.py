@@ -51,7 +51,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class CustomFindSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['email', 'first_name', 'last_name', 'celular', 'avatar']
+        fields = ['id','email', 'first_name', 'last_name', 'celular', 'avatar']
 
 
 class UserAdminSerializer(serializers.ModelSerializer):
