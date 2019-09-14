@@ -64,7 +64,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class CustomFindSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['email', 'first_name', 'last_name', 'celular', 'avatar']
+        fields = ['id','email', 'first_name', 'last_name', 'celular', 'avatar']
 
 
 class UserAdminSerializer(serializers.ModelSerializer):
@@ -320,19 +320,20 @@ class UserPlatformSerializer(BaseUserRegistrationSerializer):
         )
 
 
+        
 class validatorImg():
 
-    def __init__(self, imgFront, imgBack):
+    def __init__(self, imgFront):
         self.imgFront = imgFront
-        self.imgBack = imgBack
 
+        
 class UpdateIneSerializser(serializers.Serializer):
     imgFront = serializers.ImageField(allow_null=False,  allow_empty_file=False)
-    imgBack = serializers.ImageField(allow_null=False, allow_empty_file=False)
 
     def create(self, validated_data):
         return validatorImg(**validated_data)
 
+    
 class validatorONEImg():
 
     def __init__(self, img):
