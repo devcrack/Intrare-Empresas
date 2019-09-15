@@ -51,13 +51,15 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.save()
         html_message = render_to_string('passwordMail.html', {'password': _tmpPassword})
         send_IntrareEmail(html_message, instance.email)
-        inv = Invitacion.objects.filter(id_usuario=instance)[0]
-        html_message = render_to_string('email.html',
-                                        {'empresa': inv.id_empresa.name,
-                                         'fecha': inv.fecha_hora_invitacion,
-                                         'codigo': inv.qr_code}
-                                        )
-        send_IntrareEmail(html_message, instance.email)
+        query_set = Invitacion.objects.filter(id_usuario=instance)[0]
+        if len(query_set) > 0:  # Si el usuario tiene invitacion enviar Email con invitacion 0.
+            inv = Invitacion.objects.filter(id_usuario=instance)[0]
+            html_message = render_to_string('email.html',
+                                            {'empresa': inv.id_empresa.name,
+                                             'fecha': inv.fecha_hora_invitacion,
+                                             'codigo': inv.qr_code}
+                                            )
+            send_IntrareEmail(html_message, instance.email)
         return instance
 
 
