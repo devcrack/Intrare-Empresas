@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from .serializers import *
 from Usuarios.permissions import *
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
@@ -87,7 +88,7 @@ class InvitationListToGuard(viewsets.ModelViewSet):
 
 
 class InvitationListToSimpleUser(viewsets.ModelViewSet):
-    permission_classes = (IsUser,)
+    permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         self.queryset = Invitacion.objects.filter(id_usuario=self.request.user.id)
