@@ -9,6 +9,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from .serializers import *
 from Usuarios.permissions import *
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
@@ -87,7 +88,7 @@ class InvitationListToGuard(viewsets.ModelViewSet):
 
 
 class InvitationListToSimpleUser(viewsets.ModelViewSet):
-    permission_classes = (IsUser,)
+    permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         self.queryset = Invitacion.objects.filter(id_usuario=self.request.user.id)
@@ -188,12 +189,8 @@ class InvitationCreate(generics.CreateAPIView):
         _idUser = cls.guest_exist(email)
         if _idUser is None:
             error_response, _idUser = cls.create_user(email, cell_phone_number)
-            _msgReg = f'Recibiste una invitación. Para acceder a ella realiza tu Pregistro en: '
-            _link = _link + str(_idUser.temporalToken) + '/'
             if error_response:
                 return error_response, None
-        else:
-            _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o la aplicación"
         print('Data to commit in Invitation\n')
         print('\tCompany Id: ', id_company)
         print('\tArea Id :', id_area)
@@ -216,22 +213,27 @@ class InvitationCreate(generics.CreateAPIView):
             empresa=from_company,
             )
         try:
-            nw_invitation.save()
+            some  = nw_invitation.save()
+            print("SOME", some)
         except ValueError:
             error_response = {'Error': 'Can\'t create an Invitation'}
             nw_invitation = None
-        if nw_invitation:
-            log = None
-            if _msgReg is None:  # Se envia correo y SMS con invitacion
-                _smsResponse = send_sms(_idUser.celular, _msgInv)
+        if nw_invitation:  # Se ha creado una invitacion satisfactoriamente.
+            if _idUser.is_active == True:  # El proceso de notificacion de Invitacion se realiza normalmente
+                _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o la aplicación"
+                #  Envio de correo electronico con los datos de la invitacion
                 _htmlMessage = cls.render_InvMail(nw_invitation.id_empresa.name, nw_invitation.fecha_hora_invitacion,
-                                                 nw_invitation.qr_code)
+                                                  nw_invitation.qr_code)
+                _smsResponse = send_sms(_idUser.celular, _msgInv)  # Envio notificacion sms Invitacion.
                 send_IntrareEmail(_htmlMessage, _idUser.email)
-            else:  # Se envia un correo y un SMS con mensaje de Preregistro
+                log = None
+            else: #  Se envia al usuario una notificacion para que realize su preRegistro N VECES
+                _msgReg = f'Recibiste una invitación. Para acceder a ella realiza tu Pregistro en: '
+                _link = _link + str(_idUser.temporalToken) + '/'
                 msg = _mainMsg + _msgReg + _link
-                _smsResponse = send_sms(_idUser.celular, msg)
+                _smsResponse = send_sms(_idUser.celular, msg)  # SMS
                 _htmlMessage = cls.render_MsgPregister(_mainMsg, _msgReg, _link)
-                send_IntrareEmail(_htmlMessage, _idUser.email)
+                send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
             if _smsResponse["messages"][0]["status"] == "0":
                 log = 'Mensaje SMS ENVIADO'
             else:
@@ -336,7 +338,7 @@ class InvitationCreate(generics.CreateAPIView):
         _password = 'pass'
         #poner token 5 digitos
         nw_user = CustomUser(
-             email=_email, celular=number_phone, username=_email, password=_password, temporalToken=code)
+             email=_email, celular=number_phone, username=_email, password=_password, temporalToken=code, is_active=False)
         try:
             nw_user.save()
             print(nw_user.id, ' USER CREATED 200_OK')

@@ -36,7 +36,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'celular',
             'ine_frente',
             'temporalToken',
-            'password'
+            'is_active',
+            'avatar'
         ]
 
     def update(self, instance, validated_data):
@@ -47,17 +48,26 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.celular = validated_data.pop('celular')
         instance.ine_frente = validated_data.pop('ine_frente')
         instance.temporalToken = validated_data.pop('temporalToken')
+        instance.avatar = validated_data.pop('avatar')
         instance.set_password(_tmpPassword)
+        instance.is_active = validated_data.pop('is_active')
         instance.save()
         html_message = render_to_string('passwordMail.html', {'password': _tmpPassword})
-        send_IntrareEmail(html_message, instance.email)
-        inv = Invitacion.objects.filter(id_usuario=instance)[0]
-        html_message = render_to_string('email.html',
-                                        {'empresa': inv.id_empresa.name,
-                                         'fecha': inv.fecha_hora_invitacion,
-                                         'codigo': inv.qr_code}
-                                        )
-        send_IntrareEmail(html_message, instance.email)
+        send_IntrareEmail(html_message, instance.email)  # Envio email Password Inicial Temporal.
+        query_set = Invitacion.objects.filter(id_usuario=instance)
+        """"
+        Si el usuario tiene invitacion enviar Email con invitacion 0.
+        Se tienen que verificar si el usuario tiene mas de una invitacion y de ser asi enviar todas las
+        invitaciones pendientes de manera masiva, o pensar una mejor manera.
+        """
+        if len(query_set) > 0:
+            inv = query_set[0]
+            html_message = render_to_string('email.html',
+                                            {'empresa': inv.id_empresa.name,
+                                             'fecha': inv.fecha_hora_invitacion,
+                                             'codigo': inv.qr_code}
+                                            )
+            send_IntrareEmail(html_message, instance.email)
         return instance
 
 

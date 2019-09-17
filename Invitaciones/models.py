@@ -20,7 +20,7 @@ class Invitacion(models.Model):
     ## Invitaciones programadas
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
-    notas = models.CharField(max_length=12, null=True, blank=True, default="")
+    notas = models.CharField(max_length=256, null=True, blank=True, default="")
     empresa = models.CharField(max_length=254, null=True, blank=True, default="")
     leida = models.BooleanField(default=False, null=False)
     qr_code = models.CharField(max_length=16, null=False, blank=True, unique=True)
