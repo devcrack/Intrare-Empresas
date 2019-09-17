@@ -51,7 +51,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.save()
         html_message = render_to_string('passwordMail.html', {'password': _tmpPassword})
         send_IntrareEmail(html_message, instance.email)
-        query_set = Invitacion.objects.filter(id_usuario=instance)[0]
+        query_set = Invitacion.objects.filter(id_usuario=instance)
         if len(query_set) > 0:  # Si el usuario tiene invitacion enviar Email con invitacion 0.
             inv = query_set[0]
             html_message = render_to_string('email.html',
