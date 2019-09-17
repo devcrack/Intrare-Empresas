@@ -8,6 +8,16 @@
 
 # Acerca de las invitaciones
 
+## User.is_active == False
+
+Si el usuario no ha sido activado, mediante el preRegistro que tiene que realizar el usuario, entonces las invitaciones no se le enviaran
+solo se enviara la notificacion de que se tiene que registrar.
+
+## User.is_active == True
+
+El usuario ha sido activado, el usuario se ha Preregistrado, entonces se envian las notificaciones de invitaciones normalmente.
+
+
 Existe solo un tipo de invitacion y tiene una sola variacion en su funcionamiento.
 
 ### Tabla invitaciones
