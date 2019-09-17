@@ -336,7 +336,7 @@ class InvitationCreate(generics.CreateAPIView):
         _password = 'pass'
         #poner token 5 digitos
         nw_user = CustomUser(
-             email=_email, celular=number_phone, username=_email, password=_password, temporalToken=code)
+             email=_email, celular=number_phone, username=_email, password=_password, temporalToken=code, is_active=False)
         try:
             nw_user.save()
             print(nw_user.id, ' USER CREATED 200_OK')
