@@ -181,7 +181,7 @@ class InvitationCreate(generics.CreateAPIView):
     def create_invitation(cls, email, cell_phone_number, id_company, id_area, id_employee , date_inv, subject, vehicle,
                           notes, from_company):
         error_response = None
-        _mainMsg = 'Bienvenido a Intratre. '
+        _mainMsg = 'Bienvenido a Intrare. '
         _msgReg = None
         _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
         _msgInv = None
@@ -220,7 +220,7 @@ class InvitationCreate(generics.CreateAPIView):
             nw_invitation = None
         if nw_invitation:  # Se ha creado una invitacion satisfactoriamente.
             if _idUser.is_active == True:  # El proceso de notificacion de Invitacion se realiza normalmente
-                _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o la aplicación"
+                _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o la aplicacion"
                 #  Envio de correo electronico con los datos de la invitacion
                 _htmlMessage = cls.render_InvMail(nw_invitation.id_empresa.name, nw_invitation.fecha_hora_invitacion,
                                                   nw_invitation.qr_code)
@@ -228,7 +228,7 @@ class InvitationCreate(generics.CreateAPIView):
                 send_IntrareEmail(_htmlMessage, _idUser.email)
                 log = None
             else: #  Se envia al usuario una notificacion para que realize su preRegistro N VECES
-                _msgReg = f'Recibiste una invitación. Para acceder a ella realiza tu Pregistro en: '
+                _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
                 _link = _link + str(_idUser.temporalToken) + '/'
                 msg = _mainMsg + _msgReg + _link
                 _smsResponse = send_sms(_idUser.celular, msg)  # SMS
