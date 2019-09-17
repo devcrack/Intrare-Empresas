@@ -36,6 +36,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'celular',
             'ine_frente',
             'temporalToken',
+            'is_active',
+            'avatar'
             'password'
         ]
 
