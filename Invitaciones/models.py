@@ -3,7 +3,7 @@ from django.db import models
 
 from django.conf import settings
 from secrets import token_hex
-from datetime import datetime
+from datetime import datetime, date, time
 import qrcode
 
 
@@ -16,8 +16,14 @@ class Invitacion(models.Model):
     id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE, blank=True, null=True)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None)
     fecha_hora_envio = models.DateTimeField(default=datetime.now, null=False, blank=False)
-    fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
-    ## Invitaciones programadas
+    # fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
+    #  Invitaciones programadas
+    typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
+    dateInv = models.DateField(default=date(year=2000, month=datetime.now().month, day=datetime.now().day), null = False)
+    timeInv = models.TimeField(default=time(), null=False)
+    expiration = models.DateField(default=date(year=2000, month=datetime.now().month, day=datetime.now().day), null=True)
+    diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente
+    #
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
     notas = models.CharField(max_length=256, null=True, blank=True, default="")
