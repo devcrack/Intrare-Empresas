@@ -36,7 +36,7 @@ def addSimpleUser(*args):
         
         user = CustomUser.objects.create_user(first_name=_firstName, last_name=_lastName, username=_username, email=_email,
                                          password=_password, celular=_cellphone)
-        user.save()
+        # user.save()
         print('USER CREATED wit mail  =')
         print(_email)
         print(' And Password  =')
