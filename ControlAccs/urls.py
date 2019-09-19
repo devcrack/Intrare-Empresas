@@ -30,7 +30,8 @@ urlpatterns = [
     path('', include('Invitaciones.urls')),
     path('', include('Parques.urls')),
     path('', include('Usuarios.urls')),
-    path('', include('Grupos.urls'))
+    path('', include('Grupos.urls')),
+    path('', include('Bitacoras.urls'))
 ]
 
 if settings.DEBUG:

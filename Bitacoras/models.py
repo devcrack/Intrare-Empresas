@@ -1,4 +1,6 @@
 from django.db import models
+from datetime import datetime
+
 
 class Bitacora(models.Model):
     id_vigilante = models.ForeignKey(
@@ -17,15 +19,19 @@ class Bitacora(models.Model):
         'Empresas.Area', 
         on_delete=models.CASCADE)
     f_acceso = models.DateTimeField(
+        default=datetime.now,
         null=False, 
         blank=False)
     f_salida = models.DateTimeField(
-        null=False, 
-        blank=False)
-    url_foto = models.CharField(
-        max_length=300, 
+        default=None,
+        null=True,
+        blank=True)
+    url_foto = models.ImageField(
+        upload_to="WithoutAccess",
+        max_length=256,
+        blank=False,
         null=False,
-        blank=False)
+        default=None)
     nombre = models.CharField(
         max_length=200, 
         null=False,
