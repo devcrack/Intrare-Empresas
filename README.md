@@ -21,19 +21,25 @@ El usuario ha sido activado, el usuario se ha Preregistrado, entonces se envian 
 Existe solo un tipo de invitacion y tiene una sola variacion en su funcionamiento.
 
 ### Tabla invitaciones
-| Invitacion      | Tipo   | OBLIGATORIO |
-|-----------------|--------|-------------|
-| idInvitacion    | PK     |             |
-| idEmpresa       | FK     | SI          |
-| idArea          | FK     | SI          |
-| idEmpleado      | FK     | SI          |
-| fechaInvitacion | DATE   | SI          |
-| idUsuario       | FK     | NO          |
-| asunto          | STRING | SI          |
-| automovil       | BOOL   | SI          |
-| empresa         | STRING | NO          |
-| notas           | STRING | NO          |
-| LEIDA           | BOOL   | SI/AUTO     |
+| Invitacion      | Tipo     | OBLIGATORIO |
+|-----------------|----------|-------------|
+| idInvitacion    | PK       |             |
+| idEmpresa       | FK       | SI          |
+| idArea          | FK       | SI          |
+| idEmpleado      | FK       | SI          |
+| typeInv         | INT      | SI          |
+| dateInv         | DATE     |             |
+| timeInv         | TIME     | SI          |
+| expiration      | DATE     | SI          |
+| diary           | String   | NO          |
+| idUsuario       | FK       | NO          |
+| asunto          | STRING   | SI          |
+| automovil       | BOOL     | SI          |
+| empresa         | STRING   | NO          |
+| notas           | STRING   | NO          |
+| LEIDA           | BOOL     | SI/AUTO     |
+
+
 
 Cada Invitacion tiene que cubrir con los campos que son marcados como obligatorios sin excepcion,
 ya que son totalmente necesarios para gestionar las invitaciones.
@@ -219,7 +225,12 @@ JSON Usado para la creacion de las invitaciones.
  "employeeId":2,
  "dateInv": "2016-01-27 12:05",
  "numCell": 4443424829,
+ "email": "unemail@mail.com",
  "subject": "Algun asunto de la visita",
+ "typeInv":can be null, default = 0
+ "dateInv":"Yy-Mm-Dd",can be null, default = (Al dia siguiente)
+ "timeInv": "Hh:Mm", Default misma hora enviada invitacion
+ "exp": "Yy-Mmm-Dd", Default = (2 dias despues de que se envia la invitacion")
  "secEquip": "1,3,6",
  "vehicle": false,
  "companyFrom": "Edison Effect",

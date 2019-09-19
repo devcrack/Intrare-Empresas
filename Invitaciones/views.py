@@ -111,7 +111,7 @@ class InvitationCreate(generics.CreateAPIView):
         # self.preprocessJson(request.data)
         self.serializer_class = InvitationCreateSerializerAdmin
         _serializer = self.serializer_class(data=request.data)
-        if _serializer.is_valid():
+        if _serializer.is_valid(raise_exception=True):
             _serializer.save()
             _idCompany = None
             _employee = None
@@ -129,42 +129,42 @@ class InvitationCreate(generics.CreateAPIView):
             _notes = _serializer.data['notes']
             _companyFrom = _serializer.data['companyFrom']
 
-            if usr.roll == settings.ADMIN:
-                print('Logged as Administrator\n')
-                _employeeId = _serializer.data['employeeId']
-                _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
-                _idCompany = _admCompany.id_empresa
-                #  Validating Employee
-                _errorResponse, _employee = self.validate_employee(_idCompany, _employeeId)
-                if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                print('Logged as Employee\n')
-                _employee = Empleado.objects.filter(id_usuario=usr)[0]
-                _idCompany = _employee.id_empresa
-            print('IDCompany =', _idCompany)
-            _errorResponse, _area = self.validate_areas(_idCompany, _areaId)  # Validating if Area exist
-            if _area:
-                # Validating if Security Equipment Exist
-                _securityEqu, _errorResponse = self.validateSecEqu(_arraySecEquip)
-                if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
-
-                # Create Invitation
-                _errorResponse, invitation = self.create_invitation(_email, _cellNumberUser, _idCompany, _area,
-                                                                    _employee, _dateInv, _subject, _vehicle,
-                                                                    _notes, _companyFrom)
-                if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    if _securityEqu:
-                        _errorResponse = self.add_sec_equ_by_inv(_securityEqu, invitation)
-            else:
-                return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
+        #     if usr.roll == settings.ADMIN:
+        #         print('Logged as Administrator\n')
+        #         _employeeId = _serializer.data['employeeId']
+        #         _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
+        #         _idCompany = _admCompany.id_empresa
+        #         #  Validating Employee
+        #         _errorResponse, _employee = self.validate_employee(_idCompany, _employeeId)
+        #         if _errorResponse:
+        #             return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+        #     else:
+        #         print('Logged as Employee\n')
+        #         _employee = Empleado.objects.filter(id_usuario=usr)[0]
+        #         _idCompany = _employee.id_empresa
+        #     print('IDCompany =', _idCompany)
+        #     _errorResponse, _area = self.validate_areas(_idCompany, _areaId)  # Validating if Area exist
+        #     if _area:
+        #         # Validating if Security Equipment Exist
+        #         _securityEqu, _errorResponse = self.validateSecEqu(_arraySecEquip)
+        #         if _errorResponse:
+        #             return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+        #
+        #         # Create Invitation
+        #         _errorResponse, invitation = self.create_invitation(_email, _cellNumberUser, _idCompany, _area,
+        #                                                             _employee, _dateInv, _subject, _vehicle,
+        #                                                             _notes, _companyFrom)
+        #         if _errorResponse:
+        #             return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+        #         else:
+        #             if _securityEqu:
+        #                 _errorResponse = self.add_sec_equ_by_inv(_securityEqu, invitation)
+        #     else:
+        #         return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED, data =_serializer.data)
 
 
     @classmethod

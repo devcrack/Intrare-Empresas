@@ -1,24 +1,33 @@
 from django.utils import regex_helper
 from rest_framework import serializers
-
 from .models import *
 from Usuarios.models import CustomUser
 from Empresas.models import Administrador, Empresa, Area
 from Empresas.models import Empleado
 
 
+# def validateDateInv(value):
+#     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
+#     if _date > value:
+#         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
+#
 class json_invit_admin():
     """
     Object Class for render the input for the creation of
     invitations by Administrators.
     """
-    def __init__(self, areaId, employeeId, dateInv, email, cellNumber, subject, secEquip, vehicle, companyFrom, notes):
+    def __init__(self, areaId, employeeId, cellNumber, email, subject, typeInv, dateInv, timeInv, exp,
+                 secEquip, vehicle, companyFrom, notes,
+                 ):
         self.areaId = areaId
         self.employeeId = employeeId
-        self.dateInv = dateInv
         self.cellNumber = cellNumber
         self.email = email
         self.subject = subject
+        self.typeInv = typeInv
+        self.dateInv = dateInv
+        self.timeInv = timeInv
+        self.exp = exp
         self.secEquip = secEquip
         self.vehicle = vehicle
         self.companyFrom = companyFrom
@@ -29,12 +38,17 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     """
     Serializer Class for create and validates Invitations created by an ADMIN
     """
-    areaId = serializers.IntegerField()
-    employeeId = serializers.IntegerField(allow_null=True)
-    dateInv = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
-    email = serializers.EmailField()
-    cellNumber = serializers.IntegerField(allow_null=True)
-    subject = serializers.CharField(max_length=400)
+    areaId = serializers.IntegerField() #
+    employeeId = serializers.IntegerField(allow_null=True) #
+    cellNumber = serializers.IntegerField(allow_null=True) #
+    email = serializers.EmailField(allow_null=True, allow_blank=False) #
+    subject = serializers.CharField(max_length=400) #
+    typeInv = serializers.IntegerField(default=0) #
+    # dateInv = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
+    # dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], validators=[validateDateInv])
+    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
+    timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M']) #
+    exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"]) #
     secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
     vehicle = serializers.BooleanField()
     companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
@@ -42,6 +56,29 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
 
     def create(self, validated_data):
         return json_invit_admin(**validated_data)
+
+    # def is_valid(self, raise_exception=False):
+    #     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
+    #     if  _date > self.data['dateInv']:
+    #         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
+    def validate(self, data):
+        # Validando la fecha de la invitacion
+        _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
+        if  _date > data['dateInv']:
+            raise serializers.ValidationError("La fecha de la invitacion esta vencida")
+        # Validando que se haya ingresado el email o el numero de telefono, pero no ninguno de los 2.
+        if data['cellNumber'] == None and data['email'] == None:
+            raise serializers.ValidationError("Tienes que ingresar email o numero de Telefono")
+        # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
+        if data['exp'] < data['dateInv']:
+            raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que acontezca la invitacion")
+        return data
+    # def validate_dateInv(self, value):
+    #     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
+    #     if _date > value:
+    #         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
+    #     return value
+
 
 
 class json_invit_employee():
