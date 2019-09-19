@@ -48,7 +48,7 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     # dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], validators=[validateDateInv])
     dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M']) #
-    exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"]) #
+    exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True) #
     secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
     vehicle = serializers.BooleanField()
     companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
@@ -66,8 +66,9 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
         if data['cellNumber'] == None and data['email'] == None:
             raise serializers.ValidationError("Tienes que ingresar email o numero de Telefono")
         # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
-        if data['exp'] < data['dateInv']:
-            raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que acontezca la invitacion")
+        if data['exp'] != None:
+            if data['exp'] < data['dateInv']:
+                raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que acontezca la invitacion")
         return data
 
 

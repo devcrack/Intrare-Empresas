@@ -104,7 +104,7 @@ class InvitationListToSimpleUser(viewsets.ModelViewSet):
 
 
 class InvitationCreate(generics.CreateAPIView):
-    permission_classes = (IsAdmin | IsEmployee,)
+    # permission_classes = (IsAdmin | IsEmployee,)
 
     def create(self, request, *args, **kwargs):
         usr = self.request.user

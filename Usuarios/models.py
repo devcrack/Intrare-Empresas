@@ -28,15 +28,13 @@ class CustomUser(AbstractUser):
     
 
     """
-    Aqui se especifican los campos obligatorios para poder reegistrar un usuarios.
-    
+    Aqui se especifican los campos obligatorios para poder reegistrar un usuarios.    
     y el campo que se utilizara para iniciar sesion
     """
     REQUIRED_FIELDS = ["celular", "username", "first_name", "last_name"]
     USERNAME_FIELD = "email"
     def save(self, *args, **kwargs):
         super(CustomUser, self).save(*args, **kwargs)
-        print('QUE COJONES TIO')
         _nwSettings = UserSettings()
         _nwSettings.user = self
         _nwSettings.save()
