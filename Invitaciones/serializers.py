@@ -57,13 +57,9 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     def create(self, validated_data):
         return json_invit_admin(**validated_data)
 
-    # def is_valid(self, raise_exception=False):
-    #     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
-    #     if  _date > self.data['dateInv']:
-    #         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
     def validate(self, data):
         # Validando la fecha de la invitacion
-        _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
+        _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day) #Fecha actual
         if  _date > data['dateInv']:
             raise serializers.ValidationError("La fecha de la invitacion esta vencida")
         # Validando que se haya ingresado el email o el numero de telefono, pero no ninguno de los 2.
@@ -73,11 +69,7 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
         if data['exp'] < data['dateInv']:
             raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que acontezca la invitacion")
         return data
-    # def validate_dateInv(self, value):
-    #     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
-    #     if _date > value:
-    #         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
-    #     return value
+
 
 
 
