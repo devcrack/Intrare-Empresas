@@ -24,7 +24,8 @@ class CustomUser(AbstractUser):
     roll = models.IntegerField(null=False, default=0, blank=False, name='roll')
     temporalToken = models.CharField(max_length=8, default="", null=False, blank=True)
     plataforma = models.CharField(max_length=25, default='web', name='plataforma')  # Tipo de aplicacion que es el sistema(Web, Android, iOs)
-
+    host = models.ForeignKey("self", null=True, on_delete=models.SET_NULL, related_name="anfitrion")  # Campo que ayuda a referenciar el anfitrion para este invitado.
+    
     """
     Aqui se especifican los campos obligatorios para poder reegistrar un usuarios.
     
