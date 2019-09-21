@@ -52,7 +52,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.set_password(_tmpPassword)
         instance.is_active = validated_data.pop('is_active')
         instance.save()
-        html_message = render_to_string('passwordMail.html', {'password': _tmpPassword})
+        html_message = render_to_string('passwordMail.html', {'password':_tmpPassword})
         send_IntrareEmail(html_message, instance.email)  # Envio email Password Inicial Temporal.
         query_set = Invitacion.objects.filter(id_usuario=instance)
         """"

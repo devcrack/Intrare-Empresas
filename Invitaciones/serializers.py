@@ -16,7 +16,7 @@ class json_invit_admin():
     Object Class for render the input for the creation of
     invitations by Administrators.
     """
-    def __init__(self, areaId, employeeId, cellNumber, email, subject, typeInv, dateInv, timeInv, exp,
+    def __init__(self, areaId, employeeId, cellNumber, email, subject, typeInv, dateInv, timeInv, exp, diary,
                  secEquip, vehicle, companyFrom, notes,
                  ):
         self.areaId = areaId
@@ -28,6 +28,7 @@ class json_invit_admin():
         self.dateInv = dateInv
         self.timeInv = timeInv
         self.exp = exp
+        self.diary = diary
         self.secEquip = secEquip
         self.vehicle = vehicle
         self.companyFrom = companyFrom
@@ -49,6 +50,7 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M']) #
     exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True) #
+    diary = serializers.CharField(max_length=7, allow_blank=True)
     secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
     vehicle = serializers.BooleanField()
     companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
@@ -90,24 +92,6 @@ class json_invit_employee():
         self.notes = notes
         self.date = date
 
-
-class InvitationCreateSerializerEmployee(serializers.Serializer):
-    """
-    Serializer Class for creation of invitations by Employees.
-    """
-    cell_number = serializers.IntegerField()
-    email = serializers.EmailField(allow_blank=True)
-    # area = serializers.CharField(max_length=100)
-    area = serializers.IntegerField()
-    business = serializers.CharField(max_length=300)
-    sec_equip = serializers.CharField(max_length=300, allow_null=True)
-    vehicle = serializers.BooleanField()
-    company = serializers.CharField(max_length=200)
-    notes = serializers.CharField(max_length=300, allow_blank=True)
-    date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
-
-    def create(self, validated_data):
-        return json_invit_employee(**validated_data)
 
 
 class InvitacionSerializers(serializers.ModelSerializer):

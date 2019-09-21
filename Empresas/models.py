@@ -120,40 +120,7 @@ class Administrador(models.Model):
 
 
 class Empleado(models.Model):
-    """
-    Modelo Empleado  name(str): Nombre de la Empresa.
-            address(str): Dirección de la Empresa.
-            telephone(str): Teléfono de la Empresa.
-            email(email): Dirección de Correo Electrónico de la Empresa.
-            logo(str): Ubicación del archivo logo de la Empresa.
-            web_page(str): Direccón de la Página Web de la Empresa.
-            scian(int): Código Sistema de Clasificación
-                        Industrial de América del Norte de la Empresa.
-            classification(str): Clasificación de la Empresa.
-            latitude(float): Latitud de la Empresa.
-            longitude(float): Longitud de la Empresa.
-            url_map(str): Dirección web del mapa de la Empresa.
-            validity(Date): Vigencia de la Empresa.
 
-    Represnta la Tabla Empleado
-    en la Base de Datos.
-
-    Attributes:
-        id_empresa(int): ID de la Empresa al cual pertenece el Empleado,
-        id_usuario(int):ID del Usaurio del Empĺeado.
-        id_area(int): ID del Area al cual pertenece el Empleado.
-        extension(str): Extensión del Usuario
-        puede_enviar(bool): Bandera para saber si el Empleado puede eviar invitaciones:
-                        True: Puede enviar invitaciones.
-                        False:NO puede enviar invitaciones.
-        id_notificaciones(): Identificador de la Notificación.
-        codigo(): Código QR.
-
-    Todo:
-        * para que se ocupa el atributo extension?
-
-
-    """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     id_area = models.ForeignKey('Area', on_delete=models.CASCADE)

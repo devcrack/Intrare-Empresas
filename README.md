@@ -1,12 +1,29 @@
-# TODOS
-| POR HACER(INMEDIATO)                               | HACIENDO                                        | HECHO                                                       | PLANEAR                                                             |
-| -------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------- |
-| Generar link a formulario invitacion por referidos | Vistas con reestructuracion de las invitaciones | Restructuracion modelos invitaciones para manejar referidos | Agregar caducidad al link de invitacion por referidos               |
-| Vista accesos                                      |                                                 |                                                             | Script para depurar base de datos(Eliminar invitaciones muy viejas) |
-| Puta aplicacion de mierda                          |                                                 |                                                             | Como hacer para que el usuario pueda eliminar sus invitaciones      |
+# Generacion de un usuario nuevo mediante el envio de invitacion(Registro automatico)
+
+ 1. Anfitrion envia Invitacion
+    * Caso A Usuario Existe 
+    * Caso B Usuario no Existe
+ 2. **B** El usuario no existe
+   
+    1. Crear un Usuario, pero dicho usuario no esta ACTIVO = FALSE
+    2. Generar Invitacion 0,
+    3. Enviar Solocitud de Preregistro por, email y SMS. **FORMULARIO** , **EndPoint**
+    4. Cuando el Usuario complete el Preregistro, enviar notificacion al anfitrion mediante email y sms, mostrando los datos que se han dado de alta de dicho usuario, para validar su identidad.
+       **Formulario y EndPoint** 
+    5. Una vez que el anfitrion valide la identidad Activar el usuario **EndPoint ACTIVAR USUARIO**
+       - Cuando se activa al usuario se envia su invitacion 0 con su contraseña temporal.
+
 
 
 # Acerca de las invitaciones
+
+## Consideraciones
+
+- Se tiene que especificar:
+  - Una fecha de la visita. 
+  - Una hora de la visita.
+- Todas las invitaciones tienen caducidad, por default la caducidad es 2 dias despues de que se genero la invitacion.
+- La validacion o creacion se realiza ya sea mediante email o numero telefonico celular.
 
 ## User.is_active == False
 

@@ -14,7 +14,8 @@ class Invitacion(models.Model):
 
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE, related_name='id_company_inv')
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)
-    id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE, blank=True, null=True)
+    id_admin = models.ForeignKey('Empresas.Administrador', on_delete=models.CASCADE, blank=True, null=True)  # Anfitrion T1
+    id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE, blank=True, null=True) #Anfitrion T2
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None)
     fecha_hora_envio = models.DateTimeField(default=timezone.now, null=False, blank=False)
     # fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
@@ -22,12 +23,13 @@ class Invitacion(models.Model):
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
     dateInv = models.DateField(default=date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day+1), null = False)
     timeInv = models.TimeField(default=time(), null=False)
-    _DateExp = dateInv.get_default()
-    _delta = timezone.timedelta(days=2)
-    _DateExp = _DateExp + _delta
-    expiration = models.DateField(default=_DateExp, null=False)
+    # _DateExp = dateInv.get_default()
+    # _delta = timezone.timedelta(days=2)
+    # _DateExp = _DateExp + _delta
+    expiration = models.DateField(default=dateInv, null=False)
+    #Pendiente
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
-    #
+
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
     notas = models.CharField(max_length=256, null=True, blank=True, default="")

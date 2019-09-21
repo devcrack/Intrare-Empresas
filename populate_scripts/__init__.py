@@ -118,7 +118,6 @@ def add_user1(*args):
         celular=_cellphone,
         roll=_rol
         )
-    user.save()
     print('USER CREATED wit mail  =')
     print(_email)
     print(' And Password  =')
