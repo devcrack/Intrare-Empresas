@@ -4,7 +4,6 @@
 
 
 import sys
-from builtins import print
 
 from populate_scripts import *
 import populate_scripts.populate_models_App_Empresa as company

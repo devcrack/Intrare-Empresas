@@ -156,3 +156,28 @@ class UpdateUserPartialByToken(generics.UpdateAPIView):
         return self.partial_update(request, *args, **kwargs)
 
 
+class getUserByToken(generics.ListAPIView):
+    serializer_class = CustomUserSerializer
+
+    def get_queryset(self):
+        queryset = CustomUser.objects.filter(temporalToken=self.kwargs['temporalToken'])
+        return queryset
+
+
+class activateUser(generics.UpdateAPIView):
+    def update(self, request, *args, **kwargs):
+        usrToken = self.kwargs['temporalToken']
+        instance = CustomUser.objects.filter(temporalToken=usrToken)
+        if len(instance) != 1:
+            return Response(status=status.HTTP_409_CONFLICT, data={'error:El token de usuario ha sido corrompido'})
+        instance = instance[0]
+        _tmpPassword = token_hex(3)
+        instance.set_password(_tmpPassword) # Se establece contraseña temporal del usuario.
+        instance.is_active = True # Activamos el usuario.
+        instance.temporalToken=""
+        instance.save()
+        return Response(status=status.HTTP_200_OK)
+
+
+
+

@@ -45,8 +45,6 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     email = serializers.EmailField(allow_null=True, allow_blank=False) #
     subject = serializers.CharField(max_length=400) #
     typeInv = serializers.IntegerField(default=0) #
-    # dateInv = serializers.DateTimeField(format='%Y-%m-%d %H:%M', input_formats=['%Y-%m-%d %H:%M'])
-    # dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], validators=[validateDateInv])
     dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M']) #
     exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True) #

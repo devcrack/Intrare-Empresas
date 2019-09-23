@@ -35,39 +35,48 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'username',
             'celular',
             'ine_frente',
-            'temporalToken',
-            'is_active',
+            # 'temporalToken',
             'avatar'
         ]
 
     def update(self, instance, validated_data):
-        _tmpPassword = token_hex(3)
+        # _tmpPassword = token_hex(3)
+        #Enviar Notificaciones correo a Anfitrion(HOST)
+        msg = "Hola Anfitrion, valida a tu Invitado para que empieze a usar Intrare."
+        link = "URL/VistaUsrPrereg/" + instance.temporalToken + "/"
+
         instance.first_name = validated_data.pop('first_name')
         instance.last_name = validated_data.pop('last_name')
         instance.email = validated_data.pop('email')
         instance.celular = validated_data.pop('celular')
         instance.ine_frente = validated_data.pop('ine_frente')
-        instance.temporalToken = validated_data.pop('temporalToken')
+        # instance.temporalToken = validated_data.pop('temporalToken')
         instance.avatar = validated_data.pop('avatar')
-        instance.set_password(_tmpPassword)
-        instance.is_active = validated_data.pop('is_active')
+        # instance.set_password(_tmpPassword)
+        # instance.is_active = validated_data.pop('is_active')
         instance.save()
-        html_message = render_to_string('passwordMail.html', {'password':_tmpPassword})
-        send_IntrareEmail(html_message, instance.email)  # Envio email Password Inicial Temporal.
-        query_set = Invitacion.objects.filter(id_usuario=instance)
-        """"
-        Si el usuario tiene invitacion enviar Email con invitacion 0.
-        Se tienen que verificar si el usuario tiene mas de una invitacion y de ser asi enviar todas las
-        invitaciones pendientes de manera masiva, o pensar una mejor manera.
-        """
-        if len(query_set) > 0:
-            inv = query_set[0]
-            html_message = render_to_string('email.html',
-                                            {'empresa': inv.id_empresa.name,
-                                             'fecha': inv.fecha_hora_invitacion,
-                                             'codigo': inv.qr_code}
-                                            )
-            send_IntrareEmail(html_message, instance.email)
+        html_message = render_to_string('nwUserMail.html',
+                         {'headerMsg': 'Intrare',
+                          'msg': msg,
+                          'link': link
+                          })
+        mail_host = instance.host.email
+        print(mail_host)
+        send_IntrareEmail(html_message, mail_host)  # Envio de mail para validar la identidad de Usuario.
+        # query_set = Invitacion.objects.filter(id_usuario=instance)
+        # """"
+        # Si el usuario tiene invitacion enviar Email con invitacion 0.
+        # Se tienen que verificar si el usuario tiene mas de una invitacion y de ser asi enviar todas las
+        # invitaciones pendientes de manera masiva, o pensar una mejor manera.
+        # """
+        # if len(query_set) > 0:
+        #     inv = query_set[0]
+        #     html_message = render_to_string('email.html',
+        #                                     {'empresa': inv.id_empresa.name,
+        #                                      'fecha': inv.fecha_hora_invitacion,
+        #                                      'codigo': inv.qr_code}
+        #                                     )
+        #     send_IntrareEmail(html_message, instance.email)
         return instance
 
 

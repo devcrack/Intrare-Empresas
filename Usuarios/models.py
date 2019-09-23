@@ -35,9 +35,11 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = "email"
     def save(self, *args, **kwargs):
         super(CustomUser, self).save(*args, **kwargs)
-        _nwSettings = UserSettings()
-        _nwSettings.user = self
-        _nwSettings.save()
+        _sts = UserSettings.objects.filter(user=self)
+        if len(_sts) == 0:
+            _nwSettings = UserSettings()
+            _nwSettings.user = self
+            _nwSettings.save()
 
     def __str__(self):
         return f"ID->{self.id}; Name: {self.first_name } {self.last_name}; Number_Phone{self.celular}; email: {self.email}; Roll={self.roll}"
