@@ -25,6 +25,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     email = serializers.EmailField(allow_blank=False)
     ine_frente = serializers.ImageField(required=True, allow_empty_file=False)
+    avatar = serializers.ImageField(required=True, allow_empty_file=False)
 
     class Meta:
         model = CustomUser

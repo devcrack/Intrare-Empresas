@@ -44,6 +44,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"ID->{self.id}; Name: {self.first_name } {self.last_name}; Number_Phone{self.celular}; email: {self.email}; Roll={self.roll}"
 
+
 class UserSettings(models.Model):
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE,null=True)
     canSendSmS = models.BooleanField(default=True)
