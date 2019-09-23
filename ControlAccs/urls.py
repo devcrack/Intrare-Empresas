@@ -14,10 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.urls import include, re_path
 from django.conf.urls.static import static
 from django.conf import settings
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 admin.site.site_header = 'Administración de Intrare Industrial'
 
@@ -32,7 +33,10 @@ urlpatterns = [
     path('', include('Parques.urls')),
     path('', include('Usuarios.urls')),
     path('', include('Grupos.urls')),
-    path('', include('Bitacoras.urls'))
+    path('', include('Bitacoras.urls')),
+
+    re_path(r'^devices?$', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}),
+            name='create_fcm_device')
 ]
 
 if settings.DEBUG:
