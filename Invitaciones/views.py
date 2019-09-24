@@ -406,7 +406,6 @@ class InvitationbyQRCode(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Invitacion.objects.all()
-        self.request.data;
         _qrCode = self.kwargs['qrcode']
         if _qrCode is not None:
             queryset = queryset.filter(qr_code=_qrCode)
