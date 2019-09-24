@@ -18,8 +18,6 @@ class Invitacion(models.Model):
     id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE, blank=True, null=True) #Anfitrion T2
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None)
     fecha_hora_envio = models.DateTimeField(default=timezone.now, null=False, blank=False)
-    # fecha_hora_invitacion = models.DateTimeField(null=False, blank=False)
-    #  Invitaciones programadas
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
     dateInv = models.DateField(default=date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day+1), null = False)
     timeInv = models.TimeField(default=time(), null=False)

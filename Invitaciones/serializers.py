@@ -59,7 +59,7 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
 
     def validate(self, data):
         # Validando la fecha de la invitacion
-        _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day) #Fecha actual
+        _date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month, day=timezone.datetime.now().day) #Fecha actual
         if  _date > data['dateInv']:
             raise serializers.ValidationError("La fecha de la invitacion esta vencida")
         # Validando que se haya ingresado el email o el numero de telefono, pero no ninguno de los 2.
