@@ -43,7 +43,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         #Enviar Notificaciones correo a Anfitrion(HOST)
         msg = "Hola Anfitrion, valida a tu Invitado para que empieze a usar Intrare."
-        link = "URL/VistaUsrPrereg/" + instance.temporalToken + "/"
+        link = "confirmar_identidad/" + instance.temporalToken + "/"
 
         instance.first_name = validated_data.pop('first_name')
         instance.last_name = validated_data.pop('last_name')
