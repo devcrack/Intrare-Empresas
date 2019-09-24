@@ -167,15 +167,40 @@ class getUserByToken(generics.ListAPIView):
 class activateUser(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         usrToken = self.kwargs['temporalToken']
-        instance = CustomUser.objects.filter(temporalToken=usrToken)
+        isAdmin = request.data.get('isAdmin')
+        idHost = request.data.get('idHost')
+
+        instance = CustomUser.objects.filter(temporalToken=usrToken) # Buscamos al usuario a validar.
         if len(instance) != 1:
-            return Response(status=status.HTTP_409_CONFLICT, data={'error:El token de usuario ha sido corrompido'})
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={'error:El token de usuario ha sido corrompido'})
         instance = instance[0]
-        _tmpPassword = token_hex(3)
+        _tmpPassword = token_hex(3)  # Generamos su contraseña temporal
         instance.set_password(_tmpPassword) # Se establece contraseña temporal del usuario.
         instance.is_active = True # Activamos el usuario.
-        instance.temporalToken=""
+        instance.temporalToken=""  # Limpiamos su token Temporal.
         instance.save()
+        #  Envio de invitacion0 y contraseña.
+        addressee = instance.email
+        if isAdmin:
+            invs = Invitacion.objects.filter(id_usuario=instance, id_admin=idHost)
+        else:
+            invs = Invitacion.objects.filter(id_usuario=instance, id_empleado=idHost)
+        _nInvs = len(invs)
+        if _nInvs> 0:
+            _inv = invs[_nInvs - 1] #Enviamos la ultima invitacion.
+            _company = _inv.id_empresa.name
+            _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
+            _qrCode = _inv.qr_code
+            html_message = render_to_string('passwordMail.html',
+                                            {
+                                                'empresa': _company,
+                                                'fecha': _dateTime,
+                                                'codigo': _qrCode,
+                                                'password': _tmpPassword
+                                            })
+            send_IntrareEmail(html_message, addressee)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT, data={'error:Error Inesperado'})
         return Response(status=status.HTTP_200_OK)
 
 
