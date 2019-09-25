@@ -254,8 +254,8 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet):
             print('IS an EMPLOYEE')
             employee = Empleado.objects.filter(id_usuario=usr)[0]
             invitations = Invitacion.objects.filter(id_empleado=employee.id, dateInv__year=y,
-                                                    dateInvn__month=m,
-                                                    dateInvn__day=d)
+                                                    dateInv__month=m,
+                                                    dateInv__day=d)
         queryset = self.queryset = invitations
         serializer = InvitationToGuardSerializer(queryset, many=True)
         return Response(serializer.data)
