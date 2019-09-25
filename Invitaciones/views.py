@@ -369,10 +369,12 @@ class MassiveInvitationCreate(generics.CreateAPIView):
         _serializer = self.serializer_class(data=request.data)
         if _serializer.is_valid(raise_exception=True):
             _serializer.save()
-            _areaId = _serializer['areaId']
+            _areaId = _serializer.data['areaId']
+            print("area ID ", _areaId)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+
 
 class InvitationbyQRCode(generics.ListAPIView):
     serializer_class = InvitationSimpleSerializer

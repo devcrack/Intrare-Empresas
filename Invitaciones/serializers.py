@@ -95,8 +95,8 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
         # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
         if data['exp'] != None:
             if data['exp'] < data['dateInv']:
-                raise serializers.ValidationError(
-                    "La fecha de expiracion no puede ser antes de que acontezca la invitacion")
+                raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que acontezca "
+                                                  "la invitacion")
         return data
 
 
@@ -219,7 +219,7 @@ class BasicDataUserSerializer(serializers.Serializer):
 
 class MassiveInvObject():
     def __init__(self, areaId, employeeId, guests, subject, typeInv, dateInv, timeInv, exp, diary, secEquip,
-                 companyFrom, notes):
+                 companyFrom, notes, vehicle):
         self.areaId = areaId #
         self.employeeId = employeeId #
         self.guests = guests #
@@ -232,10 +232,11 @@ class MassiveInvObject():
         self.secEquip = secEquip #
         self. companyFrom = companyFrom #
         self.notes = notes #
+        self.vehicle = vehicle
 
 class MasiveInvSerializer(serializers.Serializer):
     areaId = serializers.IntegerField()
-    employeeId = serializers.IntegerField()
+    employeeId = serializers.IntegerField(allow_null=True)
     guests = BasicDataUserSerializer(many=True)
     subject = serializers.CharField(max_length=400)  #
     typeInv = serializers.IntegerField(default=0)  #
@@ -250,6 +251,19 @@ class MasiveInvSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return MassiveInvObject(**validated_data)
+
+    def validate(self, data):
+        # Validando la fecha de la invitacion
+        _date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
+                     day=timezone.datetime.now().day)  # Fecha actual
+        if _date > data['dateInv']:
+            raise serializers.ValidationError("La fecha de la invitacion esta vencida")
+        # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
+        if data['exp'] != None:
+            if data['exp'] < data['dateInv']:
+                raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que "
+                                                  "acontezca la invitacion")
+        return data
 
 
 
