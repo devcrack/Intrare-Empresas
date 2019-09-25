@@ -27,6 +27,7 @@ class EquipoSeguridadList(generics.ListCreateAPIView):
     serializer_class = EquipoSeguridadSerializers
 
 
+
 class EquipoSeguridadXInvitacionList(generics.ListAPIView):
     def get_queryset(self):
         """
@@ -38,10 +39,6 @@ class EquipoSeguridadXInvitacionList(generics.ListAPIView):
 
     serializer_class = EquipoSeguridadXInvitacionSerializers
 
-
-"""
-Usada para listar las invitaciones por usuario.
-"""
 
 
 class InvitationListAdminEmployee(viewsets.ModelViewSet):
