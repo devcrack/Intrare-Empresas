@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework import filters
 
+from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
 
@@ -187,10 +188,16 @@ class activateUser(generics.UpdateAPIView):
             invs = Invitacion.objects.filter(id_usuario=instance, id_empleado=idHost)
         _nInvs = len(invs)
         if _nInvs> 0:
+            # def validateDateInv(value):
+            #     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
+            #     if _date > value:
+            #         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
+
             _inv = invs[_nInvs - 1] #Enviamos la ultima invitacion.
             _company = _inv.id_empresa.name
             _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
             _qrCode = _inv.qr_code
+            _cellNumber = instance.celular
             html_message = render_to_string('passwordMail.html',
                                             {
                                                 'empresa': _company,
@@ -198,7 +205,15 @@ class activateUser(generics.UpdateAPIView):
                                                 'codigo': _qrCode,
                                                 'password': _tmpPassword
                                             })
-            send_IntrareEmail(html_message, addressee)
+            send_IntrareEmail(html_message, addressee)  # MAIL
+            _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
+            _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
+            if _smsResponse["messages"][0]["status"] == "0":
+                log = 'Mensaje SMS ENVIADO'
+            else:
+                log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+            print('LOGs SMS!! ')
+            print(log)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT, data={'error:Error Inesperado'})
         return Response(status=status.HTTP_200_OK)
