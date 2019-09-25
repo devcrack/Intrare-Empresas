@@ -60,6 +60,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         mail_host = instance.host.email
         print(mail_host)
         send_IntrareEmail(html_message, mail_host)  # Envio de mail para validar la identidad de Usuario.
+        # Enviar SMS
         return instance
 
 
