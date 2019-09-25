@@ -93,7 +93,7 @@ class isEmployee(permissions.BasePermission):
 
 
 class IsAdmin(permissions.BasePermission):
-    message = 'Not allowed.'
+    message = 'No es un un Administrador'
     def has_permission(self, request, view):
         return request.user.roll == settings.ADMIN
 
@@ -118,6 +118,7 @@ class isGuard(permissions.BasePermission):
 
 
 class IsEmployee(permissions.BasePermission):
+    message = 'No es un empleado.'
     def has_permission(self, request, view):
         return request.user.roll == settings.EMPLEADO
 

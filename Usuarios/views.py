@@ -5,11 +5,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework import filters
+# from django.conf import settings
 
 from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
-
+from Empresas.models import Empleado, Administrador
 
 # Create your views here.
 
@@ -166,10 +167,15 @@ class getUserByToken(generics.ListAPIView):
 
 
 class activateUser(generics.UpdateAPIView):
+
+    permission_classes = [IsAuthenticated, IsAdmin | IsEmployee]  # Solo un Administrador o un Empleado pueden validar Invitados
+
     def update(self, request, *args, **kwargs):
-        usrToken = self.kwargs['temporalToken']
-        isAdmin = request.data.get('isAdmin')
-        idHost = request.data.get('idHost')
+        usr = self.request.user
+        usrToken = request.data.get("usrToken")
+
+
+        # usrToken = self.kwargs['temporalToken']
 
         instance = CustomUser.objects.filter(temporalToken=usrToken) # Buscamos al usuario a validar.
         if len(instance) != 1:
@@ -182,18 +188,20 @@ class activateUser(generics.UpdateAPIView):
         instance.save()
         #  Envio de invitacion0 y contraseña.
         addressee = instance.email
-        if isAdmin:
-            invs = Invitacion.objects.filter(id_usuario=instance, id_admin=idHost)
+        if usr.roll == settings.ADMIN:
+            _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
+            _invs = Invitacion.objects.filter(id_usuario=instance, id_admin=_admCompany)
         else:
-            invs = Invitacion.objects.filter(id_usuario=instance, id_empleado=idHost)
-        _nInvs = len(invs)
+            employee = Empleado.objects.filter(id_usuario=usr)[0]
+            _invs = Invitacion.objects.filter(id_usuario=instance, id_empleado=employee)
+        _nInvs = len(_invs)
         if _nInvs> 0:
-            # def validateDateInv(value):
+            # def validateDateInv(value):  #Se prevee solo enviar las invitacion en tiempo, es decir que no estan caducas
             #     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
             #     if _date > value:
             #         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
 
-            _inv = invs[_nInvs - 1] #Enviamos la ultima invitacion.
+            _inv = _invs[_nInvs - 1] #Enviamos la ultima invitacion.
             _company = _inv.id_empresa.name
             _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
             _qrCode = _inv.qr_code
