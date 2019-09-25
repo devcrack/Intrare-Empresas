@@ -200,9 +200,7 @@ class InvitationCreate(generics.CreateAPIView):
         _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
         _msgInv = None
 
-        # Si el Usuario no existe, tienes que forzosamente proporcionar el Numero de celular
-        # y el EMAIL.
-        _idUser = cls.guest_exist(cellphone, email)
+        _idUser = cls.guest_exist(cellphone, email) # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
         if _idUser is None:
             # Inicia Registro AUTOMATICO de USUARIO.
             if email is None or cellphone is None: ## Verificar que se haya ingresado el numero de celular y el Email
@@ -250,26 +248,26 @@ class InvitationCreate(generics.CreateAPIView):
             nw_invitation = None
         if nw_invitation:  # Se ha creado una invitacion satisfactoriamente.
             if _idUser.is_active == True:  # El proceso de notificacion de Invitacion se realiza normalmente
-                _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o la aplicacion"
+                _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
                 #  Envio de correo electronico con los datos de la invitacion
-                _htmlMessage = cls.render_InvMail(nw_invitation.id_empresa.name, nw_invitation.fecha_hora_invitacion,
+                _dateTime = str(nw_invitation.dateInv) + " " + str(nw_invitation.timeInv)
+                _htmlMessage = cls.render_InvMail(nw_invitation.id_empresa.name, _dateTime,
                                                   nw_invitation.qr_code)
-                # _smsResponse = send_sms(_idUser.celular, _msgInv)  # Envio notificacion sms Invitacion.
-                send_IntrareEmail(_htmlMessage, _idUser.email)
-                log = None
+                _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
+                send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
             else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
                 _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
                 _link = _link + str(_idUser.temporalToken) + '/'
                 msg = _mainMsg + _msgReg + _link
-                # _smsResponse = send_sms(_idUser.celular, msg)  # SMS
+                _smsResponse = send_sms(_idUser.celular, msg)  # SMS
                 _htmlMessage = cls.render_MsgPregister(_mainMsg, _msgReg, _link)
                 send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-            # if _smsResponse["messages"][0]["status"] == "0":
-            #     log = 'Mensaje SMS ENVIADO'
-            # else:
-            #     log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-            # print('LOGs SMS!! ')
-            # print(log)
+            if _smsResponse["messages"][0]["status"] == "0":
+                log = 'Mensaje SMS ENVIADO'
+            else:
+                log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+            print('LOGs SMS!! ')
+            print(log)
             print(nw_invitation.id, ' INVITATION CREATED  200_OK')
         return error_response, nw_invitation
 
@@ -353,16 +351,7 @@ class InvitationCreate(generics.CreateAPIView):
 
     @classmethod
     def create_user(cls, email, cellphone):
-        """
-        Create a user with minimum requirements data fill.
-
-        Args:
-              args[0]: number phone
-              args[1]: user name in this case is the number phone too.
-
-        """
         _errorResponse = None
-        # poner token 5 digitos
         nw_user = CustomUser(
             email=email, celular=cellphone, username=email, password='pass', temporalToken=token_hex(4),
             is_active=False)
