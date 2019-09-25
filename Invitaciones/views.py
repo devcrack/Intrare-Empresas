@@ -2,7 +2,6 @@ from hmac import new
 
 from django.db.utils import Error
 
-
 # Create your views here.
 from rest_framework import generics
 from rest_framework import viewsets
@@ -36,7 +35,9 @@ class EquipoSeguridadXInvitacionList(generics.ListAPIView):
         """
         queryset = EquiposporInvitacion.objects.filter(id_invitacion=self.kwargs["id_invitation"])
         return queryset
+
     serializer_class = EquipoSeguridadXInvitacionSerializers
+
 
 """
 Usada para listar las invitaciones por usuario.
@@ -111,7 +112,7 @@ class InvitationCreate(generics.CreateAPIView):
         # self.preprocessJson(request.data)
         self.serializer_class = InvitationCreateSerializerAdmin
         _serializer = self.serializer_class(data=request.data)
-        if _serializer.is_valid():
+        if _serializer.is_valid(raise_exception=True):
             _serializer.save()
             _idCompany = None
             _employee = None
@@ -122,12 +123,17 @@ class InvitationCreate(generics.CreateAPIView):
             _listSecEquip = _serializer.data['secEquip']
             _arraySecEquip = _listSecEquip.split(',')
             _email = _serializer.data['email']
-            _cellNumberUser = _serializer.data['cellNumber']
-            _dateInv = _serializer.data['dateInv']
+            _cellNumber = _serializer.data['cellNumber']
+            _dateInv = _serializer.data['dateInv'] # Fecha Invitacion
+            _timeInv = _serializer.data['timeInv'] # Hora Invitacion.
             _subject = _serializer.data['subject']
             _vehicle = _serializer.data['vehicle']
             _notes = _serializer.data['notes']
             _companyFrom = _serializer.data['companyFrom']
+            _typeInv = _serializer.data['typeInv']
+            _exp = _serializer.data['exp']
+            if _exp is None:
+                _exp = self.expDate(_dateInv)
 
             if usr.roll == settings.ADMIN:
                 print('Logged as Administrator\n')
@@ -142,92 +148,114 @@ class InvitationCreate(generics.CreateAPIView):
                 print('Logged as Employee\n')
                 _employee = Empleado.objects.filter(id_usuario=usr)[0]
                 _idCompany = _employee.id_empresa
-            print('IDCompany =', _idCompany)
+            #     print('IDCompany =', _idCompany)
             _errorResponse, _area = self.validate_areas(_idCompany, _areaId)  # Validating if Area exist
             if _area:
                 # Validating if Security Equipment Exist
                 _securityEqu, _errorResponse = self.validateSecEqu(_arraySecEquip)
                 if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
-
-                # Create Invitation
-                _errorResponse, invitation = self.create_invitation(_email, _cellNumberUser, _idCompany, _area,
-                                                                    _employee, _dateInv, _subject, _vehicle,
-                                                                    _notes, _companyFrom)
+                    return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
+                #
+                # Creando Invitacion
+                _errorResponse, invitation = self.create_invitation(_idCompany, _area, _employee, _email,_cellNumber,
+                                                                    _typeInv, _dateInv, _timeInv, _exp, _subject,
+                                                                    _vehicle, _notes, _companyFrom)
                 if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
                 else:
                     if _securityEqu:
                         _errorResponse = self.add_sec_equ_by_inv(_securityEqu, invitation)
             else:
-                return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
+                return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)  # Error ID de Area
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+
+    @classmethod
+    def expDate(cls, dateInv):
+        exp = timezone.datetime.strptime(dateInv , "%Y-%m-%d").date()
+        delta = timezone.timedelta(days=2)
+        exp = exp + delta
+        return exp
 
 
     @classmethod
-    def guest_exist(cls, _email):
-        user = CustomUser.objects.filter(email=_email)
-        if user:
-            print('User Exist with email: ', user[0].email)
-            return user[0]
+    def guest_exist(cls, cellphoneN, _email):
+        if _email is None:
+            user = CustomUser.objects.filter(celular=cellphoneN)
         else:
-            print('User with this number phone NOT EXIST: ')
+            user = CustomUser.objects.filter(email=_email)
+        if len(user) == 0:
             return None
+        return user[0]
+
 
     @classmethod
-    def create_invitation(cls, email, cell_phone_number, id_company, id_area, id_employee , date_inv, subject, vehicle,
-                          notes, from_company):
+    def create_invitation(cls,id_company, id_area, id_employee, email, cellphone, typeInv, _dateInv, _timeInv, expDate,
+                          subject, vehicle, notes, from_company):
         error_response = None
         _mainMsg = 'Bienvenido a Intrare. '
         _msgReg = None
         _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
         _msgInv = None
 
-        _idUser = cls.guest_exist(email)
+        _idUser = cls.guest_exist(cellphone, email) # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
         if _idUser is None:
-            error_response, _idUser = cls.create_user(email, cell_phone_number)
-            if error_response:
+            # Inicia Registro AUTOMATICO de USUARIO.
+            if email is None or cellphone is None: ## Verificar que se haya ingresado el numero de celular y el Email
+                error_response = {'Error': 'El usuario no esta registrado, es necesario ingresar su numero de celular y '
+                                           'su email'}
                 return error_response, None
+            error_response, _idUser = cls.create_user(email, cellphone)
+            if error_response:
+                return error_response, None  # TERMINA CREACION DE NUEVO USUARIO
+        #Inicia CREACION DE INVITACION
+        userAnf = CustomUser.objects.filter(id=id_employee.id_usuario.id)[0]
+        _idUser.host = userAnf
+        _idUser.save()
         print('Data to commit in Invitation\n')
         print('\tCompany Id: ', id_company)
         print('\tArea Id :', id_area)
         print('\tUser Id: ', _idUser)
         print('\tEmploye Id:', id_employee)
-        print('\tInvitation Date: ', date_inv)
+        print('\tInvitation Date: ', _dateInv)
+        print('\tHour Date: ', _timeInv)
+        print('\tExpiration Date: ', expDate)
         print('\tsubject: ', subject)
         print('\tvehicle: ', vehicle)
         print('\tnotes: ', notes)
         print('\tfromCompany: ', from_company)
+        print('\tType Inv: ', typeInv)
         nw_invitation = Invitacion(
             id_empresa=id_company,
             id_area=id_area,
             id_usuario=_idUser,
             id_empleado=id_employee,
-            fecha_hora_invitacion=date_inv,
+            dateInv = _dateInv,
+            timeInv=_timeInv,
+            expiration=expDate,
             asunto=subject,
             automovil=vehicle,
             notas=notes,
             empresa=from_company,
-            )
+        )
         try:
-            some  = nw_invitation.save()
+            some = nw_invitation.save()
             print("SOME", some)
         except ValueError:
             error_response = {'Error': 'Can\'t create an Invitation'}
             nw_invitation = None
         if nw_invitation:  # Se ha creado una invitacion satisfactoriamente.
             if _idUser.is_active == True:  # El proceso de notificacion de Invitacion se realiza normalmente
-                _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o la aplicacion"
+                _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
                 #  Envio de correo electronico con los datos de la invitacion
-                _htmlMessage = cls.render_InvMail(nw_invitation.id_empresa.name, nw_invitation.fecha_hora_invitacion,
+                _dateTime = str(nw_invitation.dateInv) + " " + str(nw_invitation.timeInv)
+                _htmlMessage = cls.render_InvMail(nw_invitation.id_empresa.name, _dateTime,
                                                   nw_invitation.qr_code)
-                _smsResponse = send_sms(_idUser.celular, _msgInv)  # Envio notificacion sms Invitacion.
-                send_IntrareEmail(_htmlMessage, _idUser.email)
-                log = None
-            else: #  Se envia al usuario una notificacion para que realize su preRegistro N VECES
+                _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
+                send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
+            else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
                 _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
                 _link = _link + str(_idUser.temporalToken) + '/'
                 msg = _mainMsg + _msgReg + _link
@@ -249,13 +277,13 @@ class InvitationCreate(generics.CreateAPIView):
                                         {'empresa': _nameEmpresa,
                                          'fecha': _dateInv,
                                          'codigo': _qrCode}
-                                       )
+                                        )
         return html_message
 
     @classmethod
     def render_MsgPregister(cls, _headerMsg, msg, link):
         html_message = render_to_string('nwUserMail.html',
-                                        {'headerMsg':_headerMsg,
+                                        {'headerMsg': _headerMsg,
                                          'msg': msg,
                                          'link': link
                                          })
@@ -281,11 +309,11 @@ class InvitationCreate(generics.CreateAPIView):
         employee = None
         employee_s = Empleado.objects.filter(id_empresa=id_company, id=id_employee)
         if employee_s:
-            print('Employee FOUND! goal!! Goal!!! SUCCESS!!!!')
+            print('Employee FOUND!!!')
             employee = employee_s[0]
         else:
             print('Employee NOT FOUND')
-            error_response = {'Error': 'The Employee provided do not exist'}
+            error_response = {'Error': 'El empleado no Existe'}
         return error_response, employee
 
     @classmethod
@@ -322,23 +350,11 @@ class InvitationCreate(generics.CreateAPIView):
         return error_response, security_equipment
 
     @classmethod
-    def create_user(cls, _aemail, cellphone):
-        """
-        Create a user with minimum requirements data fill.
-
-        Args:
-              args[0]: number phone
-              args[1]: user name in this case is the number phone too.
-
-        """
+    def create_user(cls, email, cellphone):
         _errorResponse = None
-        _email = _aemail
-        number_phone = cellphone
-        code = token_hex(4)  # Generamos Token para identificar a este usuario y modificarlo posteriormente.
-        _password = 'pass'
-        #poner token 5 digitos
         nw_user = CustomUser(
-             email=_email, celular=number_phone, username=_email, password=_password, temporalToken=code, is_active=False)
+            email=email, celular=cellphone, username=email, password='pass', temporalToken=token_hex(4),
+            is_active=False)
         try:
             nw_user.save()
             print(nw_user.id, ' USER CREATED 200_OK')
@@ -350,7 +366,7 @@ class InvitationCreate(generics.CreateAPIView):
     def validateSecEqu(cls, listSecEq):
         _idSecEqList = []
         for i in listSecEq:
-            if i !='':
+            if i != '':
                 print(i)
                 _idSecEq = int(i)
                 try:
@@ -379,14 +395,10 @@ class InvitationbyQRCode(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Invitacion.objects.all()
-        self.request.data;
         _qrCode = self.kwargs['qrcode']
         if _qrCode is not None:
             queryset = queryset.filter(qr_code=_qrCode)
         return queryset
-
-
-
 
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html

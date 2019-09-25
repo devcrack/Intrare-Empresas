@@ -1,12 +1,29 @@
-# TODOS
-| POR HACER(INMEDIATO)                               | HACIENDO                                        | HECHO                                                       | PLANEAR                                                             |
-| -------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------- |
-| Generar link a formulario invitacion por referidos | Vistas con reestructuracion de las invitaciones | Restructuracion modelos invitaciones para manejar referidos | Agregar caducidad al link de invitacion por referidos               |
-| Vista accesos                                      |                                                 |                                                             | Script para depurar base de datos(Eliminar invitaciones muy viejas) |
-| Puta aplicacion de mierda                          |                                                 |                                                             | Como hacer para que el usuario pueda eliminar sus invitaciones      |
+# Generacion de un usuario nuevo mediante el envio de invitacion(Registro automatico)
+
+ 1. Anfitrion envia Invitacion
+    * Caso A Usuario Existe 
+    * Caso B Usuario no Existe
+ 2. **B** El usuario no existe
+   
+    1. Crear un Usuario, pero dicho usuario no esta ACTIVO = FALSE
+    2. Generar Invitacion 0,
+    3. Enviar Solocitud de Preregistro por, email y SMS. **FORMULARIO** , **EndPoint**
+    4. Cuando el Usuario complete el Preregistro, enviar notificacion al anfitrion mediante email y sms, mostrando los datos que se han dado de alta de dicho usuario, para validar su identidad.
+       **Formulario y EndPoint** 
+    5. Una vez que el anfitrion valide la identidad Activar el usuario **EndPoint ACTIVAR USUARIO**
+       - Cuando se activa al usuario se envia su invitacion 0 con su contraseña temporal.
+
 
 
 # Acerca de las invitaciones
+
+## Consideraciones
+
+- Se tiene que especificar:
+  - Una fecha de la visita. 
+  - Una hora de la visita.
+- Todas las invitaciones tienen caducidad, por default la caducidad es 2 dias despues de que se genero la invitacion.
+- La validacion o creacion se realiza ya sea mediante email o numero telefonico celular.
 
 ## User.is_active == False
 
@@ -21,19 +38,25 @@ El usuario ha sido activado, el usuario se ha Preregistrado, entonces se envian 
 Existe solo un tipo de invitacion y tiene una sola variacion en su funcionamiento.
 
 ### Tabla invitaciones
-| Invitacion      | Tipo   | OBLIGATORIO |
-|-----------------|--------|-------------|
-| idInvitacion    | PK     |             |
-| idEmpresa       | FK     | SI          |
-| idArea          | FK     | SI          |
-| idEmpleado      | FK     | SI          |
-| fechaInvitacion | DATE   | SI          |
-| idUsuario       | FK     | NO          |
-| asunto          | STRING | SI          |
-| automovil       | BOOL   | SI          |
-| empresa         | STRING | NO          |
-| notas           | STRING | NO          |
-| LEIDA           | BOOL   | SI/AUTO     |
+| Invitacion      | Tipo     | OBLIGATORIO |
+|-----------------|----------|-------------|
+| idInvitacion    | PK       |             |
+| idEmpresa       | FK       | SI          |
+| idArea          | FK       | SI          |
+| idEmpleado      | FK       | SI          |
+| typeInv         | INT      | SI          |
+| dateInv         | DATE     |             |
+| timeInv         | TIME     | SI          |
+| expiration      | DATE     | SI          |
+| diary           | String   | NO          |
+| idUsuario       | FK       | NO          |
+| asunto          | STRING   | SI          |
+| automovil       | BOOL     | SI          |
+| empresa         | STRING   | NO          |
+| notas           | STRING   | NO          |
+| LEIDA           | BOOL     | SI/AUTO     |
+
+
 
 Cada Invitacion tiene que cubrir con los campos que son marcados como obligatorios sin excepcion,
 ya que son totalmente necesarios para gestionar las invitaciones.
@@ -219,7 +242,12 @@ JSON Usado para la creacion de las invitaciones.
  "employeeId":2,
  "dateInv": "2016-01-27 12:05",
  "numCell": 4443424829,
+ "email": "unemail@mail.com",
  "subject": "Algun asunto de la visita",
+ "typeInv":can be null, default = 0
+ "dateInv":"Yy-Mm-Dd",can be null, default = (Al dia siguiente)
+ "timeInv": "Hh:Mm", Default misma hora enviada invitacion
+ "exp": "Yy-Mmm-Dd", Default = (2 dias despues de que se envia la invitacion")
  "secEquip": "1,3,6",
  "vehicle": false,
  "companyFrom": "Edison Effect",

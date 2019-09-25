@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework import filters
 
+from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
 
@@ -154,5 +155,69 @@ class UpdateUserPartialByToken(generics.UpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
+
+
+class getUserByToken(generics.ListAPIView):
+    serializer_class = CustomUserSerializer
+
+    def get_queryset(self):
+        queryset = CustomUser.objects.filter(temporalToken=self.kwargs['temporalToken'])
+        return queryset
+
+
+class activateUser(generics.UpdateAPIView):
+    def update(self, request, *args, **kwargs):
+        usrToken = self.kwargs['temporalToken']
+        isAdmin = request.data.get('isAdmin')
+        idHost = request.data.get('idHost')
+
+        instance = CustomUser.objects.filter(temporalToken=usrToken) # Buscamos al usuario a validar.
+        if len(instance) != 1:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={'error:El token de usuario ha sido corrompido'})
+        instance = instance[0]
+        _tmpPassword = token_hex(3)  # Generamos su contraseña temporal
+        instance.set_password(_tmpPassword) # Se establece contraseña temporal del usuario.
+        instance.is_active = True # Activamos el usuario.
+        instance.temporalToken=""  # Limpiamos su token Temporal.
+        instance.save()
+        #  Envio de invitacion0 y contraseña.
+        addressee = instance.email
+        if isAdmin:
+            invs = Invitacion.objects.filter(id_usuario=instance, id_admin=idHost)
+        else:
+            invs = Invitacion.objects.filter(id_usuario=instance, id_empleado=idHost)
+        _nInvs = len(invs)
+        if _nInvs> 0:
+            # def validateDateInv(value):
+            #     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
+            #     if _date > value:
+            #         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
+
+            _inv = invs[_nInvs - 1] #Enviamos la ultima invitacion.
+            _company = _inv.id_empresa.name
+            _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
+            _qrCode = _inv.qr_code
+            _cellNumber = instance.celular
+            html_message = render_to_string('passwordMail.html',
+                                            {
+                                                'empresa': _company,
+                                                'fecha': _dateTime,
+                                                'codigo': _qrCode,
+                                                'password': _tmpPassword
+                                            })
+            send_IntrareEmail(html_message, addressee)  # MAIL
+            _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
+            _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
+            if _smsResponse["messages"][0]["status"] == "0":
+                log = 'Mensaje SMS ENVIADO'
+            else:
+                log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+            print('LOGs SMS!! ')
+            print(log)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT, data={'error:Error Inesperado'})
+        return Response(status=status.HTTP_200_OK)
+
+
 
 

@@ -72,6 +72,20 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'rstestmx@gmail.com'
 EMAIL_HOST_PASSWORD = 'mientras123'
 
+
+FCM_DJANGO_SETTINGS = {
+        "APP_VERBOSE_NAME": "intrarebeta",
+         # default: _('FCM Django')
+        "FCM_SERVER_KEY": "AAAA2tW-hz8:APA91bFe0xRV-wdUeTR6dcmoplFDD-TGsVw63ikoGTKz3ip2oh25h2_Apj8-1-1-dNnth08D1pGibqCgerRDtDZm0NQfi1ICaGadpN-MoIrS8KAmBNfqORFgC9Wti0Vdtjn3HYjDHaUB",
+         # true if you want to have only one active device per registered user at a time
+         # default: False
+        "ONE_DEVICE_PER_USER": False,
+         # devices to which notifications cannot be sent,
+         # are deleted upon receiving error response from FCM
+         # default: False
+        "DELETE_INACTIVE_DEVICES": False,
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -91,6 +105,7 @@ INSTALLED_APPS = [
     # App Para con control de los usuarios (Login, Registro, Token, Email, Etc)..
     # https://djoser.readthedocs.io/en/latest/
     'djoser',
+    'fcm_django',
 
     'Usuarios.apps.UsuariosConfig',
     'Empresas.apps.EmpresasConfig',
