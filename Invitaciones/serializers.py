@@ -209,6 +209,7 @@ class BasicUserObject():
         self.email = email
         self.cellphone = cellphone
 
+
 class BasicDataUserSerializer(serializers.Serializer):
     email = serializers.EmailField()
     cellphone = serializers.IntegerField()
@@ -216,4 +217,40 @@ class BasicDataUserSerializer(serializers.Serializer):
     def create(self, validated_data):
         return BasicUserData(**validated_data)
 
-class MassiveInvObject
+class MassiveInvObject():
+    def __init__(self, areaId, employeeId, guests, subject, typeInv, dateInv, timeInv, exp, diary, secEquip,
+                 companyFrom, notes):
+        self.areaId = areaId #
+        self.employeeId = employeeId #
+        self.guests = guests #
+        self.subject = subject #
+        self.typeInv = typeInv #
+        self.dateInv = dateInv #
+        self.timeInv = timeInv #
+        self.exp = exp #
+        self.diary = diary #
+        self.secEquip = secEquip #
+        self. companyFrom = companyFrom #
+        self.notes = notes #
+
+class MasiveInvSerializer(serializers.Serializer):
+    areaId = serializers.IntegerField()
+    employeeId = serializers.IntegerField()
+    guests = BasicDataUserSerializer(many=True)
+    subject = serializers.CharField(max_length=400)  #
+    typeInv = serializers.IntegerField(default=0)  #
+    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
+    timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])  #
+    exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True)  #
+    diary = serializers.CharField(max_length=7, allow_blank=True)
+    secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
+    vehicle = serializers.BooleanField(default=False)
+    companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
+    notes = serializers.CharField(max_length=300, allow_blank=True, allow_null=True)
+
+    def create(self, validated_data):
+        return MassiveInvObject(**validated_data)
+
+
+
+
