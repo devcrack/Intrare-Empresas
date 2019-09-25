@@ -208,6 +208,7 @@ def expDate(dateInv):
     exp = exp + delta
     return exp
 
+
 class EquipoSeguridadList(generics.ListCreateAPIView):
     """
     Clase AdministradorList, lista todas los Administradores de las Empresas.
@@ -229,11 +230,6 @@ class EquipoSeguridadXInvitacionList(generics.ListAPIView):
         return queryset
 
     serializer_class = EquipoSeguridadXInvitacionSerializers
-
-
-"""
-Usada para listar las invitaciones por usuario.
-"""
 
 
 class InvitationListAdminEmployee(viewsets.ModelViewSet):
@@ -363,7 +359,8 @@ class InvitationCreate(generics.CreateAPIView):
 
         return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
 
-
+class massiveInvitationCreate(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsEmployee,]
 
 class InvitationbyQRCode(generics.ListAPIView):
     serializer_class = InvitationSimpleSerializer

@@ -202,3 +202,18 @@ class InvitationSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitacion
         fields = '__all__'
+
+
+class BasicUserObject():
+    def __init__(self, email, cellphone):
+        self.email = email
+        self.cellphone = cellphone
+
+class BasicDataUserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    cellphone = serializers.IntegerField()
+
+    def create(self, validated_data):
+        return BasicUserData(**validated_data)
+
+class MassiveInvObject
