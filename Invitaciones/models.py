@@ -19,7 +19,7 @@ class Invitacion(models.Model):
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None)
     _defSent = timezone.now()
     fecha_hora_envio = models.DateTimeField(default=_defSent, null=False, blank=False)
-    typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
+    typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos 
     dateInv = models.DateField(default=date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day+1), null = False)
     timeInv = models.TimeField(default=time(), null=False)
     # _DateExp = dateInv.get_default()
