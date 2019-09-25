@@ -361,11 +361,26 @@ class InvitationCreate(generics.CreateAPIView):
 
         return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
 
-class massiveInvitationCreate(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated, IsAdmin | IsEmployee,]
+
+class MassiveInvitationCreate(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin | IsEmployee, ]
+
+    def create(self, request, *args, **kwargs):
+        usr = self.request.user
+        self.serializer_class = MasiveInvSerializer
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid(raise_exception=True):
+            _serializer.save()
+            _areaId = _serializer.data['areaId']
+            print("area ID ", _areaId)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+        return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+
 
 class InvitationbyQRCode(generics.ListAPIView):
     serializer_class = InvitationSimpleSerializer
+
 
     def get_queryset(self):
         queryset = Invitacion.objects.all()
