@@ -18,9 +18,6 @@ class InvitacionSerializers(serializers.ModelSerializer):
     It will automatically generate validators for the serializer, such as unique_together validators.
     It includes simple default implementations of .create() and .update().
     """
-    #id_usuario = serializers.SerializerMethodField('get_user')
-
-
     class Meta:
         model = Invitacion  # Desired Model to be serialized.
         #fields = '__all__'  # Indicates that all fields in model should be used.
@@ -39,11 +36,6 @@ class InvitacionSerializers(serializers.ModelSerializer):
             'leida'
         )
 
-# def validateDateInv(value):
-#     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
-#     if _date > value:
-#         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
-#
 class json_invit_admin():
     """
     Object Class for render the input for the creation of
