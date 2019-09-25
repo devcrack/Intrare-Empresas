@@ -45,9 +45,8 @@ Usada para listar las invitaciones por usuario.
 
 
 class InvitationListAdminEmployee(viewsets.ModelViewSet):
-    permission_classes = (IsAdmin | IsEmployee,)  # The user logged have to be and admin or an employee
+    permission_classes = [IsAdmin | IsEmployee,]  # The user logged have to be and admin or an employee
     serializer_class = InvitacionSerializers  # Used for validate and deserializing input, and for serializing output.
-
     def list(self, request, *args, **kwargs):
         y = self.kwargs['year']
         m = self.kwargs['month']
@@ -105,7 +104,7 @@ class InvitationListToSimpleUser(viewsets.ModelViewSet):
 
 
 class InvitationCreate(generics.CreateAPIView):
-    permission_classes = (IsAdmin | IsEmployee,)
+    permission_classes = [IsAuthenticated, IsAdmin | IsEmployee,]
 
     def create(self, request, *args, **kwargs):
         usr = self.request.user
@@ -212,7 +211,7 @@ class InvitationCreate(generics.CreateAPIView):
                 return error_response, None  # TERMINA CREACION DE NUEVO USUARIO
         #Inicia CREACION DE INVITACION
         userAnf = CustomUser.objects.filter(id=id_employee.id_usuario.id)[0]
-        _idUser.host = userAnf
+        _idUser.host = userAnf #
         _idUser.save()
         print('Data to commit in Invitation\n')
         print('\tCompany Id: ', id_company)
