@@ -352,10 +352,12 @@ class InvitationCreate(generics.CreateAPIView):
                 else:
                     if _securityEqu:
                         _errorResponse = add_sec_equ_by_inv(_securityEqu, invitation)
+                        if _errorResponse:
+                            return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
             else:
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)  # Error ID de Area
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)  # Error Serializador
 
         return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
 
@@ -369,8 +371,57 @@ class MassiveInvitationCreate(generics.CreateAPIView):
         _serializer = self.serializer_class(data=request.data)
         if _serializer.is_valid(raise_exception=True):
             _serializer.save()
+
             _areaId = _serializer.data['areaId']
-            print("area ID ", _areaId)
+            _listSecEquip = _serializer.data['secEquip']
+            _guests = _serializer.data['guests']
+            _dateInv = _serializer.data['dateInv']
+            _timeInv = _serializer.data['timeInv']
+            _exp = _serializer.data['exp']
+            _subject = _serializer.data['subject']
+            _vehicle = _serializer.data['vehicle']
+            _notes = _serializer.data['notes']
+            _companyFrom = _serializer.data['companyFrom']
+            _typeInv = _serializer.data['typeInv']
+
+            _arraySecEquip = _listSecEquip.split(',')
+
+            if _exp is None:
+                _exp = expDate(_dateInv)
+            if usr.roll == settings.ADMIN:
+
+                _employeeId = _serializer.data['employeeId']
+                _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
+                _idCompany = _admCompany.id_empresa
+
+                _errorResponse, _employee = validate_employee(_idCompany, _employeeId)
+                if _errorResponse:
+                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+            else:  # Logged as Employee
+                _employee = Empleado.objects.filter(id_usuario=usr)[0]
+                _idCompany = _employee.id_empresa
+            #     print('IDCompany =', _idCompany)
+            _errorResponse, _area = validate_areas(_idCompany, _areaId)  # Validating if Area exist
+
+            if _area:
+                _securityEqu, _errorResponse = validateSecEqu(_arraySecEquip)
+                if _errorResponse:
+                    return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
+            #  Creacion de Invitacion
+                for _guest in _guests:
+                    _email = _guest['email']
+                    _cellphone = _guest['cellphone']
+                    _errorResponse, invitation = create_invitation(_idCompany, _area, _employee, _email, _cellphone,
+                                                                   _typeInv, _dateInv, _timeInv, _exp, _subject,
+                                                                   _vehicle, _notes, _companyFrom)
+                    if _errorResponse:
+                        return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST) # Error al crear Invitacion
+                    if _securityEqu:
+                        _errorResponse = add_sec_equ_by_inv(_securityEqu, invitation)
+                        if _errorResponse:
+                            return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
+            else:
+                return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)  # Error ID de Area
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
