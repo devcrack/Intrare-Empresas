@@ -164,6 +164,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     guest_ine_frente = serializers.ImageField(source='id_usuario.ine_frente')
     guest_ine_atras = serializers.ImageField(source='id_usuario.ine_atras')
     guestCellPhone = serializers.CharField(source='id_usuario.celular')
+    avatar = serializers.ImageField(source='id_usuario.avatar')
     dateInv = serializers.DateField(format="%d-%m-%Y")  # Nuevo
     timeInv = serializers.TimeField(format="%H:%M")  # Nuevo
     expiration = serializers.DateField(format="%d-%m-%Y")  # Nuevo
@@ -194,7 +195,8 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'qr_code',
             'guestCellPhone',
             'notas',
-            'logoEmpresa'
+            'logoEmpresa',
+            'avatar'
         )
 
 
