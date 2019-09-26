@@ -1,23 +1,27 @@
 from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
+from django.core.exceptions import ObjectDoesNotExist
+
 from datetime import datetime
 
 from Empresas.models import Acceso
 from Usuarios.permissions import *
 from .serializers import *
-
+from django.utils import timezone
 from Invitaciones.models import Invitacion
 from Empresas.models import Vigilante
-
+from django.template.loader import render_to_string
+from ControlAccs.utils import send_sms, send_IntrareEmail
 
 class AccessCreate(generics.CreateAPIView):
+    """ Generacion de Accesso. NOTIFICAR a ANFITRION cuando INVITADO llegue"""
     permission_classes = (isGuard,)
 
     def create(self, request, *args, **kwargs):
         """
         POST
-        Creamos una invitacion a partir de los siguientes parametros:
+        Creamos un acceso a partir de los siguientes parametros:
             - id_invitacion: Viene en el cuerpo del json
             - id_vigilante_ent: Se obtiene de la session actual
             - datos_coche: Puede ser Nulo
@@ -39,6 +43,11 @@ class AccessCreate(generics.CreateAPIView):
             _qr_code = _serializer.data['qr_code']
             _inv = Invitacion.objects.filter(qr_code=_qr_code)[0]
             self.createAcces(_guard_ent, _inv, _datos_coche, _qr_code)
+            # Enviar Correo y SMS
+            _guestFullName = _inv.id_usuario.first_name + " "+  _inv.id_usuario.last_name
+            _from = _inv.empresa
+            _msg = "Tu invitado " + _guestFullName + "proveniente de: " + _from+ " ha llegado"
+
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED)
@@ -93,7 +102,7 @@ class AccessUpdateData(generics.UpdateAPIView):
         instance = self.get_object()
         _guard_exit = Vigilante.objects.filter(id_usuario=self.request.user)[0]
         instance.id_vigilante_sal = _guard_exit
-        instance.fecha_hora_salida = datetime.now()
+        instance.fecha_hora_salida = timezone.datetime.now()
         instance.estado = request.data.get('estado')
         instance.motivo_no_firma = request.data.get('motivo_no_firma')
         instance.comentarios_VE = request.data.get('comentarios_VE')
@@ -138,9 +147,6 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
             _idCompany = _guard.id_empresa
             queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany)
 
-        # y = self.request.data['year']
-        # m = self.request.data['month']
-        # d = self.request.data['day']
         y = self.kwargs['year']
         m = self.kwargs['month']
         d = self.kwargs['day']
@@ -176,3 +182,24 @@ class AccessListToGuard(viewsets.ModelViewSet):
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class NotifyHostSignPass(generics.ListAPIView):
+    def get(self, request, *args, **kwargs):
+        _idAcc = self.kwargs['idAcc']
+        acc = None
+        try:
+            acc =Acceso.objects.get(id=_idAcc)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND, data={"error":"Acceso no Encontrado"})
+        _emailHost = acc.id_invitacion.id_empleado.id_usuario.email
+        _cellphoneHost = acc.id_invitacion.id_empleado.id_usuario.celular
+        _guestFullName = acc.id_invitacion.id_usuario.first_name + " " + acc.id_invitacion.id_usuario.last_name
+        _dateTimeAcc = str(acc.fecha_hora_acceso)
+        _msg = "¡Firmar Pase de salida!\n Invitado: " + _guestFullName + "\nFecha y Hora de Acceso:" + _dateTimeAcc
+        html_message = render_to_string('notifyHostSigAccess.html',
+                                        { 'guestName':_guestFullName,
+                                          'dateTimeAcc':_dateTimeAcc
+                                        })
+        send_IntrareEmail(html_message, _emailHost)
+        send_sms(_cellphoneHost, _msg)
+        return Response(status=status.HTTP_200_OK)

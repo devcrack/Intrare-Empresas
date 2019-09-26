@@ -251,39 +251,6 @@ class Veto(models.Model):
 
 
 class Acceso(models.Model):
-    """
-    Modelo Acceso.
-
-    Representa la Tabla Acceso en la Base de Datos.
-
-    Attributes:
-        id_empresa(int): ID de la Empresa el cual registra el Acceso.
-        id_empleado(int): ID  del Empleado al cual se dá Acceso.
-        id_invitacion(int): ID Invitación
-        id_vigilante_ent(int): ID del vigilante que registró la entrada.
-        id_vigilante_sal(int): ID del vigilante que registró la salida.
-        estado(str):
-        pase_salida(str)
-        motivo_no_firma(str): Motivo por el cuál no firmó el Acceso.
-        comentarios_VE(str): Comentarios adicionales del Vigilante.
-        datos_coche(str): Datos adicionales del Coche.
-        equipo(str): Equipo necesario para el Acceso:
-                        Zapatos Especilaes
-                        Casco
-                        etc.
-
-        Todo:
-            * para que se emplea el atributo pase_salida??? R:
-            * para que se emplea el atributo estado??? R:
-            * El empleado es quien genera el acceso??? R:
-            * Acceso esta vinculada con una invitacion, cuando se le concede acceso el campo de
-              leida  a esa invitacion se pone en TRUE?, y eso indica que el acceso ya ha sido concedido?
-            * El acceso lo puede conceder el empleado y/o el vigilante? EL ACCESO SIEMRE LO TIENE DAR EL VIGILANTE.
-            * ¿A que se refiere con vigilante Entrada, Vigilante Salida?, ¿Puede ser alguno de estos campos
-                                                                           Nulo, si es que el acceso se lo concedio
-                                                                           un empleado? NO.
-
-    """
     id_invitacion = models.ForeignKey('Invitaciones.Invitacion', on_delete=models.CASCADE)
     id_vigilante_ent = models.ForeignKey('Vigilante', on_delete=models.CASCADE, related_name='entrada')
     id_vigilante_sal = models.ForeignKey('Vigilante', on_delete=models.CASCADE, related_name='salida',

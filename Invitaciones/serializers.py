@@ -215,7 +215,7 @@ class BasicDataUserSerializer(serializers.Serializer):
     cellphone = serializers.IntegerField()
 
     def create(self, validated_data):
-        return BasicUserData(**validated_data)
+        return BasicUserObject(**validated_data)
 
 class MassiveInvObject():
     def __init__(self, areaId, employeeId, guests, subject, typeInv, dateInv, timeInv, exp, diary, secEquip,
