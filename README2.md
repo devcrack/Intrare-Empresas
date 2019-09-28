@@ -83,4 +83,19 @@ es indiscutible.
 
 
 
+# Pendientes
+
+- [ ] Rediseñar Invitaciones.
+- [ ] Revisar que todos los EndPoints de invitaciones funcionen de acuerdo a los cambios realizados.
+- [ ] Rediseño de Creacion de Usuario Nuevo, solamente con email o con telefono o ambos.
+- [ ] Faltas de Ortografia Mensajes.
+- [ ] Correos registro y lectura todo en minusculas.
+- [ ] En correo Invitacion agregar ademas de la imagen de codigo, el codigo en Texto.
+- [ ] Borrar el usuario cuando este no ha sido validado.
+- [ ] EndPoint UpdatePlatform User.
+- [ ] Equipo de Seguridad por Area.
+- [ ] Listar todos aquellos usuarios que no han sido validados y tiene que ser validados por anfitrion.
+
+
+
 
