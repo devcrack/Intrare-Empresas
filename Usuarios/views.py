@@ -12,6 +12,8 @@ from .serializers import *
 from .permissions import *
 from Empresas.models import Empleado, Administrador
 
+from django.db.models import Q
+
 # Create your views here.
 
 
@@ -20,10 +22,12 @@ class UserViewSet(viewsets.ModelViewSet):
     Filtro para precargar informacion de un usuario.
     """
     permission_classes = [IsAuthenticated]
-    queryset = CustomUser.objects.all()
     serializer_class = CustomFindSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['^celular', '^email']
+
+    def get_queryset(self):
+        return CustomUser.objects.exclude(Q(id=self.request.user.id) | Q(is_active=False))
 
 
 class UserPlatformCreateOrList(generics.CreateAPIView):
