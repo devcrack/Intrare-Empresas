@@ -10,11 +10,14 @@ from ControlAccs.utils import send_IntrareEmail
 from .models import *
 from Invitaciones.models import Invitacion
 from django.contrib.auth import validators
+from rest_framework.validators import UniqueValidator
 
 
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
-        fields = ('id', 'email', 'username', 'roll', 'first_name', 'last_name', 'celular', 'is_staff', 'is_superuser', 'avatar', 'temporalToken')
+        fields = (
+        'id', 'email', 'username', 'roll', 'first_name', 'last_name', 'celular', 'is_staff', 'is_superuser', 'avatar',
+        'temporalToken')
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -41,7 +44,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
-        #Enviar Notificaciones correo a Anfitrion(HOST)
+        # Enviar Notificaciones correo a Anfitrion(HOST)
         msg = "Hola Anfitrion, valida a tu Invitado para que empieze a usar Intrare."
         link = "https://first-project-vuejs.herokuapp.com/confirmar_identidad/" + instance.temporalToken + "/"
 
@@ -53,10 +56,10 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.avatar = validated_data.pop('avatar')
         instance.save()
         html_message = render_to_string('nwUserMail.html',
-                         {'headerMsg': 'Intrare',
-                          'msg': msg,
-                          'link': link
-                          })
+                                        {'headerMsg': 'Intrare',
+                                         'msg': msg,
+                                         'link': link
+                                         })
         mail_host = instance.host.email
         print(mail_host)
         send_IntrareEmail(html_message, mail_host)  # Envio de mail para validar la identidad de Usuario.
@@ -67,7 +70,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class CustomFindSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id','email', 'first_name', 'last_name', 'celular', 'avatar']
+        fields = ['id', 'email', 'first_name', 'last_name', 'celular', 'avatar']
 
 
 class UserAdminSerializer(serializers.ModelSerializer):
@@ -127,7 +130,6 @@ class UserAdminSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('A user with that E-Mail already exists.')
         return value
 
-
     def validate_username(self, value):
         check_query = CustomUser.objects.filter(username=value)
         if self.instance:
@@ -146,7 +148,6 @@ class UserAdminSerializer(serializers.ModelSerializer):
 
 
 class UserEmployeeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = CustomUser
         fields = (
@@ -214,7 +215,6 @@ class UserEmployeeSerializer(serializers.ModelSerializer):
             if translation.get_language() == 'en':
                 raise serializers.ValidationError('A user with that E-Mail already exists.')
         return value
-
 
     def validate_username(self, value):
         check_query = CustomUser.objects.filter(username=value)
@@ -290,7 +290,6 @@ class UserVigilanteSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError('A user with that E-Mail already exists.')
         return value
 
-
     def validate_username(self, value):
         check_query = CustomUser.objects.filter(username=value)
         if self.instance:
@@ -323,27 +322,27 @@ class UserPlatformSerializer(BaseUserRegistrationSerializer):
         )
 
 
-        
 class validatorImg():
 
     def __init__(self, imgFront):
         self.imgFront = imgFront
 
-        
+
 class UpdateIneSerializser(serializers.Serializer):
-    imgFront = serializers.ImageField(allow_null=False,  allow_empty_file=False)
+    imgFront = serializers.ImageField(allow_null=False, allow_empty_file=False)
 
     def create(self, validated_data):
         return validatorImg(**validated_data)
 
-    
+
 class validatorONEImg():
 
     def __init__(self, img):
         self.img = img
 
+
 class UpdateOneIMGSerializser(serializers.Serializer):
-    img = serializers.ImageField(allow_null=False,  allow_empty_file=False)
+    img = serializers.ImageField(allow_null=False, allow_empty_file=False)
 
     def create(self, validated_data):
         return validatorONEImg(**validated_data)
@@ -357,6 +356,7 @@ class validatorUserUpdate():
         self.first_name = first_name
         self.last_name = last_name
 
+
 class UpdateUserByTempToken(serializers.Serializer):
     username_validator = UnicodeUsernameValidator()
 
@@ -364,11 +364,36 @@ class UpdateUserByTempToken(serializers.Serializer):
     username = serializers.CharField(
         max_length=150,
         help_text=('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
-        validators = [username_validator])
+        validators=[username_validator])
 
 
+class UserSerilizerAPP(serializers.ModelSerializer):
+    first_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+    last_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+    email = serializers.EmailField(allow_blank=False, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    celular = serializers.IntegerField(required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'celular',
+        ]
 
 
+    def update(self, instance, validated_data):
+        # _id = instance.id
+        # _mail = validated_data.pop('email')
+        # _celular = validated_data.pop('celular')
+        # _set = CustomUser.objects.filter(mail=_mail, celular=_celular).exclude(id=_id)
+        instance.first_name = validated_data.pop('first_name')
+        instance.last_name = validated_data.pop('last_name')
+        instance.email = validated_data.pop('email')
+        instance.celular = validated_data.pop('celular')
+        instance.save()
+        return instance
 
 
 
