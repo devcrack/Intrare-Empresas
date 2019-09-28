@@ -144,8 +144,8 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Invitacion
-        fields = ('id', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv', 'expiration',
-                  'asunto', 'automovil', 'qr_code')
+        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv', 'expiration',
+                  'asunto', 'automovil', 'qr_code', 'diary')
 
 
 class InvitationToGuardSerializer(serializers.ModelSerializer):
