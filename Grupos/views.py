@@ -78,5 +78,12 @@ class ContactosXGrupoCreate(generics.CreateAPIView):
 class ContactosXGrupoDelete(generics.DestroyAPIView):
     permission_classes = (isEmployee,)
     serializer_class = ContactosXGrupoSerializersCreate
-    lookup_field = 'pk'
-    queryset = Grupo_has_contacto.objects.all()
+
+    def destroy(self, request, *args, **kwargs):
+        id_grupo = self.kwargs['id_grupo']
+        id_user = self.kwargs['id_user']
+        cont = Grupo_has_contacto.objects.filter(id_contacto=id_user, id_grupo=id_grupo)
+        self.perform_destroy(cont)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
