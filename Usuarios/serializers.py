@@ -10,6 +10,7 @@ from ControlAccs.utils import send_IntrareEmail
 from .models import *
 from Invitaciones.models import Invitacion
 from django.contrib.auth import validators
+from rest_framework.validators import UniqueValidator
 
 
 class UserSerializer(BaseUserSerializer):
@@ -369,8 +370,8 @@ class UpdateUserByTempToken(serializers.Serializer):
 class UserSerilizerAPP(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     last_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
-    email = serializers.EmailField(allow_blank=False)
-    celular = serializers.IntegerField(required=True)
+    email = serializers.EmailField(allow_blank=False, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    celular = serializers.IntegerField(required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
 
     class Meta:
         model = CustomUser
@@ -381,13 +382,19 @@ class UserSerilizerAPP(serializers.ModelSerializer):
             'celular',
         ]
 
+
     def update(self, instance, validated_data):
+        # _id = instance.id
+        # _mail = validated_data.pop('email')
+        # _celular = validated_data.pop('celular')
+        # _set = CustomUser.objects.filter(mail=_mail, celular=_celular).exclude(id=_id)
         instance.first_name = validated_data.pop('first_name')
         instance.last_name = validated_data.pop('last_name')
         instance.email = validated_data.pop('email')
         instance.celular = validated_data.pop('celular')
         instance.save()
         return instance
+
 
 
 

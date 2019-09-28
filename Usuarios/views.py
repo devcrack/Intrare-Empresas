@@ -37,19 +37,20 @@ class UserPlatformCreateOrList(generics.CreateAPIView):
     """
     queryset = CustomUser.objects.all()
     serializer_class = UserPlatformSerializer
-    lookup_field = "pk"
+
 
 class UserUpdateParcial(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
+
+
     queryset = CustomUser.objects.all()
+    lookup_field = "pk"
     serializer_class = UserSerilizerAPP
 
     def patch(self, request, *args, **kwargs):
         val = self.partial_update(request, *args, **kwargs)
 
         return val
-
-
 
 
 class UserPasswordUpdate(generics.UpdateAPIView):
