@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework import filters
+from django.core.exceptions import ObjectDoesNotExist
 # from django.conf import settings
 
 from ControlAccs.utils import send_sms
@@ -32,33 +33,19 @@ class UserPlatformCreateOrList(generics.CreateAPIView):
     """
     queryset = CustomUser.objects.all()
     serializer_class = UserPlatformSerializer
-
+    lookup_field = "pk"
 
 class UserUpdateParcial(generics.UpdateAPIView):
-    """
-    TIPO peticion: PATCH
-
-    URLHost/UserPlatformUpdate/
-    Header: Authorization Token #"$
-    {
-        "email": "newValue",
-        "username": "newValue",
-        "first_name": "newValue",
-        "last_name": "newValue",
-        "celular": newValue
-    }
-    Realiza update parcialmente a un determinado Usuario. El usuario se obtiene desde el request
-    si es que esta autentificado.
-    """
     permission_classes = [IsAuthenticated]
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerilizerAPP
 
-    def update(self, request, *args, **kwargs):
-        ui = self.request.user
+    def patch(self, request, *args, **kwargs):
+        val = self.partial_update(request, *args, **kwargs)
+
+        return val
 
 
-        # Performing Update
-        instance.save()
-        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 class UserPasswordUpdate(generics.UpdateAPIView):

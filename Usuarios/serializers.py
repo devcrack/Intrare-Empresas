@@ -370,7 +370,6 @@ class UserSerilizerAPP(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     last_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     email = serializers.EmailField(allow_blank=False)
-    ine_frente = serializers.ImageField(required=True, allow_empty_file=False)
     celular = serializers.IntegerField(required=True)
 
     class Meta:
@@ -380,7 +379,6 @@ class UserSerilizerAPP(serializers.ModelSerializer):
             'last_name',
             'email',
             'celular',
-            'ine_frente',
         ]
 
     def update(self, instance, validated_data):
@@ -388,7 +386,6 @@ class UserSerilizerAPP(serializers.ModelSerializer):
         instance.last_name = validated_data.pop('last_name')
         instance.email = validated_data.pop('email')
         instance.celular = validated_data.pop('celular')
-        instance.ine_frente = validated_data.pop('ine_frente')
         instance.save()
         return instance
 
