@@ -140,11 +140,12 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     dateInv = serializers.DateField(format="%d-%m-%Y")  # Nuevo
     timeInv = serializers.TimeField(format="%H:%M")  # Nuevo
     expiration = serializers.DateField(format="%d-%m-%Y")  # Nuevo
+    colorArea = serializers.CharField(source='id_area.color')
 
     class Meta:
         model = Invitacion
-        fields = ('companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv', 'expiration',
-                  'asunto', 'automovil', 'qr_code')
+        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv', 'expiration',
+                  'asunto', 'automovil', 'qr_code', 'diary')
 
 
 class InvitationToGuardSerializer(serializers.ModelSerializer):
