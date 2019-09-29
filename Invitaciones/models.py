@@ -14,17 +14,16 @@ class Invitacion(models.Model):
 
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE, related_name='id_company_inv')
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)
-    host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_guest')
-    # guest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_host')
+    host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_host')
     _defSent = timezone.now()
     fecha_hora_envio = models.DateTimeField(default=_defSent, null=False, blank=False)
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
     dateInv = models.DateField(default=date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day+1), null = False)
     timeInv = models.TimeField(default=time(), null=False)
-    # _DateExp = dateInv.get_default()
-    # _delta = timezone.timedelta(days=2)
-    # _DateExp = _DateExp + _delta
-    expiration = models.DateField(default=dateInv, null=False)
+    _DateExp = dateInv.get_default()
+    _delta = timezone.timedelta(days=2)
+    _DateExp = _DateExp + _delta
+    expiration = models.DateField(default=_DateExp, null=False)
     #Pendiente
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
 
@@ -47,6 +46,9 @@ class Invitacion(models.Model):
     class Meta:
         verbose_name_plural = "INVITACIONES"
 
+class InvitationbyUsers(models.Model):
+    idInvitation = models.ForeignKey('Invitacion', on_delete=models.CASCADE, null=False) # Esta instancia puede tener muchas invitaciones
+    idGuest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_guest')
 
 class InvitacionReferido(models.Model):
     idInvitacion = models.ForeignKey('Invitacion', on_delete=models.CASCADE)
