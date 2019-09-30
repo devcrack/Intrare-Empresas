@@ -5,12 +5,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.mixins import UpdateModelMixin
 from rest_framework import filters
+from django.core.exceptions import ObjectDoesNotExist
 # from django.conf import settings
 
 from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
 from Empresas.models import Empleado, Administrador
+
+from django.db.models import Q
 
 # Create your views here.
 
@@ -20,10 +23,12 @@ class UserViewSet(viewsets.ModelViewSet):
     Filtro para precargar informacion de un usuario.
     """
     permission_classes = [IsAuthenticated]
-    queryset = CustomUser.objects.all()
     serializer_class = CustomFindSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['^celular', '^email']
+
+    def get_queryset(self):
+        return CustomUser.objects.exclude(Q(id=self.request.user.id) | Q(is_active=False))
 
 
 class UserPlatformCreateOrList(generics.CreateAPIView):
@@ -35,42 +40,17 @@ class UserPlatformCreateOrList(generics.CreateAPIView):
 
 
 class UserUpdateParcial(generics.UpdateAPIView):
-    """
-    TIPO peticion: PATCH
-
-    URLHost/UserPlatformUpdate/
-    Header: Authorization Token #"$
-    {
-        "email": "newValue",
-        "username": "newValue",
-        "first_name": "newValue",
-        "last_name": "newValue",
-        "celular": newValue
-    }
-    Realiza update parcialmente a un determinado Usuario. El usuario se obtiene desde el request
-    si es que esta autentificado.
-    """
     permission_classes = [IsAuthenticated]
 
-    def update(self, request, *args, **kwargs):
-        instance = self.request.user
-        _email = request.data.get('email')
-        _numberPhone = request.data.get('celular')
-        _set = CustomUser.objects.filter(email=_email)
-        if len(_set) > 0: # Determinamos si algun usuario ya tiene el correo electronico con el que se desea actualizar
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data={'Error': 'El Email ya existe'})
-        _set = CustomUser.objects.filter(celular=_numberPhone)
-        if len(_set) > 0: # Determinamos si algun usuario ya tiene el numero celular con el que se desea actualizar
-            return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data={'Error': 'El numero de movíl ya existe'})
-        instance.email = request.data.get('email')
-        instance.celular = request.data.get('celular')
-        instance.username = request.data.get('username')
-        instance.first_name = request.data.get('first_name')
-        instance.last_name = request.data.get('last_name')
 
-        # Performing Update
-        instance.save()
-        return Response(status=status.HTTP_202_ACCEPTED)
+    queryset = CustomUser.objects.all()
+    lookup_field = "pk"
+    serializer_class = UserSerilizerAPP
+
+    def patch(self, request, *args, **kwargs):
+        val = self.partial_update(request, *args, **kwargs)
+
+        return val
 
 
 class UserPasswordUpdate(generics.UpdateAPIView):
