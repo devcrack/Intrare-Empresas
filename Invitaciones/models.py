@@ -15,18 +15,11 @@ class Invitacion(models.Model):
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE, related_name='id_company_inv')
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_host')
-    _defSent = timezone.now()
-    fecha_hora_envio = models.DateTimeField(default=_defSent, null=False, blank=False)
-    _DateExp = fecha_hora_envio.get_default()
-    _delta = timezone.timedelta(days=1)
-    _DateExp = _DateExp + _delta
+    fecha_hora_envio = models.DateTimeField(default=timezone.now, null=False, blank=False) #
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
-    dateInv = models.DateField(default=_DateExp, null = False)
-    timeInv = models.TimeField(default=time(), null=False)
-    _DateExp = dateInv.get_default()
-    _delta = timezone.timedelta(days=2)
-    _DateExp = _DateExp + _delta
-    expiration = models.DateField(default=_DateExp, null=False)
+    dateInv = models.DateField(null=False) #
+    timeInv = models.TimeField(null=False) #
+    expiration = models.DateField(null=False ) #
     #Pendiente
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
 
@@ -38,8 +31,8 @@ class Invitacion(models.Model):
     qr_code = models.CharField(max_length=16, null=False, blank=True, unique=True)
 
     def __str__(self):
-        return f"ID_Invitation: {self.id};  COMPANY: {self.empresa}; GUEST_PHONE: " \
-            f"{self.id_usuario.celular}; GUEST:MAIL: {self.id_usuario.email}"
+        return f"ID_Invitation: {self.id};  COMPANY: {self.empresa}; host_PHONE: " \
+            f"{self.host.celular}; hostMAIL: {self.host.email}"
 
     def save(self, *args, **kwargs):
         code = token_hex(8)
@@ -49,9 +42,18 @@ class Invitacion(models.Model):
     class Meta:
         verbose_name_plural = "INVITACIONES"
 
+
 class InvitationbyUsers(models.Model):
     idInvitation = models.ForeignKey('Invitacion', on_delete=models.CASCADE, null=False) # Esta instancia puede tener muchas invitaciones
-    idGuest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_guest')
+    idGuest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,related_name='Invitation_guest')
+
+
+    def __str__(self):
+        return f"ID = {self.id} idINV:{self.idInvitation}  GUEST = {self.idGuest}"
+
+    class Meta:
+        verbose_name_plural = "UsersByInvitation"
+
 
 class InvitacionReferido(models.Model):
     idInvitacion = models.ForeignKey('Invitacion', on_delete=models.CASCADE)
