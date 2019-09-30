@@ -42,11 +42,10 @@ class json_invit_admin():
     invitations by Administrators.
     """
 
-    def __init__(self, areaId, employeeId, cellNumber, email, subject, typeInv, dateInv, timeInv, exp, diary,
+    def __init__(self, areaId, cellNumber, email, subject, typeInv, dateInv, timeInv, exp, diary,
                  secEquip, vehicle, companyFrom, notes,
                  ):
         self.areaId = areaId
-        self.employeeId = employeeId
         self.cellNumber = cellNumber
         self.email = email
         self.subject = subject
@@ -66,9 +65,8 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
     Serializer Class for create and validates Invitations created by an ADMIN
     """
     areaId = serializers.IntegerField()  #
-    employeeId = serializers.IntegerField(allow_null=True)  #
-    cellNumber = serializers.IntegerField(allow_null=True)  #
-    email = serializers.EmailField(allow_null=True, allow_blank=False)  #
+    cellNumber = serializers.IntegerField(allow_null=False, required=True)  #
+    email = serializers.EmailField(allow_null=True)  #
     subject = serializers.CharField(max_length=400)  #
     typeInv = serializers.IntegerField(default=0)  #
     dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
@@ -89,9 +87,6 @@ class InvitationCreateSerializerAdmin(serializers.Serializer):
                      day=timezone.datetime.now().day)  # Fecha actual
         if _date > data['dateInv']:
             raise serializers.ValidationError("La fecha de la invitacion esta vencida")
-        # Validando que se haya ingresado el email o el numero de telefono, pero no ninguno de los 2.
-        if data['cellNumber'] == None and data['email'] == None:
-            raise serializers.ValidationError("Tienes que ingresar email o numero de Telefono")
         # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
         if data['exp'] != None:
             if data['exp'] < data['dateInv']:
@@ -214,17 +209,16 @@ class BasicUserObject():
 
 
 class BasicDataUserSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    email = serializers.EmailField(allow_null=True)
     cellphone = serializers.IntegerField()
 
     def create(self, validated_data):
         return BasicUserObject(**validated_data)
 
 class MassiveInvObject():
-    def __init__(self, areaId, employeeId, guests, subject, typeInv, dateInv, timeInv, exp, diary, secEquip,
+    def __init__(self, areaId, guests, subject, typeInv, dateInv, timeInv, exp, diary, secEquip,
                  companyFrom, notes, vehicle):
         self.areaId = areaId #
-        self.employeeId = employeeId #
         self.guests = guests #
         self.subject = subject #
         self.typeInv = typeInv #
@@ -239,7 +233,6 @@ class MassiveInvObject():
 
 class MasiveInvSerializer(serializers.Serializer):
     areaId = serializers.IntegerField()
-    employeeId = serializers.IntegerField(allow_null=True)
     guests = BasicDataUserSerializer(many=True)
     subject = serializers.CharField(max_length=400)  #
     typeInv = serializers.IntegerField(default=0)  #

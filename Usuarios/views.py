@@ -3,16 +3,15 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.mixins import UpdateModelMixin
 from rest_framework import filters
 from django.core.exceptions import ObjectDoesNotExist
-# from django.conf import settings
+from django.utils import timezone
+from datetime import date
 
 from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
-from Empresas.models import Empleado, Administrador
-
+from Invitaciones.models import Invitacion, InvitationByUsers
 from django.db.models import Q
 
 # Create your views here.
@@ -154,56 +153,59 @@ class activateUser(generics.UpdateAPIView):
         usr = self.request.user
         usrToken = request.data.get("usrToken")
 
-
-        # usrToken = self.kwargs['temporalToken']
-
-        instance = CustomUser.objects.filter(temporalToken=usrToken) # Buscamos al usuario a validar.
-        if len(instance) != 1:
-            return Response(status=status.HTTP_400_BAD_REQUEST, data={'error:El token de usuario ha sido corrompido'})
-        instance = instance[0]
-        _tmpPassword = token_hex(3)  # Generamos su contraseña temporal
-        instance.set_password(_tmpPassword) # Se establece contraseña temporal del usuario.
-        instance.is_active = True # Activamos el usuario.
-        instance.temporalToken=""  # Limpiamos su token Temporal.
+        try:
+            instance = CustomUser.objects.get(temporalToken=usrToken)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'El token de usuario ha sido corrompido'})
+        _tmpPassword = token_hex(3)  # tmp PASS
+        instance.set_password(_tmpPassword)  # Se establece contraseña temporal del usuario.
+        instance.is_active = True  # Activamos el usuario.
+        instance.temporalToken = ""  # Limpiamos su token Temporal.
         instance.save()
-        #  Envio de invitacion0 y contraseña.
-        addressee = instance.email
-        if usr.roll == settings.ADMIN:
-            _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
-            _invs = Invitacion.objects.filter(id_usuario=instance, id_admin=_admCompany)
-        else:
-            employee = Empleado.objects.filter(id_usuario=usr)[0]
-            _invs = Invitacion.objects.filter(id_usuario=instance, id_empleado=employee)
-        _nInvs = len(_invs)
-        if _nInvs> 0:
-            # def validateDateInv(value):  #Se prevee solo enviar las invitacion en tiempo, es decir que no estan caducas
-            #     _date = date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day)
-            #     if _date > value:
-            #         raise serializers.ValidationError("La fecha de la invitacion esta vencida")
 
-            _inv = _invs[_nInvs - 1] #Enviamos la ultima invitacion.
-            _company = _inv.id_empresa.name
-            _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
-            _qrCode = _inv.qr_code
-            _cellNumber = instance.celular
-            html_message = render_to_string('passwordMail.html',
-                                            {
-                                                'empresa': _company,
-                                                'fecha': _dateTime,
-                                                'codigo': _qrCode,
-                                                'password': _tmpPassword
-                                            })
-            send_IntrareEmail(html_message, addressee)  # MAIL
-            _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
-            _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
-            if _smsResponse["messages"][0]["status"] == "0":
-                log = 'Mensaje SMS ENVIADO'
-            else:
-                log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-            print('LOGs SMS!! ')
-            print(log)
-        else:
-            return Response(status=status.HTTP_204_NO_CONTENT, data={'error:Error Inesperado'})
+        #  Envio de invitacion0 y contraseña.
+        addressee = instance.email # Destinatario
+        _invSByUSR = InvitationByUsers.objects.filter(host=usr, idGuest=instance)
+        _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
+                     day=timezone.datetime.now().day)  # Fecha actual
+        index = 0
+        for _invByUSR in _invSByUSR:
+            _idInv = _invByUSR.idInvitation
+            _inv = None
+            try:
+                _inv = Invitacion.objects.get(id=_idInv.id)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_204_NO_CONTENT, data={'error': 'ERROR EN INVITACION'})
+            if _inv.dateInv >= _currentDate:
+                _company = _inv.id_empresa.name
+                _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
+                _qrCode = _inv.qr_code
+                _cellNumber = instance.celular
+                if index == 0:
+                    html_message = render_to_string('passwordMail.html',
+                                                    {
+                                                        'empresa': _company,
+                                                        'fecha': _dateTime,
+                                                        'codigo': _qrCode,
+                                                        'password': _tmpPassword
+                                                    })
+                else:
+                    html_message = render_to_string('email.html',
+                                                    {'empresa': _company,
+                                                     'fecha': _dateTime,
+                                                     'codigo': _qrCode}
+                                                    )
+                print('Destinatario ', addressee)
+                send_IntrareEmail(html_message, addressee)  # MAIL
+                _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
+                _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
+                if _smsResponse["messages"][0]["status"] == "0":
+                    log = 'Mensaje SMS ENVIADO'
+                else:
+                    log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+                print('LOGs SMS!! ')
+                print(log)
+                index += 1
         return Response(status=status.HTTP_200_OK)
 
 
