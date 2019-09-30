@@ -8,8 +8,6 @@ from django.utils import translation
 from django.template.loader import render_to_string
 from ControlAccs.utils import send_IntrareEmail
 from .models import *
-from Invitaciones.models import Invitacion
-from django.contrib.auth import validators
 from rest_framework.validators import UniqueValidator
 
 
@@ -50,7 +48,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
         instance.first_name = validated_data.pop('first_name')
         instance.last_name = validated_data.pop('last_name')
-        instance.email = validated_data.pop('email')
+        _email = validated_data.pop('email')
+        _email = _email.lower()
+        instance.email = _email
         instance.celular = validated_data.pop('celular')
         instance.ine_frente = validated_data.pop('ine_frente')
         instance.avatar = validated_data.pop('avatar')

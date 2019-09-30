@@ -16,7 +16,7 @@ class CustomUser(AbstractUser):
     """
     Perfil
     """
-    email = models.EmailField(unique=True, blank=True, name='email', null=True)
+    email = models.EmailField(unique=True, blank=True, name='email', null=True, default=None)
     celular = models.CharField(max_length=30, unique=True, null=False, blank=False, name='celular')
     ine_frente = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True, default=None)
     ine_atras = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True, default=None)

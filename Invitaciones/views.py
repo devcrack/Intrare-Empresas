@@ -18,24 +18,28 @@ from ControlAccs.utils import send_sms, send_IntrareEmail
 
 def guest_exist(cellphoneN, _email):
     if _email is None:
-        user = CustomUser.objects.filter(celular=cellphoneN)
+        try:
+            user = CustomUser.objects.get(celular=cellphoneN)
+        except ObjectDoesNotExist:
+            return None
     else:
-        user = CustomUser.objects.filter(email=_email)
-    if len(user) == 0:
-        return None
-    return user[0]
+        try:
+            user = CustomUser.objects.get(email=_email, celular=cellphoneN)
+        except ObjectDoesNotExist:
+            return None
+    return user
 
 
-def create_user(email, cellphone):
+def create_user(_email, cellphone):
     _errorResponse = None
-    if email is None:
+    if _email is None: # No se dio Ningun EMAIL
         nw_user = CustomUser(
-            email=email, celular=cellphone, password='pass', temporalToken=token_hex(4),
+            email="", celular=cellphone, password='pass', username=cellphone, temporalToken=token_hex(4),
             is_active=False)
     else:
-        nw_user = CustomUser(
-            email=email, celular=cellphone, username=email, password='pass', temporalToken=token_hex(4),
-            is_active=False)
+        _aEmail = _email.lower()
+        nw_user = CustomUser( email=_aEmail, celular=cellphone, username=_aEmail, password='pass',
+                              temporalToken=token_hex(4), is_active=False)
     try:
         nw_user.save()
         print(nw_user.id, ' USER CREATED 200_OK')
@@ -138,6 +142,81 @@ def create_invitation(id_company, id_area, id_host, email, cellphone, typeInv, _
         print(log)
         print(nw_invitation.id, ' INVITATION CREATED  200_OK')
     return error_response, nw_invitation
+
+
+def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expDate,
+                      subject, vehicle, notes, from_company):
+    error_response = None
+    _mainMsg = 'Bienvenido a Intrare. '
+    _msgReg = None
+    _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
+    _msgInv = None
+
+    nw_invitation = Invitacion(
+        id_empresa=id_company,
+        id_area=id_area,
+        dateInv=_dateInv,
+        timeInv=_timeInv,
+        expiration=expDate,
+        asunto=subject,
+        automovil=vehicle,
+        notas=notes,
+        empresa=from_company,
+        typeInv=_typeInv
+    )
+    nw_invitation.save()
+    return nw_invitation
+
+
+def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _dateInv, _timeInv, expDate,
+                             subject, vehicle, notes, from_company):
+    error_response = None
+    _mainMsg = 'Bienvenido a Intrare. '
+    _msgReg = None
+    _msgInv = None
+
+    inv = justCreateInvitation(id_company, id_area, typeInv, _dateInv, _timeInv, expDate,
+                               subject, vehicle, notes, from_company)
+    for _guest in listGuest:
+        _email = _guest['email']
+        print(_email)
+        _cellphone = _guest['cellphone']
+        print(_cellphone)
+        _idUser = guest_exist(_cellphone, _email)  # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
+        if _idUser is None:
+            error_response, _idUser = create_user(_email, _cellphone)
+            if error_response:
+                return error_response, None  # SE SALE ALV!
+        # En este punto ya se obutvo o se hizo la creacion del INVITADO/USUARIO
+        _idUser.host = _host
+        _idUser.save()
+        _nwInByUSER = InvitationByUsers(idInvitation=inv, host=_host, idGuest=_idUser)  # Se da
+        _nwInByUSER.save()  # de Alta al Usuario con su respectiva invitacion
+
+        if _idUser.is_active:  # El proceso de notificacion de Invitacion se realiza normalmente
+            _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
+            _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
+            _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
+                                          inv.qr_code)
+            _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
+            send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
+        else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
+            _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
+            _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
+            _link = _link + str(_idUser.temporalToken) + '/'
+            msg = _mainMsg + _msgReg + _link
+            _smsResponse = send_sms(_idUser.celular, msg)  # SMS
+            if _idUser.email:
+                _htmlMessage = render_MsgPregister(_mainMsg, _msgReg, _link)
+                send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
+        if _smsResponse["messages"][0]["status"] == "0":
+            log = 'Mensaje SMS ENVIADO'
+        else:
+            log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+        print('LOGs SMS!! ')
+        print(log)
+        print(inv.id, ' INVITATION CREATED  200_OK')
+    return error_response, inv
 
 
 def validate_employee(_id_company, _id_employee):
@@ -380,7 +459,7 @@ class MassiveInvitationCreate(generics.CreateAPIView):
 
             _areaId = _serializer.data['areaId']
             _listSecEquip = _serializer.data['secEquip']
-            _guests = _serializer.data['guests']
+            _guests = _serializer.data['guests'] #Lista invitados 1 | +
             _dateInv = _serializer.data['dateInv']
             _timeInv = _serializer.data['timeInv']
             _exp = _serializer.data['exp']
@@ -395,37 +474,26 @@ class MassiveInvitationCreate(generics.CreateAPIView):
             if _exp is None:
                 _exp = expDate(_dateInv)
             if usr.roll == settings.ADMIN:
-
-                _employeeId = _serializer.data['employeeId']
                 _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
-                _idCompany = _admCompany.id_empresa
-
-                _errorResponse, _employee = validate_employee(_idCompany, _employeeId)
-                if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+                _idCompany = _admCompany.id_empresa # Obtener ID_EMPRESA via ADMIN
             else:  # Logged as Employee
                 _employee = Empleado.objects.filter(id_usuario=usr)[0]
-                _idCompany = _employee.id_empresa
-            #     print('IDCompany =', _idCompany)
-            _errorResponse, _area = validate_areas(_idCompany, _areaId)  # Validating if Area exist
-
+                _idCompany = _employee.id_empresa  # Obtener ID_EMPRESA via EMPLEADO
+            _errorResponse, _area = validate_areas(_idCompany, _areaId)  # Validando AREAS
             if _area:
-                _securityEqu, _errorResponse = validateSecEqu(_arraySecEquip)
+                _securityEqu, _errorResponse = validateSecEqu(_arraySecEquip) # Validando equipo de seguridad
                 if _errorResponse:
                     return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
             #  Creacion de Invitacion
-                for _guest in _guests:
-                    _email = _guest['email']
-                    _cellphone = _guest['cellphone']
-                    _errorResponse, invitation = create_invitation(_idCompany, _area, _employee, _email, _cellphone,
-                                                                   _typeInv, _dateInv, _timeInv, _exp, _subject,
-                                                                   _vehicle, _notes, _companyFrom)
+                _errorResponse, invitation = createOneMoreInvitaitons(_idCompany, _area, usr, _guests,_typeInv,
+                                                                      _dateInv, _timeInv, _exp, _subject,_vehicle,
+                                                                      _notes, _companyFrom)
+                if _errorResponse:
+                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST) # Error al crear Invitacion
+                if _securityEqu:
+                    _errorResponse = add_sec_equ_by_inv(_securityEqu, invitation)
                     if _errorResponse:
-                        return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST) # Error al crear Invitacion
-                    if _securityEqu:
-                        _errorResponse = add_sec_equ_by_inv(_securityEqu, invitation)
-                        if _errorResponse:
-                            return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
+                        return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
             else:
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)  # Error ID de Area
         else:

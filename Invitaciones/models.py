@@ -14,8 +14,7 @@ class Invitacion(models.Model):
 
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE, related_name='id_company_inv')
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)
-    host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_host')
-    fecha_hora_envio = models.DateTimeField(default=timezone.now, null=False, blank=False) #
+    fecha_hora_envio = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
     dateInv = models.DateField(null=False) #
     timeInv = models.TimeField(null=False) #
@@ -43,10 +42,10 @@ class Invitacion(models.Model):
         verbose_name_plural = "INVITACIONES"
 
 
-class InvitationbyUsers(models.Model):
-    idInvitation = models.ForeignKey('Invitacion', on_delete=models.CASCADE, null=False) # Esta instancia puede tener muchas invitaciones
-    idGuest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False,related_name='Invitation_guest')
-
+class InvitationByUsers(models.Model):
+    idInvitation = models.ForeignKey('Invitacion', on_delete=models.CASCADE, null=False, related_name='InvitationLINK') # Esta instancia puede tener muchas invitaciones
+    host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_host')
+    idGuest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False, related_name='Invitation_guest')
 
     def __str__(self):
         return f"ID = {self.id} idINV:{self.idInvitation}  GUEST = {self.idGuest}"

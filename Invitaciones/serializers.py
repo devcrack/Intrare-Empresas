@@ -209,17 +209,16 @@ class BasicUserObject():
 
 
 class BasicDataUserSerializer(serializers.Serializer):
-    email = serializers.EmailField()
+    email = serializers.EmailField(allow_null=True)
     cellphone = serializers.IntegerField()
 
     def create(self, validated_data):
         return BasicUserObject(**validated_data)
 
 class MassiveInvObject():
-    def __init__(self, areaId, employeeId, guests, subject, typeInv, dateInv, timeInv, exp, diary, secEquip,
+    def __init__(self, areaId, guests, subject, typeInv, dateInv, timeInv, exp, diary, secEquip,
                  companyFrom, notes, vehicle):
         self.areaId = areaId #
-        self.employeeId = employeeId #
         self.guests = guests #
         self.subject = subject #
         self.typeInv = typeInv #
@@ -234,7 +233,6 @@ class MassiveInvObject():
 
 class MasiveInvSerializer(serializers.Serializer):
     areaId = serializers.IntegerField()
-    employeeId = serializers.IntegerField(allow_null=True)
     guests = BasicDataUserSerializer(many=True)
     subject = serializers.CharField(max_length=400)  #
     typeInv = serializers.IntegerField(default=0)  #
