@@ -21,7 +21,6 @@ class Invitacion(models.Model):
     expiration = models.DateField(null=False ) #
     #Pendiente
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
-
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
     notas = models.CharField(max_length=256, null=True, blank=True, default="")
