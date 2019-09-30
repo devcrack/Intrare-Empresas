@@ -20,12 +20,15 @@ class Invitacion(models.Model):
     _defSent = timezone.now()
     fecha_hora_envio = models.DateTimeField(default=_defSent, null=False, blank=False)
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
-    dateInv = models.DateField(default=date(year=timezone.now().year, month=timezone.now().month, day=timezone.now().day+1), null = False)
+    _DateExp = fecha_hora_envio.get_default()
+    _delta = timezone.timedelta(days=1)
+    _DateExp = _DateExp + _delta
+    dateInv = models.DateField(default=_DateExp, null = False)
     timeInv = models.TimeField(default=time(), null=False)
-    # _DateExp = dateInv.get_default()
-    # _delta = timezone.timedelta(days=2)
-    # _DateExp = _DateExp + _delta
-    expiration = models.DateField(default=dateInv, null=False)
+    _DateExp = dateInv.get_default()
+    _delta = timezone.timedelta(days=2)
+    _DateExp = _DateExp + _delta
+    expiration = models.DateField(default=_DateExp, null=False)
     #Pendiente
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
 
