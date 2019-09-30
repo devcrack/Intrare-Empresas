@@ -52,12 +52,12 @@ class Empresa(models.Model):
         null=False, blank=False,
         name='email'
     )
-    logo = models.CharField(
-        max_length=200,
-        null=False,
+    logo = models.ImageField(
+        upload_to="Logos",
+        max_length=256,
         blank=False,
-        name='logo'
-    )
+        null=False,
+        default=None)
     web_page = models.CharField(
         max_length=100, null=False,
         blank=False
