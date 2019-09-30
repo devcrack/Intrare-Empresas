@@ -66,84 +66,6 @@ def render_MsgPregister(_headerMsg, msg, link):
     return html_message
 
 
-def create_invitation(id_company, id_area, id_host, email, cellphone, typeInv, _dateInv, _timeInv, expDate,
-                      subject, vehicle, notes, from_company):
-    error_response = None
-    _mainMsg = 'Bienvenido a Intrare. '
-    _msgReg = None
-    _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
-    _msgInv = None
-
-    _idUser = guest_exist(cellphone, email)  # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
-    if _idUser is None:
-        # Inicia Registro AUTOMATICO de USUARIO.
-        error_response, _idUser = create_user(email, cellphone)
-        if error_response:
-            return error_response, None  # TERMINA CREACION DE NUEVO USUARIO
-    # Inicia CREACION DE INVITACION
-
-    # userAnf = CustomUser.objects.filter(id=id_host.id_usuario.id)[0]
-    userAnf = CustomUser.objects.get(id=id_host.id)
-    _idUser.host = userAnf  #
-    _idUser.save()
-    print('Data to commit in Invitation\n')
-    print('\tCompany Id: ', id_company)
-    print('\tArea Id :', id_area)
-    print('\tUser Id: ', _idUser)
-    print('\tHOST Id:', id_host)
-    print('\tInvitation Date: ', _dateInv)
-    print('\tHour Date: ', _timeInv)
-    print('\tExpiration Date: ', expDate)
-    print('\tsubject: ', subject)
-    print('\tvehicle: ', vehicle)
-    print('\tnotes: ', notes)
-    print('\tfromCompany: ', from_company)
-    print('\tType Inv: ', typeInv)
-    nw_invitation = Invitacion(
-        id_empresa=id_company,
-        id_area=id_area,
-        id_usuario=_idUser,
-        id_empleado=id_host,
-        dateInv=_dateInv,
-        timeInv=_timeInv,
-        expiration=expDate,
-        asunto=subject,
-        automovil=vehicle,
-        notas=notes,
-        empresa=from_company,
-    )
-    try:
-        some = nw_invitation.save()
-        print("SOME", some)
-    except ValueError:
-        error_response = {'Error': 'Can\'t create an Invitation'}
-        nw_invitation = None
-    if nw_invitation:  # Se ha creado una invitacion satisfactoriamente.
-        if _idUser.is_active == True:  # El proceso de notificacion de Invitacion se realiza normalmente
-            _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
-            #  Envio de correo electronico con los datos de la invitacion
-            _dateTime = str(nw_invitation.dateInv) + " " + str(nw_invitation.timeInv)
-            _htmlMessage = render_InvMail(nw_invitation.id_empresa.name, _dateTime,
-                                              nw_invitation.qr_code)
-            _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
-            send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-        else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
-            _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
-            _link = _link + str(_idUser.temporalToken) + '/'
-            msg = _mainMsg + _msgReg + _link
-            _smsResponse = send_sms(_idUser.celular, msg)  # SMS
-            _htmlMessage = render_MsgPregister(_mainMsg, _msgReg, _link)
-            send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-        if _smsResponse["messages"][0]["status"] == "0":
-            log = 'Mensaje SMS ENVIADO'
-        else:
-            log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-        print('LOGs SMS!! ')
-        print(log)
-        print(nw_invitation.id, ' INVITATION CREATED  200_OK')
-    return error_response, nw_invitation
-
-
 def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expDate,
                       subject, vehicle, notes, from_company):
     error_response = None
@@ -324,20 +246,11 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet):
         d = self.kwargs['day']
         usr = self.request.user
         invitations = None
-        if usr.roll == settings.ADMIN:  # Admin must be show all invitations of  the Company.
-            print('IS an ADMINISTRATOR')
-            adm_company = Administrador.objects.filter(id_usuario=usr)[0]
-            id_company = adm_company.id_empresa
-            invitations = Invitacion.objects.filter(id_empresa=id_company, dateInv__year=y,
-                                                    dateInv__month=m,
-                                                    dateInv__day=d)
-        if usr.roll == settings.EMPLEADO:
-            print('IS an EMPLOYEE')
-            employee = Empleado.objects.filter(id_usuario=usr)[0]
-            invitations = Invitacion.objects.filter(id_empleado=employee.id, dateInv__year=y,
-                                                    dateInv__month=m,
-                                                    dateInv__day=d)
-        queryset = self.queryset = invitations
+
+        invsByUser = InvitationByUsers.objects.filter(host=usr, idInvitation__fecha_hora_envio__year=y,
+                                                      idInvitation__fecha_hora_envio__month=m,
+                                                      idInvitation__fecha_hora_envio__day=d) # Todas las invitaciones que ha generado este Usuario.
+        queryset = self.queryset = invsByUser
         serializer = InvitationToGuardSerializer(queryset, many=True)
         return Response(serializer.data)
 
