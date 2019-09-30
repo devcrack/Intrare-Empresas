@@ -128,14 +128,14 @@ class EquipoSeguridadXInvitacionSerializers(serializers.ModelSerializer):
 
 
 class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
-    companyName = serializers.CharField(source='id_empresa.name')
-    areaName = serializers.CharField(source='id_area.nombre')
-    hostFirstName = serializers.CharField(source='id_empleado.id_usuario.first_name')
-    hostLastName = serializers.CharField(source='id_empleado.id_usuario.last_name')
+    companyName = serializers.CharField(source='idInvitation.id_empresa.name')
+    areaName = serializers.CharField(source='idInvitation.id_area.nombre')
+    hostFirstName = serializers.CharField(source='host.first_name')
+    hostLastName = serializers.CharField(source='host.last_name')
     dateInv = serializers.DateField(format="%d-%m-%Y")  # Nuevo
     timeInv = serializers.TimeField(format="%H:%M")  # Nuevo
     expiration = serializers.DateField(format="%d-%m-%Y")  # Nuevo
-    colorArea = serializers.CharField(source='id_area.color')
+    colorArea = serializers.CharField(source='idInvitation.id_area.color')
 
     class Meta:
         model = Invitacion
@@ -193,12 +193,6 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'logoEmpresa',
             'avatar'
         )
-
-
-class InvitationSimpleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Invitacion
-        fields = '__all__'
 
 
 class BasicUserObject():

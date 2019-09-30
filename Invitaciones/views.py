@@ -237,7 +237,7 @@ class EquipoSeguridadXInvitacionList(generics.ListAPIView):
 
 
 
-class InvitationListAdminEmployee(viewsets.ModelViewSet):
+class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
     permission_classes = [IsAdmin | IsEmployee,]  # The user logged have to be and admin or an employee
     serializer_class = InvitacionSerializers  # Used for validate and deserializing input, and for serializing output.
     def list(self, request, *args, **kwargs):
@@ -255,12 +255,14 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
-class InvitationListToGuard(viewsets.ModelViewSet):
+class InvitationListToGuard(viewsets.ModelViewSet): ####
     permission_classes = (isGuard,)
 
     def list(self, request, *args, **kwargs):
         qr_code = self.kwargs['qr_code']
-        self.queryset = Invitacion.objects.filter(qr_code=qr_code)
+        self.queryset = InvitationByUsers.objects.filter(qr_code=qr_code)
+
+        # self.queryset = Invitacion.objects.filter(qr_code=qr_code)
         _nReg = len(self.queryset)
         if _nReg > 0:
             print('nReg=', _nReg)
@@ -271,13 +273,13 @@ class InvitationListToGuard(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class InvitationListToSimpleUser(viewsets.ModelViewSet):
+class InvitationListToSimpleUser(viewsets.ModelViewSet): ####
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
-        self.queryset = Invitacion.objects.filter(id_usuario=self.request.user.id)
+        self.queryset = InvitationByUsers.objects.filter(idGuest=self.request.user.id)
+        # self.queryset = Invitacion.objects.filter(id_usuario=self.request.user.id)
         _nReg = len(self.queryset)
-
         if _nReg > 0:
             print('nReg=', _nReg)
             queryset = self.queryset
@@ -342,11 +344,12 @@ class MassiveInvitationCreate(generics.CreateAPIView):
 
 
 class InvitationbyQRCode(generics.ListAPIView):
-    serializer_class = InvitationSimpleSerializer
+    serializer_class = InvitationToGuardSerializer
 
 
     def get_queryset(self):
-        queryset = Invitacion.objects.all()
+        queryset = InvitationByUsers.objects.all()
+        # queryset = Invitacion.objects.all()
         _qrCode = self.kwargs['qrcode']
         if _qrCode is not None:
             queryset = queryset.filter(qr_code=_qrCode)
