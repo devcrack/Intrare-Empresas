@@ -28,9 +28,14 @@ def guest_exist(cellphoneN, _email):
 
 def create_user(email, cellphone):
     _errorResponse = None
-    nw_user = CustomUser(
-        email=email, celular=cellphone, username=email, password='pass', temporalToken=token_hex(4),
-        is_active=False)
+    if email is None:
+        nw_user = CustomUser(
+            email=email, celular=cellphone, password='pass', temporalToken=token_hex(4),
+            is_active=False)
+    else:
+        nw_user = CustomUser(
+            email=email, celular=cellphone, username=email, password='pass', temporalToken=token_hex(4),
+            is_active=False)
     try:
         nw_user.save()
         print(nw_user.id, ' USER CREATED 200_OK')
@@ -57,7 +62,7 @@ def render_MsgPregister(_headerMsg, msg, link):
     return html_message
 
 
-def create_invitation(id_company, id_area, id_employee, email, cellphone, typeInv, _dateInv, _timeInv, expDate,
+def create_invitation(id_company, id_area, id_host, email, cellphone, typeInv, _dateInv, _timeInv, expDate,
                       subject, vehicle, notes, from_company):
     error_response = None
     _mainMsg = 'Bienvenido a Intrare. '
@@ -65,26 +70,23 @@ def create_invitation(id_company, id_area, id_employee, email, cellphone, typeIn
     _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
     _msgInv = None
 
-    _idUser = guest_exist(cellphone,
-                              email)  # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
+    _idUser = guest_exist(cellphone, email)  # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
     if _idUser is None:
         # Inicia Registro AUTOMATICO de USUARIO.
-        if email is None or cellphone is None:  ## Verificar que se haya ingresado el numero de celular y el Email
-            error_response = {'Error': 'El usuario no esta registrado, es necesario ingresar su numero de celular y '
-                                       'su email'}
-            return error_response, None
         error_response, _idUser = create_user(email, cellphone)
         if error_response:
             return error_response, None  # TERMINA CREACION DE NUEVO USUARIO
     # Inicia CREACION DE INVITACION
-    userAnf = CustomUser.objects.filter(id=id_employee.id_usuario.id)[0]
+
+    # userAnf = CustomUser.objects.filter(id=id_host.id_usuario.id)[0]
+    userAnf = CustomUser.objects.get(id=id_host.id)
     _idUser.host = userAnf  #
     _idUser.save()
     print('Data to commit in Invitation\n')
     print('\tCompany Id: ', id_company)
     print('\tArea Id :', id_area)
     print('\tUser Id: ', _idUser)
-    print('\tEmploye Id:', id_employee)
+    print('\tHOST Id:', id_host)
     print('\tInvitation Date: ', _dateInv)
     print('\tHour Date: ', _timeInv)
     print('\tExpiration Date: ', expDate)
@@ -97,7 +99,7 @@ def create_invitation(id_company, id_area, id_employee, email, cellphone, typeIn
         id_empresa=id_company,
         id_area=id_area,
         id_usuario=_idUser,
-        id_empleado=id_employee,
+        id_empleado=id_host,
         dateInv=_dateInv,
         timeInv=_timeInv,
         expiration=expDate,
@@ -323,16 +325,18 @@ class InvitationCreate(generics.CreateAPIView):
             _exp = _serializer.data['exp']
             if _exp is None:
                 _exp = expDate(_dateInv)
+            # Obteniendo ID Usuario.
+
 
             if usr.roll == settings.ADMIN:
                 print('Logged as Administrator\n')
-                _employeeId = _serializer.data['employeeId']
+                # _employeeId = _serializer.data['employeeId']
                 _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
                 _idCompany = _admCompany.id_empresa
                 #  Validating Employee
-                _errorResponse, _employee = validate_employee(_idCompany, _employeeId)
-                if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
+                # _errorResponse, _employee = validate_employee(_idCompany, _employeeId)
+                # if _errorResponse:
+                #     return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)
             else:
                 print('Logged as Employee\n')
                 _employee = Empleado.objects.filter(id_usuario=usr)[0]
@@ -346,9 +350,9 @@ class InvitationCreate(generics.CreateAPIView):
                     return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
                 #
                 # Creando Invitacion
-                _errorResponse, invitation = create_invitation(_idCompany, _area, _employee, _email,_cellNumber,
-                                                                    _typeInv, _dateInv, _timeInv, _exp, _subject,
-                                                                    _vehicle, _notes, _companyFrom)
+                _errorResponse, invitation = create_invitation(_idCompany, _area, usr, _email, _cellNumber,
+                                                               _typeInv, _dateInv, _timeInv, _exp, _subject,
+                                                               _vehicle, _notes, _companyFrom)
                 if _errorResponse:
                     return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
                 else:
