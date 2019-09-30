@@ -36,83 +36,6 @@ class InvitacionSerializers(serializers.ModelSerializer):
             'leida'
         )
 
-class json_invit_admin():
-    """
-    Object Class for render the input for the creation of
-    invitations by Administrators.
-    """
-
-    def __init__(self, areaId, cellNumber, email, subject, typeInv, dateInv, timeInv, exp, diary,
-                 secEquip, vehicle, companyFrom, notes,
-                 ):
-        self.areaId = areaId
-        self.cellNumber = cellNumber
-        self.email = email
-        self.subject = subject
-        self.typeInv = typeInv
-        self.dateInv = dateInv
-        self.timeInv = timeInv
-        self.exp = exp
-        self.diary = diary
-        self.secEquip = secEquip
-        self.vehicle = vehicle
-        self.companyFrom = companyFrom
-        self.notes = notes
-
-
-class InvitationCreateSerializerAdmin(serializers.Serializer):
-    """
-    Serializer Class for create and validates Invitations created by an ADMIN
-    """
-    areaId = serializers.IntegerField()  #
-    cellNumber = serializers.IntegerField(allow_null=False, required=True)  #
-    email = serializers.EmailField(allow_null=True)  #
-    subject = serializers.CharField(max_length=400)  #
-    typeInv = serializers.IntegerField(default=0)  #
-    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
-    timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])  #
-    exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True)  #
-    diary = serializers.CharField(max_length=7, allow_blank=True)
-    secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
-    vehicle = serializers.BooleanField()
-    companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
-    notes = serializers.CharField(max_length=300, allow_blank=True, allow_null=True)
-
-    def create(self, validated_data):
-        return json_invit_admin(**validated_data)
-
-    def validate(self, data):
-        # Validando la fecha de la invitacion
-        _date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
-                     day=timezone.datetime.now().day)  # Fecha actual
-        if _date > data['dateInv']:
-            raise serializers.ValidationError("La fecha de la invitacion esta vencida")
-        # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
-        if data['exp'] != None:
-            if data['exp'] < data['dateInv']:
-                raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que acontezca "
-                                                  "la invitacion")
-        return data
-
-
-class json_invit_employee():
-    """
-    Object Class for render the json input data for create invitations by
-    employees.
-    """
-
-    def __init__(self, cell_number, email, area, business, sec_equip, vehicle, company, notes, date):
-        self.cell_number = cell_number
-        self.email = email
-        self.area = area
-        self.business = business
-        self.sec_equip = sec_equip
-        self.vehicle = vehicle
-        self.company = company
-        self.notes = notes
-        self.date = date
-
-
 class EquipoSeguridadSerializers(serializers.ModelSerializer):
     class Meta:
         model = EquipoSeguridad
@@ -132,10 +55,15 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     areaName = serializers.CharField(source='idInvitation.id_area.nombre')
     hostFirstName = serializers.CharField(source='host.first_name')
     hostLastName = serializers.CharField(source='host.last_name')
-    dateInv = serializers.DateField(format="%d-%m-%Y")  # Nuevo
-    timeInv = serializers.TimeField(format="%H:%M")  # Nuevo
-    expiration = serializers.DateField(format="%d-%m-%Y")  # Nuevo
+    dateInv = serializers.DateField(source='idInvitation.dateInv',format="%d-%m-%Y")  # Nuevo
+    timeInv = serializers.TimeField(source='idInvitation.timeInv',format="%H:%M")  # Nuevo
+    expiration = serializers.DateField(source='idInvitation.expiration',format="%d-%m-%Y")  # Nuevo
     colorArea = serializers.CharField(source='idInvitation.id_area.color')
+    typeInv = serializers.IntegerField(source='idInvitation.typeInv')
+    asunto = serializers.CharField(source='idInvitation.asunto')
+    automovil = serializers.BooleanField(source='idInvitation.automovil')
+    qr_code = serializers.CharField(source='idInvitation.qr_code')
+    diary = serializers.CharField(source='idInvitation.diary')
 
     class Meta:
         model = Invitacion
@@ -160,10 +88,10 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     guest_ine_atras = serializers.ImageField(source='idGuest.ine_atras')
     guestCellPhone = serializers.CharField(source='idGuest.celular')
     avatar = serializers.ImageField(source='idGuest.avatar')
-    dateInv = serializers.DateField(format="%d-%m-%Y")  # Nuevo
-    timeInv = serializers.TimeField(format="%H:%M")  # Nuevo
-    expiration = serializers.DateField(format="%d-%m-%Y")  # Nuevo
-    logoEmpresa = serializers.ImageField(source='id_empleado.id_empresa.logo')
+    dateInv = serializers.DateField(source='idInvitation.dateInv', format="%d-%m-%Y")  # Nuevo
+    timeInv = serializers.TimeField(source='idInvitation.timeInv', format="%H:%M")  # Nuevo
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")  # Nuevo
+    logoEmpresa = serializers.ImageField(source='idInvitation.id_empresa.logo')
 
     class Meta:
         model = Invitacion
