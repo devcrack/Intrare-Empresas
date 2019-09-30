@@ -169,7 +169,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     dateInv = serializers.DateField(format="%d-%m-%Y")  # Nuevo
     timeInv = serializers.TimeField(format="%H:%M")  # Nuevo
     expiration = serializers.DateField(format="%d-%m-%Y")  # Nuevo
-    logoEmpresa = serializers.CharField(source='id_empleado.id_empresa.logo')
+    logoEmpresa = serializers.ImageField(source='id_empleado.id_empresa.logo')
 
     class Meta:
         model = Invitacion
