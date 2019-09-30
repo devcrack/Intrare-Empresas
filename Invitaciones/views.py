@@ -199,23 +199,23 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                           inv.qr_code)
             _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
-            # send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
+            send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
         else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
             _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
             _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
             _link = _link + str(_idUser.temporalToken) + '/'
             msg = _mainMsg + _msgReg + _link
-            # _smsResponse = send_sms(_idUser.celular, msg)  # SMS
+            _smsResponse = send_sms(_idUser.celular, msg)  # SMS
             if _idUser.email:
                 _htmlMessage = render_MsgPregister(_mainMsg, _msgReg, _link)
                 send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-        # if _smsResponse["messages"][0]["status"] == "0":
-        #     log = 'Mensaje SMS ENVIADO'
-        # else:
-        #     log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-        # print('LOGs SMS!! ')
-        # print(log)
-        # print(inv.id, ' INVITATION CREATED  200_OK')
+        if _smsResponse["messages"][0]["status"] == "0":
+            log = 'Mensaje SMS ENVIADO'
+        else:
+            log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+        print('LOGs SMS!! ')
+        print(log)
+        print(inv.id, ' INVITATION CREATED  200_OK')
     return error_response, inv
 
 
