@@ -116,16 +116,15 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         _nwInByUSER.save()  # de Alta al Usuario con su respectiva invitacion
 
         if _idUser.is_active:  # El proceso de notificacion de Invitacion se realiza normalmente
-            # _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
-            _msgInv = "Se+te+ha+enviado+una+invitaci%C3%B3n%2C+verifica+desde+tu+correo+electr%C3%B3nico+o+en+la+aplicaci%C3%B3n"
+            _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
+
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                           inv.qr_code)
             _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
             send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
         else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
-            # _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
-            _msgReg = "Recibiste+una+invitaci%C3%B3n.+Para+acceder+a+ella+realiza+tu+Pregistro+en%3A"
+            _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en:"
             _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
             _link = _link + str(_idUser.temporalToken) + '/'
             msg = _mainMsg + _msgReg + _link
@@ -361,8 +360,8 @@ class GetInvitationByHOST(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         usr = self.request.user
-        self.queryset =  InvitationByUsers.objects.filter(host=usr)
-        serializers = InvitationToHostSerializer(self.queryset, many=True)
+        _queryset = self.queryset =  InvitationByUsers.objects.filter(host=usr)
+        serializers = InvitationToHostSerializer(_queryset, many=True)
         return Response(serializers.data)
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html

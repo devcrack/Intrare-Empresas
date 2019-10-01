@@ -197,7 +197,7 @@ class activateUser(generics.UpdateAPIView):
                                                     )
                 print('Destinatario ', addressee)
                 send_IntrareEmail(html_message, addressee)  # MAIL
-                _msgInv = "Se+te+ha+enviado+una+invitaci%C3%B3n%2C+verifica+desde+tu+correo+electr%C3%B3nico+o+en+la+aplicaci%C3%B3n"
+                _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
                 _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
                 if _smsResponse["messages"][0]["status"] == "0":
                     log = 'Mensaje SMS ENVIADO'
