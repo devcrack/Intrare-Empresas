@@ -208,9 +208,9 @@ class NotifyHostSignPass(generics.ListAPIView):
             acc =Acceso.objects.get(id=_idAcc)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND, data={"error":"Acceso no Encontrado"})
-        _emailHost = acc.id_invitacion.id_empleado.id_usuario.email
-        _cellphoneHost = acc.id_invitacion.id_empleado.id_usuario.celular
-        _guestFullName = acc.id_invitacion.id_usuario.first_name + " " + acc.id_invitacion.id_usuario.last_name
+        _emailHost = acc.invitationByUsers.host.email
+        _cellphoneHost = acc.invitationByUsers.host.celular
+        _guestFullName = acc.invitationByUsers.idGuest.first_name + " " + acc.invitationByUsers.idGuest.last_name
         _dateTimeAcc = str(acc.fecha_hora_acceso)
         _msg = "¡Firmar Pase de salida!\n Invitado: " + _guestFullName + "\nFecha y Hora de Acceso:" + _dateTimeAcc
         html_message = render_to_string('notifyHostSigAccess.html',
@@ -218,7 +218,7 @@ class NotifyHostSignPass(generics.ListAPIView):
                                           'dateTimeAcc':_dateTimeAcc
                                         })
         send_IntrareEmail(html_message, _emailHost)
-        send_sms(_cellphoneHost, _msg)
+        # send_sms(_cellphoneHost, _msg)
         return Response(status=status.HTTP_200_OK)
 
 

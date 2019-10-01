@@ -208,6 +208,21 @@ class activateUser(generics.UpdateAPIView):
                 index += 1
         return Response(status=status.HTTP_200_OK)
 
+class GetUsersNotActivated(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,IsAdmin | IsEmployee,)
 
+    def get_queryset(self):
+        usr = self.request.user
+        queryset = CustomUser.objects.filter(host=usr)
+        queryset = queryset.filter(is_active=False)
+        return queryset
 
+    def list(self, request, *args, **kwargs):
+        _queryset = self.get_queryset()
+        _nReg = len(_queryset)
+        if _nReg > 0:
+            _serializer= CustomFindSerializer(_queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 

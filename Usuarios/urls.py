@@ -12,5 +12,6 @@ urlpatterns = [
     path('haveIneImages/', UserHaveIne.as_view(), name='UserHaveIne'),
     path('partialUpdateUser/<temporalToken>/', UpdateUserPartialByToken.as_view(), name='partialUpdateUser'),
     path('getUser/<temporalToken>/', getUserByToken.as_view(), name='GetUserByToken'),
-    path('activateUser/', activateUser.as_view(), name='ActivateUser')
+    path('activateUser/', activateUser.as_view(), name='ActivateUser'),
+    path('GetUsers/NoActivated', GetUsersNotActivated.as_view({'get':'list'})),
 ]
