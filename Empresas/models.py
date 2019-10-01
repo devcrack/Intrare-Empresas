@@ -180,7 +180,7 @@ class Acceso(models.Model):
     comentarios_VE = models.TextField(null=True, blank=True, max_length=300)  # No siempre se da el caso de haber comentarios.
     datos_coche = models.TextField(null=True, blank=True)  # No siempre el visitante trae un coche
     equipo = models.TextField(null=True, blank=True, default=None)
-    qr_code = models.CharField(max_length=16, null=False, blank=False, unique=True)  # Para no hacer una doble consulta y evitar estresar la base de datos.
+    qr_code = models.CharField(max_length=30, null=False, blank=False, unique=True)  # Para no hacer una doble consulta y evitar estresar la base de datos.
 
     def __str__(self):
         """

@@ -189,6 +189,7 @@ class AccessListToGuard(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         qr_code = self.kwargs['qr_code']
+
         self.queryset = Acceso.objects.filter(qr_code=qr_code)
         _nReg = len(self.queryset)
         if _nReg > 0:

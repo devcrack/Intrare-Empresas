@@ -41,7 +41,7 @@ class Invitacion(models.Model):
 
 class InvitationByUsers(models.Model):
     idInvitation = models.ForeignKey('Invitacion', on_delete=models.CASCADE, null=False, related_name='InvitationLINK') # Esta instancia puede tener muchas invitaciones
-    qr_code = models.CharField(max_length=16, null=False)
+    qr_code = models.CharField(max_length=30, null=False)
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_host')
     idGuest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False, related_name='Invitation_guest')
 

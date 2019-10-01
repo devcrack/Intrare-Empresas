@@ -62,11 +62,11 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     asunto = serializers.CharField(source='idInvitation.asunto')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
-    qr_code = serializers.CharField(source='idInvitation.qr_code')
+    # qr_code = serializers.CharField(source='idInvitation.qr_code')
     diary = serializers.CharField(source='idInvitation.diary')
 
     class Meta:
-        model = Invitacion
+        model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv', 'expiration',
                   'asunto', 'automovil', 'qr_code', 'diary')
 
@@ -83,11 +83,11 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     asunto = serializers.CharField(source='idInvitation.asunto')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
-    qr_code = serializers.CharField(source='idInvitation.qr_code')
+    # qr_code = serializers.CharField(source='idInvitation.qr_code')
     diary = serializers.CharField(source='idInvitation.diary')
 
     class Meta:
-        model = Invitacion
+        model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
                   'timeInv', 'expiration', 'asunto', 'automovil', 'qr_code', 'diary')
 
@@ -116,11 +116,11 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     asunto = serializers.CharField(source='idInvitation.asunto')
     empresa = serializers.CharField(source='idInvitation.empresa')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
-    qr_code = serializers.CharField(source='idInvitation.qr_code')
+    # qr_code = serializers.CharField(source='idInvitation.qr_code')
     notas = serializers.CharField(source='idInvitation.notas')
 
     class Meta:
-        model = Invitacion
+        model = InvitationByUsers
         fields = (
             'id',
             'areaName',

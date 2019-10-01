@@ -112,7 +112,8 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         # En este punto ya se obutvo o se hizo la creacion del INVITADO/USUARIO
         _idUser.host = _host
         _idUser.save()
-        _nwInByUSER = InvitationByUsers(idInvitation=inv, qr_code= inv.qr_code, host=_host, idGuest=_idUser)  # Se da
+        _specialQR = inv.qr_code + _idUser.id # CONCATENADO
+        _nwInByUSER = InvitationByUsers(idInvitation=inv, qr_code=_specialQR, host=_host, idGuest=_idUser)  # Se da
         _nwInByUSER.save()  # de Alta al Usuario con su respectiva invitacion
 
         if _idUser.is_active:  # El proceso de notificacion de Invitacion se realiza normalmente
@@ -120,7 +121,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
 
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
-                                          inv.qr_code)
+                                          _nwInByUSER.qr_code) #<<<CONCATENADO>>>>
             _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
             send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
         else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
