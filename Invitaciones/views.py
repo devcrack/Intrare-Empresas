@@ -34,7 +34,7 @@ def create_user(_email, cellphone):
     _errorResponse = None
     if _email is None: # No se dio Ningun EMAIL
         nw_user = CustomUser(
-            email="", celular=cellphone, password='pass', username=cellphone, temporalToken=token_hex(4),
+            email=None, celular=cellphone, password='pass', username=cellphone, temporalToken=token_hex(4),
             is_active=False)
     else:
         _aEmail = _email.lower()
