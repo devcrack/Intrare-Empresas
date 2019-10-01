@@ -112,7 +112,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         # En este punto ya se obutvo o se hizo la creacion del INVITADO/USUARIO
         _idUser.host = _host
         _idUser.save()
-        _specialQR = inv.qr_code + _idUser.id # CONCATENADO
+        _specialQR = inv.qr_code + str(_idUser.id) # CONCATENADO
         _nwInByUSER = InvitationByUsers(idInvitation=inv, qr_code=_specialQR, host=_host, idGuest=_idUser)  # Se da
         _nwInByUSER.save()  # de Alta al Usuario con su respectiva invitacion
 
