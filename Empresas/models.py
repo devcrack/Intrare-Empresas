@@ -1,88 +1,21 @@
 from django.db import models
 from django.conf import settings
 from datetime import datetime
-
+from django.utils import timezone
 
 class Empresa(models.Model):
-    """Modelo Empresa
-
-       Representa la tabla Empresa en la Base de Datos.
-
-       Attributes:
-            name(str): Nombre de la Empresa.
-            address(str): Dirección de la Empresa.
-            telephone(str): Teléfono de la Empresa.
-            email(email): Dirección de Correo Electrónico de la Empresa.
-            logo(str): Ubicación del archivo logo de la Empresa.
-            web_page(str): Direccón de la Página Web de la Empresa.
-            scian(int): Código Sistema de Clasificación
-                        Industrial de América del Norte de la Empresa.
-            classification(str): Clasificación de la Empresa.
-            latitude(float): Latitud de la Empresa.
-            longitude(float): Longitud de la Empresa.
-            url_map(str): Dirección web del mapa de la Empresa.
-            validity(Date): Vigencia de la Empresa.
-    """
-    id_parque = models.ForeignKey(
-    'Parques.Parque',
-    on_delete=models.CASCADE,
-    default=None,
-    null=True
-
-    )
-    name = models.CharField(
-        max_length=100,
-        unique=True, null=False,
-        blank=False, name='name'
-    )
-    address = models.CharField(
-        max_length=200,
-        null=False,
-        blank=False,
-        name='address'
-    )
-    telephone = models.CharField(
-        max_length=30,
-        unique=True,
-        null=False,
-        blank=True,
-        name='telephone')
-    email = models.EmailField(
-        max_length=100, unique=True,
-        null=False, blank=False,
-        name='email'
-    )
-    logo = models.ImageField(
-        upload_to="Logos",
-        max_length=256,
-        blank=False,
-        null=False,
-        default=None)
-    web_page = models.CharField(
-        max_length=100, null=False,
-        blank=False
-    )
-    scian = models.IntegerField(
-        null=False,
-        blank=False, name='scian'
-    )
-    classification = models.CharField(
-        max_length=100, null=False,
-        blank=False, name='classification'
-    )
-    latitude = models.FloatField(
-        null=False,
-        blank=False,
-        name='latitude'
-    )
-    longitude = models.FloatField(
-        null=False, blank=False,
-        name='longitude'
-    )
-    url_map = models.CharField(
-        max_length=200, null=False,
-        blank=False, name='url_map'
-    )
+    id_parque = models.ForeignKey('Parques.Parque', on_delete=models.CASCADE, default=None, null=True)
+    name = models.CharField(max_length=100, unique=True, null=False, blank=False, name='name')
+    address = models.CharField(max_length=200, null=False, blank=False, name='address')
+    telephone = models.CharField(max_length=30, unique=True, null=False, blank=True, name='telephone')
+    email = models.EmailField(max_length=100, unique=True, null=False, blank=False, name='email')
+    logo = models.ImageField(upload_to="Logos", max_length=256, blank=False, null=False, default=None)
+    web_page = models.CharField(max_length=100, null=False, blank=False)
+    scian = models.IntegerField(null=False, blank=False, name='scian')
+    classification = models.CharField(max_length=100, null=False, blank=False, name='classification')
+    latitude = models.FloatField(null=False, blank=False, name='latitude')
+    longitude = models.FloatField(null=False, blank=False, name='longitude')
+    url_map = models.CharField(max_length=200, null=False, blank=False, name='url_map')
     validity = models.DateField(null=False, blank=False, name='validity')
 
     def __str__(self):
@@ -220,22 +153,6 @@ class Caseta(models.Model):
 
 
 class Veto(models.Model):
-    """
-    Modelo Veto.
-
-    Representa la Tabla Veto en la Base de Datos.
-
-    Attributes:
-        id_empresa(int): ID de la Empresa en la cual está registrado
-                         el Usuario .
-        id_usuario(int): ID del Usuario al cual se va vetar.
-        fecha_hora_veto(DateTime): Fecha y Hora en el que se vetó al Usuario.
-        motivo(str): Motivo por el cual se vetó al Usuario.
-        tipo(str):
-
-        Todo:
-            * que tipos de Vetos hay?
-    """
     id_empresa = models.ForeignKey('Empresa', on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     fecha_hora_veto = models.DateTimeField(auto_now=False, auto_now_add=True, null=False)
@@ -251,11 +168,12 @@ class Veto(models.Model):
 
 
 class Acceso(models.Model):
-    id_invitacion = models.ForeignKey('Invitaciones.Invitacion', on_delete=models.CASCADE)
+    invitationByUsers = models.ForeignKey('Invitaciones.InvitationByUsers', on_delete=models.CASCADE)
+    # id_invitacion = models.ForeignKey('Invitaciones.Invitacion', on_delete=models.CASCADE)
     id_vigilante_ent = models.ForeignKey('Vigilante', on_delete=models.CASCADE, related_name='entrada')
     id_vigilante_sal = models.ForeignKey('Vigilante', on_delete=models.CASCADE, related_name='salida',
                                          blank=True, null=True, default=None)
-    fecha_hora_acceso = models.DateTimeField(default=datetime.now, null=False, blank=False)  # Automaticamente se genera al crear el registro
+    fecha_hora_acceso = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)  # Automaticamente se genera al crear el registro
     fecha_hora_salida = models.DateTimeField(default=None, null=True, blank=True)  # Temporalmente esta vacio, posteriormente se actualizara el terminar la visita.
     estado = models.IntegerField(default=1, null=False, blank=False)  # 1 = Entrada, 2 = Salida
     pase_salida = models.BooleanField(default=False, null=False, blank=True)  # Check que valida que se ha efectuado la visita, ya sea con el empleado o con el amdinistrador.
