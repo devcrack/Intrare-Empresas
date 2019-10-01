@@ -53,7 +53,7 @@ class AccessCreate(generics.CreateAPIView):
             _emailHost = _invByUsers.host.email
             _cellphoneHost = _invByUsers.host.celular
             _from = _invByUsers.idInvitation.empresa
-            _msg = "Tu invitado " + _guestFullName + "proveniente de: " + _from+ " ha llegado"
+            _msg = "Tu invitado " + _guestFullName + " proveniente de: " + _from+  " ha llegado"
             html_message = render_to_string('guestArrived.html',
                                             { 'guestName':_guestFullName,
                                               'from':_from

@@ -117,9 +117,7 @@ INSTALLED_APPS = [
     'Parques.apps.ParquesConfig',
     'Bitacoras.apps.BitacorasConfig',
     'Grupos.apps.GruposConfig',
-
-
-
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -225,13 +223,17 @@ USE_TZ = True
 AWS_ACCESS_KEY_ID = 'AKIAVZH4SBSYUMNPRIJQ'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'bucketeer-576c8228-7737-4878-8397-1c8403d07005'
-AWS_S3_CUSTOM_DOMAIN = 'https://bucketeer-576c8228-7737-4878-8397-1c8403d07005.s3.amazonaws.com/public/'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
+MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-STATIC_URL = 'http://' + AWS_STORAGE_BUCKET_NAME + '.s3.amazonaws.com/'
-ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+#
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+#
+# STATIC_URL = 'http://' + AWS_STORAGE_BUCKET_NAME + '.s3.amazonaws.com/'
+# ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
 #
 #
