@@ -89,7 +89,7 @@ def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expD
     nw_invitation.save()
     return nw_invitation
 
-
+####DESHABILITADO ENVIO DE MENSAJES
 def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _dateInv, _timeInv, expDate,
                              subject, vehicle, notes, from_company):
     error_response = None
@@ -120,24 +120,24 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                           inv.qr_code)
-            _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
-            send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
+            # _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
+            # send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
         else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
             _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
             _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
             _link = _link + str(_idUser.temporalToken) + '/'
             msg = _mainMsg + _msgReg + _link
-            _smsResponse = send_sms(_idUser.celular, msg)  # SMS
+            # _smsResponse = send_sms(_idUser.celular, msg)  # SMS
             if _idUser.email:
                 _htmlMessage = render_MsgPregister(_mainMsg, _msgReg, _link)
                 send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-        if _smsResponse["messages"][0]["status"] == "0":
-            log = 'Mensaje SMS ENVIADO'
-        else:
-            log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-        print('LOGs SMS!! ')
-        print(log)
-        print(inv.id, ' INVITATION CREATED  200_OK')
+        # if _smsResponse["messages"][0]["status"] == "0":
+        #     log = 'Mensaje SMS ENVIADO'
+        # else:
+        #     log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+        # print('LOGs SMS!! ')
+        # print(log)
+        # print(inv.id, ' INVITATION CREATED  200_OK')
     return error_response, inv
 
 
@@ -238,7 +238,7 @@ class EquipoSeguridadXInvitacionList(generics.ListAPIView):
 
 
 class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
-    permission_classes = [IsAdmin | IsEmployee,]  # The user logged have to be and admin or an employee
+    permission_classes = [IsAuthenticated,IsAdmin | IsEmployee,]  # The user logged have to be and admin or an employee
 
     def list(self, request, *args, **kwargs):
         y = self.kwargs['year']
@@ -354,5 +354,13 @@ class InvitationbyQRCode(generics.ListAPIView):
             queryset = queryset.filter(qr_code=_qrCode)
         return queryset
 
+class GetInvitationByHOST(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated,IsAdmin | IsEmployee, ]  # The user logged have to be and admin or an employee
+
+    def list(self, request, *args, **kwargs):
+        usr = self.request.user
+        self.queryset =  InvitationByUsers.objects.filter(host=usr)
+        serializers = InvitationToSimpleUserSerializer(self.queryset, many=True)
+        return Response(serializers.data)
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html

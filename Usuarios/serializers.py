@@ -41,6 +41,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'avatar'
         ]
 
+    ###### Deshabilitado SMS
     def update(self, instance, validated_data):
         # Enviar Notificaciones correo a Anfitrion(HOST)
         msg = "Hola Anfitrion, valida a tu Invitado para que empieze a usar Intrare."

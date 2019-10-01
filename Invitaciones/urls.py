@@ -14,12 +14,19 @@ from .views import *
     route   
 """
 urlpatterns = [
+    # Obtiene la invitacion
     path('get_inv/<year>/<month>/<day>/', InvitationListAdminEmployee.as_view({'get': 'list'}), name='get_invitations_url'),  # path(route, view, kwargs, name= None)]
-    path('get_inv/user', InvitationListToSimpleUser.as_view({'get': 'list'}), name='get_inv_user'),
+    # Obtiene las invitaciones del Usuario (INVITADO)
+    path('get_inv/user', InvitationListToSimpleUser.as_view({'get': 'list'}), name='get_inv_user'), #
+    # Crea Invitaciones ya sea individuales o Masivamanete
     path('create_inv/', MassiveInvitationCreate.as_view(), name='create_invitations_url'),  # path(route, view, kwargs, name= None
     path('equipo_seguridad/', EquipoSeguridadList.as_view(), name='equipo_seguridad_list'),
     path('equipo_seguridad/<id_invitation>/', EquipoSeguridadXInvitacionList.as_view(), name='get_equipoxinvitacion'),
+    # Obtiene la invitacion por codigo QR
     path('get_inv/qr/<qrcode>/', InvitationbyQRCode.as_view(), name='getInv_qrCode'),  # Get only one invitation by QR_CODE
+    # Obtiene la invitacion por Codigo QR especialemente prestanda para el GUARDIA
     path('get_inv/gaurd/<str:qr_code>/', InvitationListToGuard.as_view({'get': 'list'}), name='get_inv_qrcode_guard'),
     path('create_massiveInv/', MassiveInvitationCreate.as_view()),
+    #Regresa todas las Invitaciones hechas ya sea por un Administrador o por un Empleado
+    path('getInv/Admin/Employee/', GetInvitationByHOST.as_view({'get':'list'}))
 ]
