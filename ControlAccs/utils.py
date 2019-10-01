@@ -14,7 +14,12 @@ def send_sms(number, message):
     :param message: Contenido del mensaje, valga la redundancia
     :return: Respuesta de la transaccion al enviar el sms.
     """
-    to_number = '+52' + str(number)
+    lenStr = len(number)
+    if lenStr == 13:
+        to_number = str(number)
+    else:
+        to_number = '+52' + str(number)
+
     responseData = CLIENT.send_message(
         {
             "from": "Intrare Empresarial",
