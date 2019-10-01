@@ -14,11 +14,12 @@ def send_sms(number, message):
     :param message: Contenido del mensaje, valga la redundancia
     :return: Respuesta de la transaccion al enviar el sms.
     """
-    lenStr = len(number)
+    strNumber = str(number)
+    lenStr = len(strNumber)
     if lenStr > 10:
-        to_number = str(number)
+        to_number = strNumber
     else:
-        to_number = '52' + str(number)
+        to_number = '52' + strNumber
 
     responseData = CLIENT.send_message(
         {
