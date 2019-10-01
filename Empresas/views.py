@@ -121,8 +121,9 @@ class AccessUpdateData(generics.UpdateAPIView):
         instance.save()
         return Response(status=status.HTTP_202_ACCEPTED)
 
+
 class AccessListGet(viewsets.ModelViewSet):
-    #Obtiene una lista de todos los accesos
+    #Obtiene una lista de TODOS los accesos
     permission_classes = (IsAuthenticated, IsAdmin | IsEmployee | isGuard,)  # The user logged have to be and admin, employee or Guard
 
     def list(self, request, *args, **kwargs):
@@ -149,16 +150,16 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
         if usr.roll == settings.ADMIN:
             _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
             _idCompany = _admCompany.id_empresa
-            queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany)
+            queryset=Acceso.objects.filter(invitationByUsers__idInvitation__id_empresa=_idCompany)
         if usr.roll == settings.EMPLEADO:
             _employee = Empleado.objects.filter(id_usuario=usr)[0]
             _idCompany = _employee.id_empresa
-            queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany,
-                                             id_invitacion__id_empleado=_employee.id)
+            queryset = Acceso.objects.filter(invitationByUsers__idInvitation__id_empresa=_idCompany,
+                                             invitationByUsers__host=usr)
         if usr.roll == settings.VIGILANTE:
             _guard = Vigilante.objects.filter(id_usuario=usr)[0]
             _idCompany = _guard.id_empresa
-            queryset = Acceso.objects.filter(id_invitacion__id_empresa=_idCompany)
+            queryset = Acceso.objects.filter(invitationByUsers__idInvitation__id_empresa=_idCompany)
 
         y = self.kwargs['year']
         m = self.kwargs['month']
@@ -181,6 +182,9 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
 
 
 class AccessListToGuard(viewsets.ModelViewSet):
+    """
+    Lista los Accesos por Codigo QR
+    """
     permission_classes = (isGuard,)
 
     def list(self, request, *args, **kwargs):
