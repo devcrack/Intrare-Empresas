@@ -9,7 +9,7 @@ from Empresas.models import Acceso
 from Usuarios.permissions import *
 from .serializers import *
 from django.utils import timezone
-from Invitaciones.models import Invitacion
+from Invitaciones.models import Invitacion, InvitationByUsers
 from Empresas.models import Vigilante
 from django.template.loader import render_to_string
 from ControlAccs.utils import send_sms, send_IntrareEmail
@@ -22,7 +22,6 @@ class AccessCreate(generics.CreateAPIView):
         """
         POST
         Creamos un acceso a partir de los siguientes parametros:
-            - id_invitacion: Viene en el cuerpo del json
             - id_vigilante_ent: Se obtiene de la session actual
             - datos_coche: Puede ser Nulo
             - qr_code : No puede ser nulo
@@ -38,12 +37,17 @@ class AccessCreate(generics.CreateAPIView):
         if _serializer.is_valid():
             _serializer.save()
             _guard_ent = Vigilante.objects.filter(id_usuario=self.request.user)[0]
-
             _datos_coche = _serializer.data['datos_coche']
             _qr_code = _serializer.data['qr_code']
-            _inv = Invitacion.objects.filter(qr_code=_qr_code)[0]
-            self.createAcces(_guard_ent, _inv, _datos_coche, _qr_code)
+            try:
+                _invByUsers = InvitationByUsers.objects.get(qr_code=_qr_code)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST, data={'Error':'Invitacion Corrompida'})
+
+            # _inv = Invitacion.objects.filter(qr_code=_qr_code)[0]
+            self.createAcces(_guard_ent, _invByUsers, _datos_coche, _qr_code)
             # Enviar Correo y SMS
+
             _guestFullName = _inv.id_usuario.first_name + " "+  _inv.id_usuario.last_name
             _emailHost = _inv.id_empleado.id_usuario.email
             _cellphoneHost = _inv.id_empleado.id_usuario.celular
@@ -60,9 +64,9 @@ class AccessCreate(generics.CreateAPIView):
         return Response(status=status.HTTP_201_CREATED)
 
     @classmethod
-    def createAcces(cls, _guard_ent, _id_inv, _vehicleData, _qr_code):
+    def createAcces(cls, _guard_ent, _invByUsers, _vehicleData, _qr_code):
         _errorResponse = None
-        nwAccess = Acceso(id_vigilante_ent=_guard_ent, id_invitacion=_id_inv, datos_coche=_vehicleData, qr_code=_qr_code)
+        nwAccess = Acceso(id_vigilante_ent=_guard_ent, invitationByUsers=_invByUsers, datos_coche=_vehicleData, qr_code=_qr_code)
         nwAccess.save()
 
 

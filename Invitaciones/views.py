@@ -360,7 +360,7 @@ class GetInvitationByHOST(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         usr = self.request.user
         self.queryset =  InvitationByUsers.objects.filter(host=usr)
-        serializers = InvitationToSimpleUserSerializer(self.queryset, many=True)
+        serializers = InvitationToHostSerializer(self.queryset, many=True)
         return Response(serializers.data)
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html

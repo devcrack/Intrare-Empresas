@@ -71,6 +71,27 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
                   'asunto', 'automovil', 'qr_code', 'diary')
 
 
+class InvitationToHostSerializer(serializers.ModelSerializer):
+    companyName = serializers.CharField(source='idInvitation.id_empresa.name')
+    areaName = serializers.CharField(source='idInvitation.id_area.nombre')
+    guestFirstName = serializers.CharField(source='idGuest.first_name')
+    guestLastName = serializers.CharField(source='idGuest.last_name')
+    dateInv = serializers.DateField(source='idInvitation.dateInv',format="%d-%m-%Y")  # Nuevo
+    timeInv = serializers.TimeField(source='idInvitation.timeInv',format="%H:%M")  # Nuevo
+    expiration = serializers.DateField(source='idInvitation.expiration',format="%d-%m-%Y")  # Nuevo
+    colorArea = serializers.CharField(source='idInvitation.id_area.color')
+    typeInv = serializers.IntegerField(source='idInvitation.typeInv')
+    asunto = serializers.CharField(source='idInvitation.asunto')
+    automovil = serializers.BooleanField(source='idInvitation.automovil')
+    qr_code = serializers.CharField(source='idInvitation.qr_code')
+    diary = serializers.CharField(source='idInvitation.diary')
+
+    class Meta:
+        model = Invitacion
+        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
+                  'timeInv', 'expiration', 'asunto', 'automovil', 'qr_code', 'diary')
+
+
 class InvitationToGuardSerializer(serializers.ModelSerializer):
     """
     Para listar la invitacion al guardia en el acceso
