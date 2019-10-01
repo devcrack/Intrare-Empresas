@@ -181,6 +181,7 @@ class activateUser(generics.UpdateAPIView):
                 _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
                 _qrCode = _inv.qr_code
                 _cellNumber = instance.celular
+                _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
                 if index == 0:
                     html_message = render_to_string('passwordMail.html',
                                                     {
@@ -189,6 +190,13 @@ class activateUser(generics.UpdateAPIView):
                                                         'codigo': _qrCode,
                                                         'password': _tmpPassword
                                                     })
+                    _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
+                    if _smsResponse["messages"][0]["status"] == "0":
+                        log = 'Mensaje SMS ENVIADO'
+                    else:
+                        log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+                    print('LOGs SMS!! ')
+                    print(log)
                 else:
                     html_message = render_to_string('email.html',
                                                     {'empresa': _company,
@@ -197,14 +205,6 @@ class activateUser(generics.UpdateAPIView):
                                                     )
                 print('Destinatario ', addressee)
                 send_IntrareEmail(html_message, addressee)  # MAIL
-                _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
-                _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
-                if _smsResponse["messages"][0]["status"] == "0":
-                    log = 'Mensaje SMS ENVIADO'
-                else:
-                    log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-                print('LOGs SMS!! ')
-                print(log)
                 index += 1
         return Response(status=status.HTTP_200_OK)
 
