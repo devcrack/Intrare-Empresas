@@ -122,6 +122,7 @@ class AccessUpdateData(generics.UpdateAPIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
 class AccessListGet(viewsets.ModelViewSet):
+    #Obtiene una lista de todos los accesos
     permission_classes = (IsAuthenticated, IsAdmin | IsEmployee | isGuard,)  # The user logged have to be and admin, employee or Guard
 
     def list(self, request, *args, **kwargs):
