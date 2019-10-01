@@ -175,7 +175,7 @@ class jsonAcceso():
 
 class AccessCreateSerializer(serializers.Serializer):
     datos_coche = serializers.CharField(max_length=300, allow_blank=True, allow_null=True)
-    qr_code = serializers.CharField(max_length=16)
+    qr_code = serializers.CharField(max_length=30)
 
 
     def create(self, validated_data):
