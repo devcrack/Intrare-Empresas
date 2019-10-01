@@ -48,8 +48,10 @@ urlpatterns = [
     path('empresas/access/update/forExit/<qr_code>/', AccessUpdateData.as_view(), name='accessUpdate1'),
     path('empresas/access/getAcc/by/date/', get_accestoEnterByDate.as_view({'get': 'list'}), name='getAccessbyDate'),
     path('empresas/access/getAccs/<year>/<month>/<day>/', get_accestoEnterByDate.as_view({'get': 'list'}), name='getAccSession'),
-    path('notifySignExitPass/<int:idAcc>/', NotifyHostSignPass.as_view())  # Nootificar firmar pase de salida
-
+    # Nootificar firmar pase de salida
+    path('notifySignExitPass/<int:idAcc>/', NotifyHostSignPass.as_view()),
+    #Obtiene todos los accesos que ha realizado un Administrador o un Empleado. Determina quien es por la sesion.
+    path('getAccessBySession/', GetAccessBySession.as_view({'get':'list'})),
     # path('empresas/access/getAccs/', AccessListGet.as_view({'get': 'list'}), name='getAccSession')
 ]
 

@@ -141,7 +141,7 @@ class AccessListGet(viewsets.ModelViewSet):
 
 class get_accestoEnterByDate(viewsets.ModelViewSet):
 
-    permission_classes = (IsAdmin | IsEmployee | isGuard,)
+    permission_classes = (IsAuthenticated, IsAdmin | IsEmployee | isGuard,)
 
     def get_queryset(self):
         usr = self.request.user
@@ -220,3 +220,24 @@ class NotifyHostSignPass(generics.ListAPIView):
         send_IntrareEmail(html_message, _emailHost)
         send_sms(_cellphoneHost, _msg)
         return Response(status=status.HTTP_200_OK)
+
+
+class GetAccessBySession(viewsets.ModelViewSet):
+    """
+    Obtiene los Accesos por Session.
+    """
+    permission_classes = (IsAuthenticated,IsAdmin | IsEmployee,)
+
+    def get_queryset(self):
+        usr = self.request.user
+        queryset = Acceso.objects.filter(invitationByUsers__host=usr)
+        return queryset
+
+    def list(self, request, *args, **kwargs):
+        _queryset = self.get_queryset()
+        _nReg = len(_queryset)
+        if _nReg > 0:
+            _serializer = AccessDetail(_queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
