@@ -15,10 +15,10 @@ def send_sms(number, message):
     :return: Respuesta de la transaccion al enviar el sms.
     """
     lenStr = len(number)
-    if lenStr == 13:
+    if lenStr > 10:
         to_number = str(number)
     else:
-        to_number = '+52' + str(number)
+        to_number = '52' + str(number)
 
     responseData = CLIENT.send_message(
         {
