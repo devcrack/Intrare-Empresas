@@ -197,16 +197,17 @@ class activateUser(generics.UpdateAPIView):
                                                     )
                 print('Destinatario ', addressee)
                 send_IntrareEmail(html_message, addressee)  # MAIL
-                _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
-                # _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
-                # if _smsResponse["messages"][0]["status"] == "0":
-                #     log = 'Mensaje SMS ENVIADO'
-                # else:
-                #     log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-                # print('LOGs SMS!! ')
-                # print(log)
+                _msgInv = "Se+te+ha+enviado+una+invitaci%C3%B3n%2C+verifica+desde+tu+correo+electr%C3%B3nico+o+en+la+aplicaci%C3%B3n"
+                _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
+                if _smsResponse["messages"][0]["status"] == "0":
+                    log = 'Mensaje SMS ENVIADO'
+                else:
+                    log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+                print('LOGs SMS!! ')
+                print(log)
                 index += 1
         return Response(status=status.HTTP_200_OK)
+
 
 class GetUsersNotActivated(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,IsAdmin | IsEmployee,)

@@ -116,28 +116,30 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         _nwInByUSER.save()  # de Alta al Usuario con su respectiva invitacion
 
         if _idUser.is_active:  # El proceso de notificacion de Invitacion se realiza normalmente
-            _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
+            # _msgInv = "Se te ha enviado una invitación, verifica desde tu correo electrónico o en la aplicacion"
+            _msgInv = "Se+te+ha+enviado+una+invitaci%C3%B3n%2C+verifica+desde+tu+correo+electr%C3%B3nico+o+en+la+aplicaci%C3%B3n"
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                           inv.qr_code)
-            # _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
-            # send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
+            _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
+            send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
         else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
-            _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
+            # _msgReg = f'Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en: '
+            _msgReg = "Recibiste+una+invitaci%C3%B3n.+Para+acceder+a+ella+realiza+tu+Pregistro+en%3A"
             _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
             _link = _link + str(_idUser.temporalToken) + '/'
             msg = _mainMsg + _msgReg + _link
-            # _smsResponse = send_sms(_idUser.celular, msg)  # SMS
+            _smsResponse = send_sms(_idUser.celular, msg)  # SMS
             if _idUser.email:
                 _htmlMessage = render_MsgPregister(_mainMsg, _msgReg, _link)
                 send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-        # if _smsResponse["messages"][0]["status"] == "0":
-        #     log = 'Mensaje SMS ENVIADO'
-        # else:
-        #     log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-        # print('LOGs SMS!! ')
-        # print(log)
-        # print(inv.id, ' INVITATION CREATED  200_OK')
+        if _smsResponse["messages"][0]["status"] == "0":
+            log = 'Mensaje SMS ENVIADO'
+        else:
+            log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+        print('LOGs SMS!! ')
+        print(log)
+        print(inv.id, ' INVITATION CREATED  200_OK')
     return error_response, inv
 
 

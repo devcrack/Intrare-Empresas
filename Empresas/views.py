@@ -59,7 +59,7 @@ class AccessCreate(generics.CreateAPIView):
                                               'from':_from
                                             })
             send_IntrareEmail(html_message, _emailHost)
-            # send_sms(_cellphoneHost, _msg)
+            send_sms(_cellphoneHost, _msg)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED)
@@ -218,7 +218,7 @@ class NotifyHostSignPass(generics.ListAPIView):
                                           'dateTimeAcc':_dateTimeAcc
                                         })
         send_IntrareEmail(html_message, _emailHost)
-        # send_sms(_cellphoneHost, _msg)
+        send_sms(_cellphoneHost, _msg)
         return Response(status=status.HTTP_200_OK)
 
 
