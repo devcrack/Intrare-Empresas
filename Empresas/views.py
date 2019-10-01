@@ -14,6 +14,8 @@ from Empresas.models import Vigilante
 from django.template.loader import render_to_string
 from ControlAccs.utils import send_sms, send_IntrareEmail
 
+
+
 class AccessCreate(generics.CreateAPIView):
     """ Generacion de Accesso. NOTIFICAR a ANFITRION cuando INVITADO llegue"""
     permission_classes = (isGuard,)
@@ -44,21 +46,20 @@ class AccessCreate(generics.CreateAPIView):
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={'Error':'Invitacion Corrompida'})
 
-            # _inv = Invitacion.objects.filter(qr_code=_qr_code)[0]
+
             self.createAcces(_guard_ent, _invByUsers, _datos_coche, _qr_code)
             # Enviar Correo y SMS
-
-            _guestFullName = _inv.id_usuario.first_name + " "+  _inv.id_usuario.last_name
-            _emailHost = _inv.id_empleado.id_usuario.email
-            _cellphoneHost = _inv.id_empleado.id_usuario.celular
-            _from = _inv.empresa
+            _guestFullName = _invByUsers.idGuest.first_name + " " + _invByUsers.idGuest.last_name
+            _emailHost = _invByUsers.host.email
+            _cellphoneHost = _invByUsers.host.celular
+            _from = _invByUsers.idInvitation.empresa
             _msg = "Tu invitado " + _guestFullName + "proveniente de: " + _from+ " ha llegado"
             html_message = render_to_string('guestArrived.html',
                                             { 'guestName':_guestFullName,
                                               'from':_from
                                             })
             send_IntrareEmail(html_message, _emailHost)
-            send_sms(_cellphoneHost, _msg)
+            # send_sms(_cellphoneHost, _msg)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED)
