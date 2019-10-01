@@ -2,7 +2,7 @@ from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
-
+from rest_framework.permissions import IsAuthenticated
 from datetime import datetime
 
 from Empresas.models import Acceso
@@ -18,7 +18,7 @@ from ControlAccs.utils import send_sms, send_IntrareEmail
 
 class AccessCreate(generics.CreateAPIView):
     """ Generacion de Accesso. NOTIFICAR a ANFITRION cuando INVITADO llegue"""
-    permission_classes = (isGuard,)
+    permission_classes = (IsAuthenticated, isGuard,)
 
     def create(self, request, *args, **kwargs):
         """
@@ -26,7 +26,7 @@ class AccessCreate(generics.CreateAPIView):
         Creamos un acceso a partir de los siguientes parametros:
             - id_vigilante_ent: Se obtiene de la session actual
             - datos_coche: Puede ser Nulo
-            - qr_code : No puede ser nulo
+            - qr_code : NO puede ser nulo
 
         JSON
         {
@@ -72,6 +72,9 @@ class AccessCreate(generics.CreateAPIView):
 
 
 class AccessUpdateExitPass(generics.UpdateAPIView):
+    """
+    FIRMAR Pase de salida por el Anfitrion
+    """
     queryset = Acceso.objects.all()
     serializer_class = AccesUpdateSerializer
     lookup_field = 'pk'
@@ -89,14 +92,11 @@ class AccessUpdateExitPass(generics.UpdateAPIView):
         instance.pase_salida = request.data.get('pase_salida')
         instance.save()
         return Response(status=status.HTTP_202_ACCEPTED)
-        # serializer = self.get_serializer(instance)
-        # serializer.is_valid(raise_exception=True)
-        # self.perform_update(serializer)
-        #
-        # return Response(serializer.data)
+
 
 class AccessUpdateData(generics.UpdateAPIView):
     """
+    Actualiza el acceso cuando va a salir el invitado. EndPoint Usado por el Guardia.
     PATCH
     JSON
     {
@@ -108,7 +108,7 @@ class AccessUpdateData(generics.UpdateAPIView):
     queryset = Acceso.objects.all()
     serializer_class = AccesUpdateSerializer
     lookup_field = 'qr_code'
-    permission_classes = (isGuard,)
+    permission_classes = (IsAuthenticated, isGuard,)
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -122,7 +122,7 @@ class AccessUpdateData(generics.UpdateAPIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
 class AccessListGet(viewsets.ModelViewSet):
-    permission_classes = (IsAdmin | IsEmployee | isGuard,)  # The user logged have to be and admin, employee or Guard
+    permission_classes = (IsAuthenticated, IsAdmin | IsEmployee | isGuard,)  # The user logged have to be and admin, employee or Guard
 
     def list(self, request, *args, **kwargs):
         self.queryset = Acceso.objects.all()
