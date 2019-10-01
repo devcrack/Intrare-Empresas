@@ -183,11 +183,11 @@ class AccessCreateSerializer(serializers.Serializer):
 
 
 class AccessDetail(serializers.ModelSerializer):
-    guestFName = serializers.CharField(source='id_invitacion.id_usuario.first_name')
-    guestLName = serializers.CharField(source='id_invitacion.id_usuario.last_name')
-    companyName = serializers.CharField(source='id_invitacion.empresa')
-    hostFirstName = serializers.CharField(source='id_invitacion.id_empleado.id_usuario.first_name')
-    hostLastName = serializers.CharField(source='id_invitacion.id_empleado.id_usuario.last_name')
+    guestFName = serializers.CharField(source='invitationByUsers.idGuest.first_name')
+    guestLName = serializers.CharField(source='invitationByUsers.idGuest.last_name')
+    companyName = serializers.CharField(source='invitationByUsers.idInvitation.empresa')
+    hostFirstName = serializers.CharField(source='invitationByUsers.host.first_name')
+    hostLastName = serializers.CharField(source='invitationByUsers.host.last_name')
     fecha_hora_acceso = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
     fecha_hora_salida = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
 
