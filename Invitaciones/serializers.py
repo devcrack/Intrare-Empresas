@@ -96,7 +96,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     empresa = serializers.CharField(source='idInvitation.empresa')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
     qr_code = serializers.CharField(source='idInvitation.qr_code')
-    notes = serializers.CharField(source='idInvitation.notas')
+    notas = serializers.CharField(source='idInvitation.notas')
 
     class Meta:
         model = Invitacion
