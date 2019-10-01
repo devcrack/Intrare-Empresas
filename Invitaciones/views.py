@@ -239,13 +239,12 @@ class EquipoSeguridadXInvitacionList(generics.ListAPIView):
 
 class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
     permission_classes = [IsAdmin | IsEmployee,]  # The user logged have to be and admin or an employee
-    serializer_class = InvitacionSerializers  # Used for validate and deserializing input, and for serializing output.
+
     def list(self, request, *args, **kwargs):
         y = self.kwargs['year']
         m = self.kwargs['month']
         d = self.kwargs['day']
         usr = self.request.user
-        invitations = None
 
         invsByUser = InvitationByUsers.objects.filter(host=usr, idInvitation__fecha_hora_envio__year=y,
                                                       idInvitation__fecha_hora_envio__month=m,
