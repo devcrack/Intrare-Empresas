@@ -30,10 +30,10 @@ class Invitacion(models.Model):
     def __str__(self):
         return f"ID_Invitation: {self.id};  COMPANY: {self.empresa};"
 
-    def save(self, *args, **kwargs):
-        code = token_hex(8)
-        self.qr_code = code
-        super(Invitacion, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     code = token_hex(8)
+    #     self.qr_code = code
+    #     super(Invitacion, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name_plural = "INVITACIONES"

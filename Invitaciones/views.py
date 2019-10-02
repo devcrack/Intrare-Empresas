@@ -14,6 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from secrets import token_hex
 from ControlAccs.utils import send_sms, send_IntrareEmail
+from fcm_django.models import FCMDevice
 
 
 def guest_exist(cellphoneN, _email):
@@ -68,12 +69,6 @@ def render_MsgPregister(_headerMsg, msg, link):
 
 def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expDate,
                       subject, vehicle, notes, from_company):
-    error_response = None
-    _mainMsg = 'Bienvenido a Intrare. '
-    _msgReg = None
-    _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
-    _msgInv = None
-
     nw_invitation = Invitacion(
         id_empresa=id_company,
         id_area=id_area,
@@ -112,18 +107,26 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         # En este punto ya se obutvo o se hizo la creacion del INVITADO/USUARIO
         _idUser.host = _host
         _idUser.save()
-        _specialQR = inv.qr_code + str(_idUser.id) # CONCATENADO
+
+        _specialQR = token_hex(8) + str(_idUser.id) # CONCATENADO
         _nwInByUSER = InvitationByUsers(idInvitation=inv, qr_code=_specialQR, host=_host, idGuest=_idUser)  # Se da
         _nwInByUSER.save()  # de Alta al Usuario con su respectiva invitacion
 
         if _idUser.is_active:  # El proceso de notificacion de Invitacion se realiza normalmente
+            try:
+                device = FCMDevice.objects.get(user=_idUser)
+            except ObjectDoesNotExist:
+                return {'Error': 'Dispositivo de Usuario no Registrado'}, None
+            device.send_message(
+                title="Intrare",
+                body="Has Recibido una Invitación")
             _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
-
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
-                                          _nwInByUSER.qr_code) #<<<CONCATENADO>>>>
-            _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS.
+                                          _nwInByUSER.qr_code)
             send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
+            _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
+
         else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
             _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en:"
             _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
