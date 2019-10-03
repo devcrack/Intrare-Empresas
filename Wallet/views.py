@@ -4,28 +4,34 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings as set
 import os
-from wallet.models import Pass, Barcode, EventTicket, BarcodeFormat, StoreCard
+from wallet.models import Pass, Barcode, EventTicket, BarcodeFormat
 from wsgiref.util import FileWrapper
 
 class GetWallet(APIView):
     # permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
-        eventInfo = StoreCard()
+
+    def get(self, request, qrcode, id, format=None):
+        json = request.data
+
+        print(id)
+        print(qrcode)
+
+        eventInfo = EventTicket()
         eventInfo.addPrimaryField('test', 'text', 'test')
 
 
         passFile = Pass(
             eventInfo,
-            set.PASSTYPEIDENTIFIER,
-            set.ORGANIZATIONNAME,
-            set.TEAMIDENTIFIER
+            passTypeIdentifier=set.PASSTYPEIDENTIFIER,
+            organizationName=set.ORGANIZATIONNAME,
+            teamIdentifier=set.TEAMIDENTIFIER
         )
 
-        passFile.serialNumber = '1234567'
+        passFile.serialNumber = '184568974563224457'
         passFile.barcode = Barcode(message='test tets', format=BarcodeFormat.QR)
         passFile.relevantDate = "2019-11-28T12:00:00Z"
-        passFile.description = 'testststs'
+        passFile.description = 'accesos intrare'
         passFile.voided = False
 
         with open(set.MEDIA_ROOT+'/icon.png', mode='rb') as f:

@@ -51,7 +51,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
-ORGANIZATIONNAME = 'IntrareWallet'
+ORGANIZATIONNAME = 'EDISON EFFECT SA DE CV'
 PASSTYPEIDENTIFIER = 'pass.com.daelabs.intrare.mx'
 TEAMIDENTIFIER = '6VAW5LY4HJ'
 WALLETPASS = 'mientras123'
