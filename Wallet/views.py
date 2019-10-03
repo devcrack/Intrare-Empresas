@@ -11,8 +11,11 @@ class GetWallet(APIView):
     # permission_classes = [IsAuthenticated]
 
 
-    def get(self, request, format=None):
+    def get(self, request, qrcode, id, format=None):
         json = request.data
+
+        print(id)
+        print(qrcode)
 
         eventInfo = EventTicket()
         eventInfo.addPrimaryField('test', 'text', 'test')
