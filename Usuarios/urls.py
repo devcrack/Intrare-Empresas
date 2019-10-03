@@ -16,5 +16,5 @@ urlpatterns = [
     path('activateUser/', activateUser.as_view(), name='ActivateUser'),
     #Lista los Usuarios no Activados
     path('GetUsers/NoActivated', GetUsersNotActivated.as_view({'get':'list'})),
-    path('User/Delete/Devices',DeleteFMCUserDevice.as_view())
+    path('User/Delete/Devices/', DeleteFMCUserDevice.as_view()),
 ]
