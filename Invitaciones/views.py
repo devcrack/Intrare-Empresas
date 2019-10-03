@@ -116,12 +116,12 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             try:
                 device = FCMDevice.objects.get(user=_idUser)
                 # _icon = 'https://bucketeer-576c8228-7737-4878-8397-1c8403d07005.s3.amazonaws.com/images/asdfadf/intrare-icon-36x36.png'
-                data_not ={ "body" : "great match!",
-                     "title" : "Portugal vs. Denmark",
-                      "icon" : "https://bucketeer-576c8228-7737-4878-8397-1c8403d07005.s3.amazonaws.com/images/asdfadf/intrare-icon-36x36.png"}
-                host_name = _host.first_name + " " + _host.last_name
             except ObjectDoesNotExist:
                 return {'Error': 'Dispositivo de Usuario no Registrado'}, None
+            data_not = {"body": "great match!",
+                        "title": "Portugal vs. Denmark",
+                        "icon": "https://bucketeer-576c8228-7737-4878-8397-1c8403d07005.s3.amazonaws.com/images/asdfadf/intrare-icon-36x36.png"}
+            host_name = _host.first_name + " " + _host.last_name
             device.send_message(data=data_not)
             # device.send_message(
             #     title="Intrare",
