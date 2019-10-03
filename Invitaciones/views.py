@@ -115,7 +115,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         if _idUser.is_active:  # El proceso de notificacion de Invitacion se realiza normalmente
             try:
                 device = FCMDevice.objects.get(user=_idUser)
-                ico = "/media/intrare.ico"
+                _icon = 'https://bucketeer-576c8228-7737-4878-8397-1c8403d07005.s3.amazonaws.com/images/asdfadf/intrare.ico'
 
                 host_name = _host.first_name + _host.last_name
             except ObjectDoesNotExist:
@@ -123,7 +123,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             device.send_message(
                 title="Intrare",
                 body="Has Recibido una Invitación de parte de: " + host_name,
-                icon=ico)
+                icon=_icon)
             _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
