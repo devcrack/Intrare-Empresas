@@ -34,6 +34,7 @@ urlpatterns = [
     path('', include('Usuarios.urls')),
     path('', include('Grupos.urls')),
     path('', include('Bitacoras.urls')),
+    path('wallet/', include('Wallet.urls')),
 
     re_path(r'^devices?$', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}),
             name='create_fcm_device')

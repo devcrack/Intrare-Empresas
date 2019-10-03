@@ -36,7 +36,7 @@ SECRET_KEY = 'q1!a)g2djh=pw^v$()_!cf0m1ijwbk&(y*yd8kqzxe0enne-y!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1', 'localhost', '*']
 
 # Aquí le decimos a django que utilice nuestra clase de user tuneada xD
 AUTH_USER_MODEL = 'Usuarios.CustomUser'
@@ -50,6 +50,12 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
+
+ORGANIZATIONNAME = 'IntrareWallet'
+PASSTYPEIDENTIFIER = 'pass.com.daelabs.intrare.mx'
+TEAMIDENTIFIER = '6VAW5LY4HJ'
+WALLETPASS = 'mientras123'
+CRD = os.path.join(BASE_DIR, 'certf')
 
 DJOSER = {
     'SERIALIZERS': {
@@ -102,6 +108,8 @@ INSTALLED_APPS = [
 
     'corsheaders',
 
+    'Wallet',
+
     'django_filters',
 
     'rest_framework',
@@ -111,7 +119,7 @@ INSTALLED_APPS = [
     'djoser',
     'fcm_django',
 
-    'Usuarios.apps.UsuariosConfig',
+    'Usuarios',
     'Empresas.apps.EmpresasConfig',
     'Invitaciones.apps.InvitacionesConfig',
     'Parques.apps.ParquesConfig',
@@ -218,7 +226,7 @@ USE_TZ = True
 #
 # MEDIA_URL = '/media/'
 
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AWS_ACCESS_KEY_ID = 'AKIAVZH4SBSY373JN77R'
 AWS_SECRET_ACCESS_KEY = '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'
