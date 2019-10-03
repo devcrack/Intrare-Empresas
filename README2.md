@@ -1,5 +1,23 @@
 # EndPoints
 
+
+## Usuarios
+
+
+### Eliminar un Token Device(Token de FireBase) de un determinado usuario en particular.
+
+```
+  -- request DELETE 
+  -- url https://api-intrare-empresarial.herokuapp.com/User/Delete/Devices/
+  -- header 'authorization: Token a405e2f1047905039d41800882d3afb162054ac1'
+```  
+
+
+## Invitaciones
+
+
+### Crear Invitacion
+
 ## Crear Invitacion
 
 **URL**: <urlHost>/create_inv/
