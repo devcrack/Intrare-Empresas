@@ -28,7 +28,7 @@ class Invitacion(models.Model):
     # qr_code = models.CharField(max_length=16, null=False, blank=True, unique=True)
 
     def __str__(self):
-        return f"ID_Invitation: {self.id};  COMPANY: {self.empresa};"
+        return f"ID_Invitation: {self.id}   ;  COMPANY: {self.empresa};"
 
     # def save(self, *args, **kwargs):
     #     code = token_hex(8)

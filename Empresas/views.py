@@ -42,7 +42,7 @@ class AccessCreate(generics.CreateAPIView):
             _datos_coche = _serializer.data['datos_coche']
             _qr_code = _serializer.data['qr_code']
             try:
-                _invByUsers = InvitationByUsers.objects.get(qr_code=_qr_code)
+                _invByUsers = InvitationByUsers.objects.get(qr_c
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={'Error':'Invitacion Corrompida'})
 
