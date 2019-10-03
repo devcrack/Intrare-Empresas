@@ -7,6 +7,8 @@ from rest_framework import filters
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from datetime import date
+from fcm_django.models import FCMDevice
+
 
 from ControlAccs.utils import send_sms
 from .serializers import *
@@ -227,3 +229,16 @@ class GetUsersNotActivated(viewsets.ModelViewSet):
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class DeleteFMCUserDevice(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated,]
+
+    def delete(self, request, *args, **kwargs):
+        _user = self.request.user
+        # Obtener dispositivos de este usuario para eliminarlo.
+        _userDevices = FCMDevice.objects.filter(user=_user)
+        if len(_userDevices) > 0:
+            _userDevices.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_302_FOUND, data={"Error": "Este Usuario no tiene dispositivos registrados"})
