@@ -185,7 +185,7 @@ class activateUser(generics.UpdateAPIView):
                 _qrCode = _inv.qr_code
                 _cellNumber = instance.celular
                 _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
-                html_message = render_to_string('passwordMail.html', {'empresa': _company, 'fecha': _dateTime,
+                html_message = render_to_string('FirstMailInv.html', {'empresa': _company, 'fecha': _dateTime,
                                                                       'codigo': _qrCode, 'password': _tmpPassword})
                 if index == 0:
                     if len(_userDevice) > 0:
@@ -234,3 +234,20 @@ class DeleteFMCUserDevice(generics.DestroyAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_302_FOUND, data={"Error": "Este Usuario no tiene dispositivos registrados"})
+
+class RestorePasswordUser(generics.UpdateAPIView):
+
+    def update(self, request, *args, **kwargs):
+        _userMail = request.data.get("email")
+        print(_userMail)
+        try:
+            _usr = CustomUser.objects.get(email=_userMail)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Correo de usuario corrompido o inexistente"})
+        _tmpPassword = token_hex(3)
+        _usr.set_password(_tmpPassword)
+        _userPhone = _usr.celular
+        html_message = render_to_string('RestorePassword.html', {'password':_tmpPassword})
+        send_IntrareEmail(html_message, _userMail)
+        return Response(status=status.HTTP_200_OK)
+

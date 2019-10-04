@@ -12,6 +12,19 @@
   -- header 'authorization: Token a405e2f1047905039d41800882d3afb162054ac1'
 ```  
 
+### Recuperacion de Contraseña
+
+  --request PATCH \
+  --url http://127.0.0.1:8000/User/Reset/Passwordsita/ \
+  --header 'content-type: application/json' \
+  --data
+
+  ```json
+	{
+	   "email":"aurelio.hdz.aguilar@gmail.com"
+	}
+
+```
 
 ## **Invitaciones**
 
