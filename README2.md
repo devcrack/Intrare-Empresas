@@ -1,7 +1,7 @@
 # EndPoints
 
 
-## Usuarios
+## **Usuarios**
 
 
 ### Eliminar un Token Device(Token de FireBase) de un determinado usuario en particular.
@@ -13,23 +13,33 @@
 ```  
 
 
-## Invitaciones
+## **Invitaciones**
 
+### Crear Invitacion Normal o Grupales
 
-### Crear Invitacion
+La unica diferencia entre una grupal o individual es el numero de valores en la clave guest.
 
-## Crear Invitacion
 
 **URL**: <urlHost>/create_inv/
 
 **Descripcion:** Creara una invitacion tipo 0.
+
+curl --request POST \
+  --url http://127.0.0.1:8000/create_inv/ \
+  --header 'authorization: Token 835a8271fd0c7a934c79e54c1310b2db890e12ce' \
+  --header 'content-type: application/json' \
+  --data
+
 ```json
 {
 	"areaId": 1,
 	"secEquip":"",
-	"cellNumber":44437385875,
-	"email":"jaha.devcrack@gmail.com",
-	"dateInv":"2019-09-23",
+	"guests":[
+    {
+      "email":"andes204@gmail.com",
+      "cellphone":4443227734
+    }],  
+	"dateInv":"2019-09-30",
 	"timeInv":"12:03",
 	"exp":null,
 	"subject":"nada en particular",
@@ -37,9 +47,9 @@
 	"notes": "ninguna",
 	"companyFrom": "daelabs",
 	"employeeId":1,
-	"diary":"",
-	"typeInv":""  ##Este campo es opcional, es decir se puede poner o no,  por default toma el valor 0
+	"diary":""
 }
+
 ```
 
 ## Cargar la informacion de Un Usuario Por Token.

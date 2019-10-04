@@ -4,9 +4,11 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework.exceptions import ValidationError
 from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
 from secrets import token_hex
+from fcm_django.models import FCMDevice
+
 from django.utils import translation
 from django.template.loader import render_to_string
-from ControlAccs.utils import send_IntrareEmail
+from ControlAccs.utils import send_IntrareEmail, send_sms
 from .models import *
 from rest_framework.validators import UniqueValidator
 
@@ -62,9 +64,14 @@ class CustomUserSerializer(serializers.ModelSerializer):
                                          'link': link
                                          })
         mail_host = instance.host.email
+        numberHost = instance.host.celular
         print(mail_host)
+        _hostDevices = instance.host
+        if len(_hostDevices) > 0:
+            _hostDevices.send_message(title="Intrare", body = msg, sound="Default")
         send_IntrareEmail(html_message, mail_host)  # Envio de mail para validar la identidad de Usuario.
-        # Enviar SMS
+        msg = msg + " " + link
+        send_sms(numberHost, msg)
         return instance
 
 

@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
+from fcm_django.models import FCMDevice
 from datetime import datetime
 
 from Empresas.models import Acceso
@@ -49,15 +50,19 @@ class AccessCreate(generics.CreateAPIView):
 
             self.createAcces(_guard_ent, _invByUsers, _datos_coche, _qr_code)
             # Enviar Correo y SMS
+            _host = _invByUsers.host
             _guestFullName = _invByUsers.idGuest.first_name + " " + _invByUsers.idGuest.last_name
-            _emailHost = _invByUsers.host.email
-            _cellphoneHost = _invByUsers.host.celular
+            _emailHost = _host.email
+            _cellphoneHost = _host.celular
+            _hostDevices = FCMDevice.objects.filter(user=_host)
             _from = _invByUsers.idInvitation.empresa
             _msg = "Tu invitado " + _guestFullName + " proveniente de: " + _from+  " ha llegado"
             html_message = render_to_string('guestArrived.html',
                                             { 'guestName':_guestFullName,
                                               'from':_from
                                             })
+            if len(_hostDevices) > 0:
+                _hostDevices.send_message(title="Intrare", body=_msg, sound="Default")
             send_IntrareEmail(html_message, _emailHost)
             send_sms(_cellphoneHost, _msg)
         else:
@@ -209,15 +214,21 @@ class NotifyHostSignPass(generics.ListAPIView):
             acc =Acceso.objects.get(id=_idAcc)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND, data={"error":"Acceso no Encontrado"})
-        _emailHost = acc.invitationByUsers.host.email
-        _cellphoneHost = acc.invitationByUsers.host.celular
-        _guestFullName = acc.invitationByUsers.idGuest.first_name + " " + acc.invitationByUsers.idGuest.last_name
+        _host = acc.invitationByUsers.host
+        _hostDevice = FCMDevice.objects.filter(user=_host)
+        _emailHost = _host.email
+        _cellphoneHost = _host.celular
+
+        _guest = acc.invitationByUsers.idGuest
+        _guestFullName = _guest.first_name + " " + _guest.last_name
         _dateTimeAcc = str(acc.fecha_hora_acceso)
-        _msg = "¡Firmar Pase de salida!\n Invitado: " + _guestFullName + "\nFecha y Hora de Acceso:" + _dateTimeAcc
+        _msg = "Firma el pase de salida del Invitado: " + _guestFullName + "\nFecha y Hora de Acceso:" + _dateTimeAcc
         html_message = render_to_string('notifyHostSigAccess.html',
                                         { 'guestName':_guestFullName,
                                           'dateTimeAcc':_dateTimeAcc
                                         })
+        if len(_hostDevice) > 0:
+            _hostDevice.send_message(title="Intrare", body=_msg, sound="Default")
         send_IntrareEmail(html_message, _emailHost)
         send_sms(_cellphoneHost, _msg)
         return Response(status=status.HTTP_200_OK)

@@ -167,6 +167,7 @@ class activateUser(generics.UpdateAPIView):
 
         #  Envio de invitacion0 y contraseña.
         addressee = instance.email # Destinatario
+        _userDevice = FCMDevice.objects.filter(user=instance)
         _invSByUSR = InvitationByUsers.objects.filter(host=usr, idGuest=instance)
         _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
                      day=timezone.datetime.now().day)  # Fecha actual
@@ -184,14 +185,11 @@ class activateUser(generics.UpdateAPIView):
                 _qrCode = _inv.qr_code
                 _cellNumber = instance.celular
                 _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
+                html_message = render_to_string('passwordMail.html', {'empresa': _company, 'fecha': _dateTime,
+                                                                      'codigo': _qrCode, 'password': _tmpPassword})
                 if index == 0:
-                    html_message = render_to_string('passwordMail.html',
-                                                    {
-                                                        'empresa': _company,
-                                                        'fecha': _dateTime,
-                                                        'codigo': _qrCode,
-                                                        'password': _tmpPassword
-                                                    })
+                    if len(_userDevice) > 0:
+                        _userDevice.send_message(title="Intrare", body="Tienes una invitación", sound="Default") #PUSH
                     _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
                     if _smsResponse["messages"][0]["status"] == "0":
                         log = 'Mensaje SMS ENVIADO'
@@ -199,12 +197,6 @@ class activateUser(generics.UpdateAPIView):
                         log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
                     print('LOGs SMS!! ')
                     print(log)
-                else:
-                    html_message = render_to_string('email.html',
-                                                    {'empresa': _company,
-                                                     'fecha': _dateTime,
-                                                     'codigo': _qrCode}
-                                                    )
                 print('Destinatario ', addressee)
                 send_IntrareEmail(html_message, addressee)  # MAIL
                 index += 1
