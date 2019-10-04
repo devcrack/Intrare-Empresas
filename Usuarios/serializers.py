@@ -66,7 +66,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         mail_host = instance.host.email
         numberHost = instance.host.celular
         print(mail_host)
-        _hostDevices = instance.host
+        _hostDevices = FCMDevice.objects.filter(user=instance.host)
         if len(_hostDevices) > 0:
             _hostDevices.send_message(title="Intrare", body = msg, sound="Default")
         send_IntrareEmail(html_message, mail_host)  # Envio de mail para validar la identidad de Usuario.
