@@ -113,23 +113,17 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         _nwInByUSER.save()  # de Alta al Usuario con su respectiva invitacion
 
         if _idUser.is_active:  # El proceso de notificacion de Invitacion se realiza normalmente
-            try:
-                device = FCMDevice.objects.get(user=_idUser)
-                host_name = _host.first_name + _host.last_name
-            except ObjectDoesNotExist:
-                return {'Error': 'Dispositivo de Usuario no Registrado'}, None
-            device.send_message(
-                title="Intrare",
-                body="Has Recibido una Invitación de parte de: " + host_name,
-                sound="Default"
-            )
+            _userDevices = FCMDevice.objects.filter(user=_idUser)
+            host_name = _host.first_name + _host.last_name
             _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                           _nwInByUSER.qr_code)
+            if len(_userDevices) > 0:
+                _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación. Anfitrion: " + host_name,
+                                          sound="Default")
             send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
             _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
-
         else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
             _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en:"
             _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
