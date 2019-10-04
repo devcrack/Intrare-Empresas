@@ -236,10 +236,9 @@ class DeleteFMCUserDevice(generics.DestroyAPIView):
             return Response(status=status.HTTP_302_FOUND, data={"Error": "Este Usuario no tiene dispositivos registrados"})
 
 class RestorePasswordUser(generics.UpdateAPIView):
+
     def update(self, request, *args, **kwargs):
-        print(self.request.data("email"))
-        _userMail = self.request.data("email")
-        print(self.request.data("email"))
+        _userMail = request.data.get("email")
         print(_userMail)
         try:
             _usr = CustomUser.objects.get(email=_userMail)
