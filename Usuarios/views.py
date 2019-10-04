@@ -246,6 +246,7 @@ class RestorePasswordUser(generics.UpdateAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Correo de usuario corrompido o inexistente"})
         _tmpPassword = token_hex(3)
         _usr.set_password(_tmpPassword)
+        _usr.save()
         _userPhone = _usr.celular
         html_message = render_to_string('RestorePassword.html', {'password':_tmpPassword})
         send_IntrareEmail(html_message, _userMail)
