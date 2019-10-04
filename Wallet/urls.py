@@ -3,5 +3,5 @@ from .views import GetWallet
 
 
 urlpatterns = [
-    path('create/<str:qrcode>/<int:id>', GetWallet.as_view(), name='get_wallet'),
+    path('create/<str:qrcode>', GetWallet.as_view(), name='get_wallet'),
 ]

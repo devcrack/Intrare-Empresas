@@ -443,7 +443,8 @@ Ctrl + Altf + W
 | last_name     | CharField(String) | NO           |
 
 
-
+### Wallet
+solo cosuman GET /wallet/create/<qr> regresa un pkpass.pkpass
 
 
 

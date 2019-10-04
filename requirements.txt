@@ -27,5 +27,4 @@ gunicorn
 django-storages
 whitenoise
 boto3
-wallet-py3k==0.0.4
-
+wallet-py3k
