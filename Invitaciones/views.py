@@ -104,7 +104,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         print(_cellphone)
         _idUser = guest_exist(_cellphone, _email)  # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
         if _idUser == _host:
-            error_response = {"error": "Una situacion extraña ha ocurrido, estas ingresando tus propios datos en la invitacion"}
+            error_response = {"error": "Una extraña sitaucion ha ocurrido. Estas ingresando tus propios datos en la invitacion"}
             return error_response, None  # SE SALE ALV!
         if _idUser is None:
             error_response, _idUser = create_user(_email, _cellphone)
