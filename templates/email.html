@@ -17,9 +17,19 @@
     <p style="text-align: center;">Fecha y Hora: {{ fecha }}</p>
     <p style="text-align: center;"><strong>
         <img src="https://api.qrserver.com/v1/create-qr-code/?data={{ codigo }}" alt="Codigo QR" width="200" height="200" /></strong></p>
-    <p><strong>
-    <span style="color: #000000; text-align: center;">Codigo:{{ codigo }}</span></strong>
-</p>
+    <p style="text-align: center">
+        <strong>
+            <span style="color: #000000;">Codigo:{{ codigo }}</span>
+        </strong>
+    </p>
+    <p style="text-align: center">
+        <br>
+        <a href={{downloadFile}}>
+            <img width="150" height="50" src="https://support.apple.com/library/content/dam/edam/applecare/images/es_ES/iOS/add-to-apple-wallet-logo.png"
+                                         title = "Agregar Wallet" alt="Agregar a Wallet">
+        </a>
+    </p>
+
 </body>
 </html>
 
