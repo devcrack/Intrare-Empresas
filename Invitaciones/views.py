@@ -33,6 +33,8 @@ def guest_exist(cellphoneN, _email):
 
 def create_user(_email, cellphone):
     _errorResponse = None
+
+    
     if _email is None: # No se dio Ningun EMAIL
         nw_user = CustomUser(
             email=None, celular=cellphone, password='pass', username=cellphone, temporalToken=token_hex(4),
@@ -278,13 +280,13 @@ class InvitationListToSimpleUser(viewsets.ModelViewSet): ####
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
-        self.queryset = InvitationByUsers.objects.filter(idGuest=self.request.user.id)
-        # self.queryset = Invitacion.objects.filter(id_usuario=self.request.user.id)
-        _nReg = len(self.queryset)
+        _currentDate = timezone.datetime.now()
+        _query = InvitationByUsers.objects.filter(idGuest=self.request.user.id)
+        _query = _query.filter(idInvitation__dateInv__gte=_currentDate)
+        _nReg = len(_query)
         if _nReg > 0:
             print('nReg=', _nReg)
-            queryset = self.queryset
-            _serializer = InvitationToSimpleUserSerializer(queryset, many=True)
+            _serializer = InvitationToSimpleUserSerializer(_query, many=True)
             return Response(_serializer.data)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -355,6 +357,7 @@ class InvitationbyQRCode(generics.ListAPIView):
         if _qrCode is not None:
             queryset = queryset.filter(qr_code=_qrCode)
         return queryset
+
 
 class GetInvitationByHOST(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,IsAdmin | IsEmployee, ]  # The user logged have to be and admin or an employee
