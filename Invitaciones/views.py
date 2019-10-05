@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 from secrets import token_hex
 from ControlAccs.utils import send_sms, send_IntrareEmail
 from fcm_django.models import FCMDevice
+from django.db.models import Q
 from django.core.files.storage import default_storage
 
 def guest_exist(cellphoneN, _email):
@@ -25,7 +26,7 @@ def guest_exist(cellphoneN, _email):
             return None
     else:
         try:
-            user = CustomUser.objects.get(email=_email, celular=cellphoneN)
+            user = CustomUser.objects.get(Q(email=_email) | Q(celular=cellphoneN))
         except ObjectDoesNotExist:
             return None
     return user
@@ -102,6 +103,9 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         _cellphone = _guest['cellphone']
         print(_cellphone)
         _idUser = guest_exist(_cellphone, _email)  # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
+        if _idUser == _host:
+            error_response = {"error": "Una situacion extraña ha ocurrido, estas ingresando tus propios datos en la invitacion"}
+            return error_response, None  # SE SALE ALV!
         if _idUser is None:
             error_response, _idUser = create_user(_email, _cellphone)
             if error_response:
