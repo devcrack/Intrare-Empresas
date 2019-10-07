@@ -37,7 +37,7 @@ class GetWallet(APIView):
         with open(settings.MEDIA_ROOT + '/icon.png', mode='rb') as f:
             pass_file.addFile('icon.png', f)
 
-        with open(settings.MEDIA_ROOT + '/thumbnail.png', mode='rb') as w:
+        with open(settings.MEDIA_ROOT + '/icon.png', mode='rb') as w:
             pass_file.addFile('logo.png', w)
 
         # with open(settings.MEDIA_ROOT + '/thumbnail.png', mode='rb') as t:
