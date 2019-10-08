@@ -26,7 +26,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
     """
     first_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     last_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
-    email = serializers.EmailField(allow_blank=False)
+    email = serializers.EmailField(allow_blank=False, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    celular = serializers.IntegerField(required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
     ine_frente = serializers.ImageField(required=True, allow_empty_file=False)
     avatar = serializers.ImageField(required=True, allow_empty_file=False)
 
@@ -36,10 +37,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'email',
-            'username',
             'celular',
             'ine_frente',
-            # 'temporalToken',
             'avatar'
         ]
 
