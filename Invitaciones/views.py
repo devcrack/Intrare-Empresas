@@ -133,7 +133,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
         # Se envia al usuario una notificacion para que realize su preRegistro N VECES
         else:
-            _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en:"
+            _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Preregistro en:"
             _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
             _link = _link + str(_idUser.temporalToken) + '/'
             msg = _mainMsg + _msgReg + _link
