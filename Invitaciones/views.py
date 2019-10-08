@@ -52,12 +52,12 @@ def create_user(_email, cellphone):
     return _errorResponse, nw_user
 
 
-def render_InvMail(_nameEmpresa, _dateInv, _qrCode):
+def render_InvMail(_nameEmpresa, _dateInv, _qrCode, _wallet):
     html_message = render_to_string('email.html',
                                     {'empresa': _nameEmpresa,
                                      'fecha': _dateInv,
-                                     'codigo': _qrCode}
-                                    )
+                                     'codigo': _qrCode,
+                                     'downloadFile': _wallet})
     return html_message
 
 
@@ -115,22 +115,24 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         _idUser.save()
 
         _specialQR = token_hex(8) + str(_idUser.id) # CONCATENADO
-        _nwInByUSER = InvitationByUsers(idInvitation=inv, qr_code=_specialQR, host=_host, idGuest=_idUser)  # Se da
-        _nwInByUSER.save()  # de Alta al Usuario con su respectiva invitacion
+        _nwInByUSER = InvitationByUsers(idInvitation=inv, qr_code=_specialQR, host=_host, idGuest=_idUser)
+        _nwInByUSER.save()
 
         if _idUser.is_active:  # El proceso de notificacion de Invitacion se realiza normalmente
             _userDevices = FCMDevice.objects.filter(user=_idUser)
             host_name = _host.first_name + _host.last_name
             _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
+            _wallet = 'https://api-intrare-empresarial.herokuapp.com/create/' + _specialQR
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
-                                          _nwInByUSER.qr_code)
+                                          _nwInByUSER.qr_code, _wallet)
             if len(_userDevices) > 0:
                 _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación. Anfitrion: " + host_name,
                                           sound="Default")
             send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
             _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
-        else:  # Se envia al usuario una notificacion para que realize su preRegistro N VECES
+        # Se envia al usuario una notificacion para que realize su preRegistro N VECES
+        else:
             _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Pregistro en:"
             _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
             _link = _link + str(_idUser.temporalToken) + '/'

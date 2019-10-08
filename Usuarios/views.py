@@ -155,6 +155,7 @@ class activateUser(generics.UpdateAPIView):
         usr = self.request.user
         usrToken = request.data.get("usrToken")
 
+        _walletLink = 'https://api-intrare-empresarial.herokuapp.com/create/'
         try:
             instance = CustomUser.objects.get(temporalToken=usrToken)
         except ObjectDoesNotExist:
@@ -179,14 +180,17 @@ class activateUser(generics.UpdateAPIView):
                 _inv = Invitacion.objects.get(id=_idInv.id)
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_204_NO_CONTENT, data={'error': 'ERROR EN INVITACION'})
+            # Aqui verificamos si la Invitacion es Valida, en base a su fecha.
             if _inv.dateInv >= _currentDate:
+                _walletLink = 'https://api-intrare-empresarial.herokuapp.com/create/' + _invByUSR.qr_code
                 _company = _inv.id_empresa.name
                 _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
                 _qrCode = _inv.qr_code
                 _cellNumber = instance.celular
                 _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
                 html_message = render_to_string('FirstMailInv.html', {'empresa': _company, 'fecha': _dateTime,
-                                                                      'codigo': _qrCode, 'password': _tmpPassword})
+                                                                      'codigo': _qrCode, 'password': _tmpPassword,
+                                                                      'downloadFile': _walletLink})
                 if index == 0:
                     if len(_userDevice) > 0:
                         _userDevice.send_message(title="Intrare", body="Tienes una invitación", sound="Default") #PUSH
