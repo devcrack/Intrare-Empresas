@@ -185,7 +185,7 @@ class activateUser(generics.UpdateAPIView):
                 _walletLink = 'https://api-intrare-empresarial.herokuapp.com/create/' + _invByUSR.qr_code
                 _company = _inv.id_empresa.name
                 _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
-                _qrCode = _idInv.qr_code
+                _qrCode = _invByUSR.qr_code
                 _cellNumber = instance.celular
                 _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
                 html_message = render_to_string('FirstMailInv.html', {'empresa': _company, 'fecha': _dateTime,
