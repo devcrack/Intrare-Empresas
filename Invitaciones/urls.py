@@ -28,5 +28,6 @@ urlpatterns = [
     path('get_inv/gaurd/<str:qr_code>/', InvitationListToGuard.as_view({'get': 'list'}), name='get_inv_qrcode_guard'),
     path('create_massiveInv/', MassiveInvitationCreate.as_view()),
     #Regresa todas las Invitaciones hechas ya sea por un Administrador o por un Empleado
-    path('getInv/Admin/Employee/', GetInvitationByHOST.as_view({'get':'list'}))
+    path('getInv/Admin/Employee/', GetInvitationByHOST.as_view({'get': 'list'})),
+    path('createReferred/Inv/', createRefferedInvitation.as_view())
 ]

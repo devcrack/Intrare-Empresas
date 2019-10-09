@@ -391,10 +391,6 @@ class UserSerilizerAPP(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        # _id = instance.id
-        # _mail = validated_data.pop('email')
-        # _celular = validated_data.pop('celular')
-        # _set = CustomUser.objects.filter(mail=_mail, celular=_celular).exclude(id=_id)
         instance.first_name = validated_data.pop('first_name')
         instance.last_name = validated_data.pop('last_name')
         instance.email = validated_data.pop('email')

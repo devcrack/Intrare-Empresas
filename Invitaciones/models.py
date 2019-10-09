@@ -52,12 +52,13 @@ class InvitationByUsers(models.Model):
         verbose_name_plural = "UsersByInvitation"
 
 
-class InvitacionReferido(models.Model):
-    idInvitacion = models.ForeignKey('Invitacion', on_delete=models.CASCADE)
-    emailTercero = models.EmailField(null=False, blank=False)
-    asignada = models.BooleanField(null=False, blank=False, default=False)
-    hashCode = models.CharField(max_length=100, null=False, unique=True)
-
+class ReferredInvitation(models.Model):
+    referredMail = models.EmailField(default=None)
+    referredPhone = models.BooleanField(default=None)
+    qrCode = models.CharField(max_length=100, null=False, unique=True)
+    referredExpiration = models.DateField(null=False, blank=False)
+    host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
+                             related_name='InvitationReferred_host')
     def __str__(self):
         return f"ID = {self.id}-EmailTercer{self.emailTercero}  Invitacion = {self.idInvitacion}"
         #return "%s %s" % (str(self.id), self.email)

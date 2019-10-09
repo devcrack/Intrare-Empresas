@@ -375,3 +375,16 @@ class GetInvitationByHOST(viewsets.ModelViewSet):
         return Response(serializers.data)
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
+
+
+class createRefferedInvitation(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated,IsAdmin | IsEmployee, ]  # The user logged have to be and admin or an employee
+
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = ReferredInvitationSerializer
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid(raise_exception=True):
+            _serializer.save()
+            return Response(data=_serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data=_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

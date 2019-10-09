@@ -5,5 +5,5 @@ from .models import *
 admin.site.register(Invitacion)
 admin.site.register(EquipoSeguridad)
 admin.site.register(EquiposporInvitacion)
-admin.site.register(InvitacionReferido)
+admin.site.register(ReferredInvitation)
 admin.site.register(InvitationByUsers)
