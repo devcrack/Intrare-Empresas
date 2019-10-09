@@ -169,15 +169,15 @@ class activateUser(generics.UpdateAPIView):
         #  Envio de invitacion0 y contraseña.
         addressee = instance.email # Destinatario
         _userDevice = FCMDevice.objects.filter(user=instance)
-        _invSByUSR = InvitationByUsers.objects.filter(host=usr, idGuest=instance)
+        _invitationSByUSR = InvitationByUsers.objects.filter(host=usr, idGuest=instance)
         _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
-                     day=timezone.datetime.now().day)  # Fecha actual
+                            day=timezone.datetime.now().day)  # Fecha actual
         index = 0
-        for _invByUSR in _invSByUSR:
+        for _invByUSR in _invitationSByUSR:  # El usuario puede tener mas de una invitacion vinculada a su cuenta
             _idInv = _invByUSR.idInvitation
             _inv = None
             try:
-                _inv = Invitacion.objects.get(id=_idInv.id)
+                _inv = Invitacion.objects.get(id=_idInv.id)  # Obtenemos datos de la invitacion.
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_204_NO_CONTENT, data={'error': 'ERROR EN INVITACION'})
             # Aqui verificamos si la Invitacion es Valida, en base a su fecha.
@@ -185,7 +185,7 @@ class activateUser(generics.UpdateAPIView):
                 _walletLink = 'https://api-intrare-empresarial.herokuapp.com/create/' + _invByUSR.qr_code
                 _company = _inv.id_empresa.name
                 _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
-                _qrCode = _inv.qr_code
+                _qrCode = _idInv.qr_code
                 _cellNumber = instance.celular
                 _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
                 html_message = render_to_string('FirstMailInv.html', {'empresa': _company, 'fecha': _dateTime,
