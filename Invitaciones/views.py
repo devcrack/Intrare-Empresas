@@ -123,7 +123,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             host_name = _host.first_name + _host.last_name
             _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
-            _wallet = 'https://api-intrare-empresarial.herokuapp.com/create/' + _specialQR
+            _wallet = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _specialQR
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                           _nwInByUSER.qr_code, _wallet)
             if len(_userDevices) > 0:

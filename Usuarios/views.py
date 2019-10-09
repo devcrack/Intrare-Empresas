@@ -154,8 +154,6 @@ class activateUser(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         usr = self.request.user
         usrToken = request.data.get("usrToken")
-
-        _walletLink = 'https://api-intrare-empresarial.herokuapp.com/create/'
         try:
             instance = CustomUser.objects.get(temporalToken=usrToken)
         except ObjectDoesNotExist:
@@ -182,7 +180,7 @@ class activateUser(generics.UpdateAPIView):
                 return Response(status=status.HTTP_204_NO_CONTENT, data={'error': 'ERROR EN INVITACION'})
             # Aqui verificamos si la Invitacion es Valida, en base a su fecha.
             if _inv.dateInv >= _currentDate:
-                _walletLink = 'https://api-intrare-empresarial.herokuapp.com/create/' + _invByUSR.qr_code
+                _walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _invByUSR.qr_code
                 _company = _inv.id_empresa.name
                 _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
                 _qrCode = _invByUSR.qr_code
