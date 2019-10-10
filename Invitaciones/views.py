@@ -208,7 +208,7 @@ def add_sec_equ_by_inv(list_equipment_security, inv):
         _eqInv = EquiposporInvitacion(id_equipo_seguridad=i, id_invitacion=inv)
         try:
             _eqInv.save()
-            print('Equipment by Invitation Created 200_OK')
+            print('Equipment by Invitation Created 201_CREATED')
         except ValueError:
             error_response = {'Error': 'Can\'t create Equipment for invitation'}
             return error_response
