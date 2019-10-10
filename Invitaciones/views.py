@@ -377,14 +377,31 @@ class GetInvitationByHOST(viewsets.ModelViewSet):
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
 
 
-class createRefferedInvitation(generics.CreateAPIView):
+class Createreferredinvitation(generics.CreateAPIView):
     permission_classes = [IsAuthenticated,IsAdmin | IsEmployee, ]  # The user logged have to be and admin or an employee
 
     def create(self, request, *args, **kwargs):
-        self.serializer_class = ReferredInvitationSerializer
+        self.serializer_class = ReferredInvitationSerializerCreate
         _serializer = self.serializer_class(data=request.data)
         if _serializer.is_valid(raise_exception=True):
             _serializer.save()
-            return Response(data=_serializer.data, status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(data=_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetReferredInv(viewsets.ModelViewSet):
+    def get_queryset(self):
+        try:
+            _querySet = ReferredInvitation.objects.get(qrCode=self.kwargs['token'])
+        except ObjectDoesNotExist:
+            return None
+        return _querySet
+
+    def list(self, request, *args, **kwargs):
+        querySet = self.get_queryset()
+        if querySet is not None:
+            _serializer = GetReferralInvSerializer(querySet)
+            return Response(status=status.HTTP_200_OK, data=_serializer.data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        

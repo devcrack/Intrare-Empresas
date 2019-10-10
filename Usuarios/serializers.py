@@ -3,8 +3,8 @@ from rest_framework import serializers
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework.exceptions import ValidationError
 from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
-from secrets import token_hex
 from fcm_django.models import FCMDevice
+
 
 from django.utils import translation
 from django.template.loader import render_to_string
