@@ -282,6 +282,25 @@ class InvitationListToGuard(viewsets.ModelViewSet): ####
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class InvitationListToManagerAndEmployee(viewsets.ModelViewSet):
+    """
+        Vista para mostrar la Información de la Invitación por ID_INVITACION
+    """
+    permission_classes = (isEmployee | isAdmin,)
+
+    def list(self, request, *args, **kwargs):
+        pk = self.kwargs['pk']
+        self.queryset = InvitationByUsers.objects.filter(id=pk)
+        _nReg = len(self.queryset)
+        if _nReg > 0:
+            print('nReg=', _nReg)
+            queryset = self.queryset
+            _serializer = InvitationToGuardSerializer(queryset, many=True, context={"request": request})
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class InvitationListToSimpleUser(viewsets.ModelViewSet): ####
     permission_classes = [IsAuthenticated]
 
