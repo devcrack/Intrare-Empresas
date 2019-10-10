@@ -210,8 +210,8 @@ class MasiveInvSerializer(serializers.Serializer):
 
 class ReferredInvitationSerializer(serializers.ModelSerializer):
     referredMail = serializers.EmailField(allow_null=True)
-    referredPhone = serializers.RegexField(regex=r'^(\d{10})(?:\s|$))', max_length=10, allow_null=True)
-
+    referredPhone = serializers.RegexField(regex=r'^(\d{10})(?:\s|$)', max_length=10, allow_null=True)
+    qrCode = serializers.CharField(required=False, max_length=100)
 
     class Meta:
         model = ReferredInvitation
@@ -221,7 +221,7 @@ class ReferredInvitationSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data['referredMail'] and data['referredPhone'] is None:
             raise serializers.ValidationError("Se debe de proporcionar al menos una direccion de correo o un numero telefonico")
-
+        return data
 
     def create(self, validated_data):
         print(validated_data)

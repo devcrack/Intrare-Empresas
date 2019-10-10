@@ -25,7 +25,6 @@ class Invitacion(models.Model):
     notas = models.CharField(max_length=256, null=True, blank=True, default="")
     empresa = models.CharField(max_length=254, null=True, blank=True, default="")
     leida = models.BooleanField(default=False, null=False)
-    # qr_code = models.CharField(max_length=16, null=False, blank=True, unique=True)
 
     def __str__(self):
         return f"ID_Invitation: {self.id}   ;  COMPANY: {self.empresa};"
@@ -55,7 +54,7 @@ class InvitationByUsers(models.Model):
 class ReferredInvitation(models.Model):
     referredMail = models.EmailField(default=None)
     referredPhone = models.CharField(default=None, max_length=12)
-    qrCode = models.CharField(max_length=100, null=False, unique=True)
+    qrCode = models.CharField(max_length=100, null=False, blank=True, unique=True)
     referredExpiration = models.DateField(null=False, blank=False)
     maxForwarding = models.IntegerField(default=3)
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
