@@ -54,7 +54,7 @@ class InvitationByUsers(models.Model):
 
 class ReferredInvitation(models.Model):
     referredMail = models.EmailField(default=None)
-    referredPhone = models.BooleanField(default=None)
+    referredPhone = models.CharField(default=None, max_length=12)
     qrCode = models.CharField(max_length=100, null=False, unique=True)
     referredExpiration = models.DateField(null=False, blank=False)
     maxForwarding = models.IntegerField(default=3)
