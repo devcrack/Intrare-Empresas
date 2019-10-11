@@ -1,0 +1,254 @@
+* PORTABLE
+** Credentials User
+Staff 
+email: devcrack@mail.com
+user_name: devcrack
+password: mientras123
+
+
+| Empresa                      | email                | password    | Token                                    |   |
+|------------------------------+----------------------+-------------+------------------------------------------+---|
+| Lewis, Bates and Gutierrez   | d9d3dandres@mail.com | mientras123 | a808c4d53e65f0966be11b72f2a259b815cff3af |   |
+| Bates and Sons               | 4953bandres@mail.com | ........    | 307e682ef5e16b0afbbbfc717f17ae18d231e1b0 |   |
+| Dawson, Lawrence and Esparza | b83ddandres@mail.com | ........    |                                          |   |
+
+** Empleados
+| Empresa                      | Area                                            | email              | password    | Token                                    | Number Invitations |
+|------------------------------+-------------------------------------------------+--------------------+-------------+------------------------------------------+--------------------|
+| Lewis, Bates and Gutierrez   | Lewis, Bates and Gutierrez - Gerencia           | ebfc1alex@mail.com | mientras123 | 802a6508e2a9a8607345e2576206c1283198ec6e |                  2 |
+| .........................    | Lewis, Bates and Gutierrez - Recursos Humanos   | 657b4alex@mail.com |             | 98bd9b0f22bddd419f7c216413212f5dabfff928 |                 18 |
+| #Bates and Sons              | Bates and Sons - Gerencia                       | 846a1alex@mail.com |             |                                          |                  0 |
+| .........................    | Bates and Sons - Recursos Humanos               | 6934aalex@mail.com | .........   |                                          |                  0 |
+| Dawson, Lawrence and Esparza | Dawson, Lawrence and Esparza - Gerencia         | 82c79alex@mail.com |             |                                          |                  0 |
+| .........................    | Dawson, Lawrence and Esparza - Recursos Humanos | 114d3alex@mail.com |             |                                          |                  0 |
+|                              |                                                 |                    |             |                                          |                    |
+|                              |                                                 |                    |             |                                          |                    |
+
+** Normal Users
+   - 6911469107
+** JSON FORMATS
+*** Json Create_Invitations
+   
+   {
+      "cell_number":
+      "email":
+      "area":
+      "business":
+      "sec_equip":
+      "vehicle":
+      "company":
+      "notes":
+      "date":
+   }
+
+
+{
+   "cell_number":6911469107,
+   "email":"jeffrey24@garcia.com",
+   "area":"Recursos Humanos",
+   "business":"Nada en particular",
+   "sec_equip":"Cofia",
+   "vehicle":true,
+   "company":"Dreams Customs",
+   "notes":"No complains",
+   "date":"2019-05-15 15:36"
+}
+
+** What is necesary for create a normal Invitation
+
+- id_empresa= Company that the employee belongs.
+- id_area= Area that it will be visited.
+- id_empleado= Employee that create the invitation
+- id_usuario=_user,
+- leida=_watched,
+- empresa=_from_company,
+- notas=_notes,
+- automovil=_car,
+- asunto=_business,
+- fecha_hora_invitacion=_date_invitation,
+- fecha_hora_envio=_date_sent
+  
+* Desktop
+
+** User Credentials
+| Usuario | Rol           | Mail           | Password    | Token                                    |   |
+|---------+---------------+----------------+-------------+------------------------------------------+---|
+|         | Administrador |                |             | 32f217c04e4c30a2cd3bbf8d0e3a9f1edc51195f |   |
+|         | Administrador | yeyo@gmail.com | !K0WJ2wyV_  | e423d806132dea59c9995fd76f9193b65ed96bac |   |
+|         | Administrador | mail@gmail.com | mientras123 | 3c76de45add332a88415c0fd1d83463ab4a75310 |   |
+
+
+
+Empleados 
+
+| Empresa         | Area                               | Email                 | Password    | Token                                    | Num_Inv |
+|-----------------+------------------------------------+-----------------------+-------------+------------------------------------------+---------|
+| Stewart-Miller  | Stewart-Miller - Gerencia          | cc2faandres@gmail.com | mientras123 |   | 4       |
+| Stewart-Miller  | Stewart-Miller - Recursos Humanos  | 40281andres@gmail.com | mientras123 |                                          |         |
+| Hernandez Group | Hernandez Group - Gerencia         | 59049andres@gmail.com | ..........  | 0848618dae61e88d1f5515dc587463e594477067 |         |
+| Hernandez Group | Hernandez Group - Recursos Humanos | af37bandres@gmail.com | ..........  |                                          |         |
+|                 |                                    |                       |             |                                          |         |
+
+
+** JSON's
+*** Invitaciones
+**** Wished JSON
+    {
+       	"celular": 4444894789,
+       	"email": "conradscott@hotmail.com",
+       	"area":"Recursos Humanos",     
+       	"fecha_invitacion:,
+       	"asunto":,
+       	"equipo_seguridad":,
+       	"vehiculo":
+       	"notas":
+       	"Empresa":
+       	
+    }
+
+
+    {
+	 "celular":5598021626,
+	 "email": "aurelio.hdz.aguilar@gmail.com",
+	 "area": "Hernandez Group - Recursos Humanos",
+	 "fecha_invitacion":"2006-10-25",
+	 "asunto":"Vamos ir a chelear",
+	 "equipo_seguridad":"Casco",
+	 "vehiculo":"TRUE",
+	 "Notas":"NO llegues tarde",
+	 "Empresa": "Loreal"
+	 
+    }
+
+**** JSON
+
+   {
+       "id_empresa": "Stewart-Miller"
+       "id_area": "Hernandez Group - Recursos Humanos",
+       "id_empleado":"2e901andresfcedd",     
+       "id_usuario:"2e901andres@gmail.com",
+       "fecha_hora_envio":"04-06-2019",
+       "fecha_hora_invitacion":"12-06-2019",
+       "vehiculo":"FALSE"
+       "asunto":"Sepa Madres!,
+       "automovil":"True",
+       "notas":"Lleve pomada y sal",
+       "empresa":"Brazzers",
+       "leida":       
+   }
+
+
+
+{
+       "email":"leila@example.com",
+       "content":"foo bar",
+       "created":"2016-01-27T15:17:10.375877"
+}
+
+
+
+{
+	"cell_number":4443738675,
+	"email":"leila@example.com",
+	"area": "recursos humanos",
+	"inv_date": "2016-01-27",
+	"business": "algo :p", 
+	"sec_equip": "Revolver",
+	"vehicle":true,
+	"notes":"no notes",
+	"company_from":"INTRARE"
+}
+
+** Existen users
+- 5598021626
+
+
+** Data Required for create an Invitation
+** What is necesary for create a normal Invitation
+
+- id_empresa= Company that sent the inviations.                        NOT NULL 
+- id_area= Area that it will be visited.                               NOT NULL, 
+- id_empleado= Employee that create the invitation,                    Can BE NULL.
+- id_usuario=_user,                                                    NOT NULL
+- fecha_hora_envio=_date_sent                                          Take a DEFAULT Value.
+- fecha_hora_invitacion=_date_invitation,                              NOT NULL
+- asunto                                                               NOT NULL
+- automovil                                                            NOT NULL
+- notas=_notes,                                                        Can be NULL 
+- empresa=_from_company,                                               NOT NULL
+- leida=_watched,                                                      Use a default value.
+
+
+{
+ Invitation:
+ {
+   fecha_hora_envio:
+   fecha_hora_invitacion:
+
+   automovil:
+   notas:
+   empresa:       Company from invitate comes.
+   leida:         Check for know if have been readed
+   id_area:       Area of invitation.
+   id_empleado:   Employee that sent invitation
+   id_empresa:    Company that is invita.
+   id_usuario:    User that has been invitated.
+}
+
+* Notes and Task
+*** Task
+
+
+- [X] Investigate how create model object and save it!.
+  *Option #1*
+  p = Person(first_name="Bruce", last_name="Springsteen")
+  p.save(force_insert=True)
+  *Option 2*
+  p = Person.objects.create(first_name="Bruce", last_name="Springsteen")
+
+
+- [ ] How insert correct format to a date time field.
+  '%Y-%m-%d %H:%M',        # '2006-10-25 14:30'
+  2019-06-06 20:45:15+00:00
+- [ ]Create a normal invitation.
+*** Notes 
+**** Create a User 
+     For create an user is necessary 
+     - password
+     - username
+     - celular
+     The others fields are not mandatory
+**** Temporary Invitation
+     The temporary Invitation is used for those users that are not register
+     in app. So we create first and user with minumum requirements and 
+     then link this recently created user with a Temporary_Invitation.
+***** Creating a Temporary Invitation
+      
+      
+    id_empresa = Company to Visit
+    id_area = Area to Visit
+    id_empleado = Employe who created the invitation 
+    celular_invitado = Cellphone number of guest.
+    fecha_hora_envio = Obvious
+    fecha_hora_invitacion = Obvious
+    asunto = Obvious
+    automovil = 
+    notas = 
+    empresa = Company FROM.
+
+*** JSON 
+    {
+	"employee_first_name":"Kristine",
+	"employee_last_name":"Wallace",
+	"cell_number":3008269546,
+	"email":"leila@example.com",
+	"area":"Recursos Humanos",
+	"business":"Junta de trabajo con el gerente",
+	"sec_equip":"Macana",
+	"vehicle":true,
+	"company":"Red Sparrow Techologies",
+	"date":"2016-01-27 12:05",
+	"notes":"foo bar"
+    }
+* Questions 
+  1. In model Invitation, id_area refers to area it will be visit?
