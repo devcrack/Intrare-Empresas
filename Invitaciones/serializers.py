@@ -2,6 +2,11 @@ from django.utils import regex_helper
 from rest_framework import serializers
 from .models import *
 from Usuarios.models import CustomUser
+from django.core.exceptions import ObjectDoesNotExist
+from django.template.loader import render_to_string
+from ControlAccs.utils import send_IntrareEmail, send_sms
+
+
 from Empresas.models import Administrador, Empresa, Area
 from Empresas.models import Empleado
 
@@ -208,10 +213,13 @@ class MasiveInvSerializer(serializers.Serializer):
         return data
 
 
-class ReferredInvitationSerializer(serializers.ModelSerializer):
-    referredMail = serializers.EmailField(allow_null=True)
-    referredPhone = serializers.RegexField(regex=r'^(\d{10})(?:\s|$)', max_length=10, allow_null=True)
-    qrCode = serializers.CharField(required=False, max_length=100)
+class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
+    referredMail = serializers.EmailField(allow_null=False)
+    referredPhone = serializers.RegexField(regex=r'^(\d{10})(?:\s|$)', max_length=10, allow_null=True, required=False)
+    # qrCode = serializers.CharField(required=False, max_length=100)
+    referredExpiration = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
+    host = serializers.IntegerField()
+    maxForwarding = serializers.IntegerField(allow_null=True)
 
     class Meta:
         model = ReferredInvitation
@@ -219,11 +227,50 @@ class ReferredInvitationSerializer(serializers.ModelSerializer):
 
 
     def validate(self, data):
-        if data['referredMail'] and data['referredPhone'] is None:
+        if data['referredMail'] is None and data['referredPhone'] is None:
             raise serializers.ValidationError("Se debe de proporcionar al menos una direccion de correo o un numero telefonico")
         return data
 
     def create(self, validated_data):
-        print(validated_data)
+        _mailRef = validated_data['referredMail']
+        # _phoneRef = validated_data['referredPhone']
+        _maxForwarding = validated_data['maxForwarding']
+        _exp = validated_data['referredExpiration']
+        _token = token_hex(7)
+        _host = None
+        try:
+            _host = CustomUser.objects.get(id=validated_data['host'])
+        except ObjectDoesNotExist:
+            return None
+
+        if _maxForwarding is None:
+            _nwReferredInv = ReferredInvitation(referredMail=_mailRef, qrCode=_token,
+                                                referredExpiration=_exp, host=_host)
+        else:
+            _nwReferredInv = ReferredInvitation(referredMail=_mailRef, qrCode=_token,
+                                                maxForwarding=_maxForwarding, host=_host, referredExpiration=_exp)
+
+        _nwReferredInv.save()
+        _numForwarding = _nwReferredInv.maxForwarding
+        _link = "URL/" + _token
+        # if _mailRef is not None and _phoneRef is not None:
+        #     # Enviamos correo y sms
+        # else:
+        #     if _mailRef:
+        #         # Enviamos MAIL
+        #     else:
+        #         # Enviamos SMS
+        html_message = render_to_string("referredMail.html",
+                                        {
+                                            "forwardNum": _nwReferredInv.maxForwarding,
+                                            "link": _token
+                                        })
+        send_IntrareEmail(html_message, _mailRef)
+        return _nwReferredInv
 
 
+class GetReferralInvSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ReferredInvitation
+        fields = ['referredMail']

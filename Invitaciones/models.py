@@ -52,9 +52,9 @@ class InvitationByUsers(models.Model):
 
 
 class ReferredInvitation(models.Model):
-    referredMail = models.EmailField(default=None)
-    referredPhone = models.CharField(default=None, max_length=12)
-    qrCode = models.CharField(max_length=100, null=False, blank=True, unique=True)
+    referredMail = models.EmailField(default=None, null=True)
+    referredPhone = models.CharField(default=None, max_length=12, null=True)
+    qrCode = models.CharField(max_length=14, null=False, blank=True, unique=True)
     referredExpiration = models.DateField(null=False, blank=False)
     maxForwarding = models.IntegerField(default=3)
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
