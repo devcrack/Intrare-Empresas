@@ -206,6 +206,26 @@ class AccessListToGuard(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class AccessListToAdminAndEmployee(viewsets.ModelViewSet):
+    """
+    Lista el Acceso por id_Acceso
+    """
+    permission_classes = (isAdmin | isEmployee,)
+
+    def list(self, request, *args, **kwargs):
+        a_pk = self.kwargs['pk']
+
+        self.queryset = Acceso.objects.filter(id=a_pk)
+        _nReg = len(self.queryset)
+        if _nReg > 0:
+            print('nReg=', _nReg)
+            queryset = self.queryset
+            _serializer = AccessDetailFull(queryset, many=True, context={"request": request})
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class NotifyHostSignPass(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         _idAcc = self.kwargs['idAcc']

@@ -41,6 +41,8 @@ urlpatterns = [
 
     path("empresas/accesos/", AccesoList.as_view(), name="accesos_list"),  # Listado de todos los accesos
     path('empresas/accesos/search/<str:qr_code>/', AccessListToGuard.as_view({'get': 'list'}), name='get_inv_qrcode_guard'), # Obtiene Acceso por codigo QR
+    # Obtiene Acceso por id_Acceso
+    path('empresas/accesos/search/<int:pk>', AccessListToAdminAndEmployee.as_view({'get': 'list'}), name='get_inv_qrcode_guard'),
     path('empresas/access/create', AccessCreate.as_view(), name='_createacces'),  #
     #Actualiza el pase de salida , es decir lo FIRMA
     path('empresas/access/update/exitpass/<int:pk>/', AccessUpdateExitPass.as_view(), name='accessUpdate1'),

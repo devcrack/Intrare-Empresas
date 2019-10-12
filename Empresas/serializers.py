@@ -195,3 +195,46 @@ class AccessDetail(serializers.ModelSerializer):
         model = Acceso
         fields = ('id', 'guestFName', 'guestLName', 'companyName', 'fecha_hora_acceso', 'fecha_hora_salida', 'hostFirstName',
                   'hostLastName', 'pase_salida', 'estado')
+
+
+class AccessDetailFull(serializers.ModelSerializer):
+    guestFName = serializers.CharField(source='invitationByUsers.idGuest.first_name')
+    guestLName = serializers.CharField(source='invitationByUsers.idGuest.last_name')
+    guestCellphone = serializers.CharField(source='invitationByUsers.idGuest.celular')
+    guestEmail = serializers.CharField(source='invitationByUsers.idGuest.email')
+    guestIneFront = serializers.ImageField(source='invitationByUsers.idGuest.ine_frente')
+    companyName = serializers.CharField(source='invitationByUsers.idInvitation.empresa')
+    hostFirstName = serializers.CharField(source='invitationByUsers.host.first_name')
+    hostLastName = serializers.CharField(source='invitationByUsers.host.last_name')
+    hostCellphone = serializers.CharField(source='invitationByUsers.host.celular')
+    hostEmail = serializers.CharField(source='invitationByUsers.host.email')
+    hostIneFront = serializers.ImageField(source='invitationByUsers.host.ine_frente')
+    fecha_hora_acceso = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
+    fecha_hora_salida = serializers.DateTimeField(format="%d/%m/%Y %H:%M")
+    asunto = serializers.CharField(source='invitationByUsers.idInvitation.asunto')
+    notas = serializers.CharField(source='invitationByUsers.idInvitation.notas')
+    nombreArea = serializers.CharField(source='invitationByUsers.idInvitation.id_area.nombre')
+
+    class Meta:
+        model = Acceso
+        fields = (
+            'id',
+            'guestFName',
+            'guestLName',
+            'guestCellphone',
+            'guestEmail',
+            'guestIneFront',
+            'companyName',
+            'asunto',
+            'notas',
+            'hostFirstName',
+            'hostLastName',
+            'hostCellphone',
+            'hostEmail',
+            'nombreArea',
+            'hostIneFront',
+            'fecha_hora_acceso',
+            'fecha_hora_salida',
+            'pase_salida',
+            'estado',
+        )
