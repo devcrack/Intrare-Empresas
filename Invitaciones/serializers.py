@@ -62,7 +62,6 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     hostLastName = serializers.CharField(source='host.last_name')
     dateInv = serializers.DateField(source='idInvitation.dateInv',format="%d-%m-%Y")  # Nuevo
     timeInv = serializers.TimeField(source='idInvitation.timeInv',format="%H:%M")  # Nuevo
-    expiration = serializers.DateField(source='idInvitation.expiration',format="%d-%m-%Y")  # Nuevo
     colorArea = serializers.CharField(source='idInvitation.id_area.color')
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     asunto = serializers.CharField(source='idInvitation.asunto')
@@ -72,7 +71,7 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InvitationByUsers
-        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv', 'expiration',
+        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv',
                   'asunto', 'automovil', 'qr_code', 'diary')
 
 
@@ -83,7 +82,6 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     guestLastName = serializers.CharField(source='idGuest.last_name')
     dateInv = serializers.DateField(source='idInvitation.dateInv',format="%d-%m-%Y")  # Nuevo
     timeInv = serializers.TimeField(source='idInvitation.timeInv',format="%H:%M")  # Nuevo
-    expiration = serializers.DateField(source='idInvitation.expiration',format="%d-%m-%Y")  # Nuevo
     colorArea = serializers.CharField(source='idInvitation.id_area.color')
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     asunto = serializers.CharField(source='idInvitation.asunto')
@@ -94,7 +92,7 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
-                  'timeInv', 'expiration', 'asunto', 'automovil', 'qr_code', 'diary')
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary')
 
 
 class InvitationToGuardSerializer(serializers.ModelSerializer):
@@ -116,7 +114,6 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     avatar = serializers.ImageField(source='idGuest.avatar')
     dateInv = serializers.DateField(source='idInvitation.dateInv', format="%d-%m-%Y")  # Nuevo
     timeInv = serializers.TimeField(source='idInvitation.timeInv', format="%H:%M")  # Nuevo
-    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")  # Nuevo
     logoEmpresa = serializers.ImageField(source='idInvitation.id_empresa.logo')
     asunto = serializers.CharField(source='idInvitation.asunto')
     empresa = serializers.CharField(source='idInvitation.empresa')
@@ -141,7 +138,6 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'guest_ine_atras',
             'dateInv',
             'timeInv',
-            'expiration',
             'asunto',
             'empresa',
             'automovil',
@@ -263,7 +259,7 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
         html_message = render_to_string("referredMail.html",
                                         {
                                             "forwardNum": _nwReferredInv.maxForwarding,
-                                            "link": _token
+                                            "link": _link
                                         })
         send_IntrareEmail(html_message, _mailRef)
         return _nwReferredInv
@@ -273,4 +269,10 @@ class GetReferralInvSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReferredInvitation
-        fields = ['referredMail']
+        fields = ['referredMail', 'maxForwarding']
+
+
+
+
+
+

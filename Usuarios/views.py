@@ -50,7 +50,6 @@ class UserUpdateParcial(generics.UpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         val = self.partial_update(request, *args, **kwargs)
-
         return val
 
 

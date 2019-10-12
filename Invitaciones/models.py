@@ -18,7 +18,6 @@ class Invitacion(models.Model):
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
     dateInv = models.DateField(null=False) #
     timeInv = models.TimeField(null=False) #
-    expiration = models.DateField(null=False ) #
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
@@ -52,10 +51,20 @@ class InvitationByUsers(models.Model):
 
 
 class ReferredInvitation(models.Model):
+    id_empresa = models.IntegerField()
+    id_area = models.IntegerField()
+    dateInv = models.DateField(null=False)  #
+    timeInv = models.TimeField(null=False)  # Este campo decide la caducidad
+    diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
+    asunto = models.CharField(max_length=254, null=False, blank=False)
+    automovil = models.BooleanField(null=False, blank=False)
+    notas = models.CharField(max_length=256, null=True, blank=True, default="")
+    empresa = models.CharField(max_length=254, null=True, blank=True, default="")
+    leida = models.BooleanField(default=False, null=False)
+    dateSend = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)
     referredMail = models.EmailField(default=None, null=True)
     referredPhone = models.CharField(default=None, max_length=12, null=True)
     qrCode = models.CharField(max_length=14, null=False, blank=True, unique=True)
-    referredExpiration = models.DateField(null=False, blank=False)
     maxForwarding = models.IntegerField(default=3)
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
                              related_name='InvitationReferred_host')
