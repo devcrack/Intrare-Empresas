@@ -53,7 +53,9 @@ class InvitationByUsers(models.Model):
 class ReferredInvitation(models.Model):
     id_empresa = models.IntegerField()
     id_area = models.IntegerField()
-    dateInv = models.DateField(null=False)  #
+    dateInv = models.DateField(null=False, default=timezone.datetime(timezone.datetime.now().year,
+                                                                     timezone.datetime.now().month,
+                                                                     timezone.datetime.now().day))
     timeInv = models.TimeField(null=False)  # Este campo decide la caducidad
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
     asunto = models.CharField(max_length=254, null=False, blank=False)
