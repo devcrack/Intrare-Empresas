@@ -254,4 +254,6 @@ class AccessDetailFull(serializers.ModelSerializer):
             'fecha_hora_salida',
             'pase_salida',
             'estado',
-        )
+            'hostLastName',
+            'pase_salida',
+            'estado')
