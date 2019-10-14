@@ -19,6 +19,7 @@ urlpatterns = [
     path('empresas/administradores/<int:pk>/', AdministradorDetail.as_view(), name='administrador_detail'),
     path('empresas/administradores/user/<int:pk_user>/', AdministradorDetailUser.as_view(), name='administrador_detail_user'),
     path('empresas/administradores/<int:pk>/update/', AdministradorUpdate.as_view(), name='administrador_update'),
+    path('empresas/administradoresByCompany/<int:id_company>', AdministradoresViewSet.as_view({'get': 'list'})),
 
     path('empresas/areas/', AreaListAll.as_view(), name='areas_list'),
     path('empresas/areas/<int:pk>/', AreaDetail.as_view(), name='area_detail'),
