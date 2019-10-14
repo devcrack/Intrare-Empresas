@@ -1,10 +1,11 @@
 from rest_framework import generics
 from rest_framework import viewsets
+from rest_framework import filters
 from .serializers import *
 from Usuarios.permissions import *
 from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
-
+from django.db.models import Q
 
 """
 Crea o Lista  una empresa
@@ -38,6 +39,30 @@ class EmpresaUpdate(generics.UpdateAPIView):
     queryset = Empresa.objects.all()
     lookup_field = 'pk'
     serializer_class = EmpresaSerializers
+
+
+class EmpresaViewSet(viewsets.ModelViewSet):
+    """
+    Filtro para precargar informacion de un usuario.
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = EmpresaFindSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['^name']
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.roll == settings.ADMIN:
+            admin_company = Administrador.objects.filter(id_usuario=user)[0]
+            id_company = admin_company.id_empresa
+            print("id Company = " + str(id_company))
+
+        if user.roll == settings.EMPLEADO:
+            employee_company = Empleado.objects.filter(id_usuario=user)[0]
+            id_company = employee_company.id_empresa
+            print("id Company = " + str(id_company))
+
+        return Empresa.objects.exclude(Q(id=id_company.id))
 
 
 class AdministradorList(generics.ListCreateAPIView):

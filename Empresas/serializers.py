@@ -10,6 +10,12 @@ class EmpresaSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class EmpresaFindSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Empresa
+        fields = ('id', 'name')
+
+
 class AdministradorSerializers(serializers.ModelSerializer):
     id_usuario = UserAdminSerializer(many=False)
 
