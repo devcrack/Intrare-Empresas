@@ -71,14 +71,13 @@ def render_MsgPregister(_headerMsg, msg, link):
     return html_message
 
 
-def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expDate,
+def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv,
                       subject, vehicle, notes, from_company):
     nw_invitation = Invitacion(
         id_empresa=id_company,
         id_area=id_area,
         dateInv=_dateInv,
         timeInv=_timeInv,
-        expiration=expDate,
         asunto=subject,
         automovil=vehicle,
         notas=notes,
