@@ -17,6 +17,9 @@ from ControlAccs.utils import send_sms, send_IntrareEmail
 from fcm_django.models import FCMDevice
 from django.db.models import Q
 from django.core.files.storage import default_storage
+import re
+
+_regexMail = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 
 def guest_exist(cellphoneN, _email):
     if _email is None:
@@ -70,14 +73,14 @@ def render_MsgPregister(_headerMsg, msg, link):
     return html_message
 
 
-def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expDate,
+
+def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv,
                       subject, vehicle, notes, from_company):
     nw_invitation = Invitacion(
         id_empresa=id_company,
         id_area=id_area,
         dateInv=_dateInv,
         timeInv=_timeInv,
-        expiration=expDate,
         asunto=subject,
         automovil=vehicle,
         notas=notes,
@@ -423,4 +426,57 @@ class GetReferredInv(viewsets.ModelViewSet):
             _serializer = GetReferralInvSerializer(querySet)
             return Response(status=status.HTTP_200_OK, data=_serializer.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
+
+
+
+class ResendReferralInvitation(generics.UpdateAPIView):
+
+    def update(self, request, *args, **kwargs):
+        _token = request.data.get("token")
+        _newReferralMail = request.data.get("referralMail")
+        if re.search(_regexMail, _newReferralMail):
+
+            try:
+                _referralInvitation = ReferredInvitation.objects.get(qrCode=_token)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_204_NO_CONTENT, data={"Error": "Token corrompido"})
+            _numForwarding = _referralInvitation.maxForwarding
+            _referralExpiration = _referralInvitation.referredExpiration
+            if _numForwarding < 1:
+                return Response(status=status.HTTP_403_FORBIDDEN, data={'error':'Se ha excedido el numero maximo de reenvios'})
+            _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
+                                day=timezone.datetime.now().day)  # Fecha actual
+            if _referralInvitation < _currentDate:
+                return Response(status=status.HTTP_403_FORBIDDEN,
+                                data={'error': f'Esta peticion esta caducada: {_referralExpiration}'})
+            _token = token_hex(7)  # Renovando Token.
+            _numForwarding = _numForwarding - 1
+            _referralInvitation.qrCode = _token
+            _referralInvitation.maxForwarding = _numForwarding
+            _referralInvitation.referredMail = _newReferralMail
+            _referralInvitation.save()
+            _link = "URL/"+_token
+            html_message = render_to_string("referredMail.html",
+                                            {
+                                                "forwardNum": _numForwarding,
+                                                "link": _link
+                                            })
+            send_IntrareEmail(html_message, _newReferralMail)
+            return Response(status=status)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"Error": "Email Invalido"})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

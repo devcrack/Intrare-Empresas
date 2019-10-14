@@ -10,12 +10,15 @@ class EmpresaSerializers(serializers.ModelSerializer):
         fields = '__all__'
 
 
+<<<<<<< HEAD
 class EmpresaFindSerializer(serializers.ModelSerializer):
     class Meta:
         model = Empresa
         fields = ('id', 'name')
 
 
+=======
+>>>>>>> master
 class AdministradorSerializers(serializers.ModelSerializer):
     id_usuario = UserAdminSerializer(many=False)
 
@@ -200,6 +203,7 @@ class AccessDetail(serializers.ModelSerializer):
     class Meta:
         model = Acceso
         fields = ('id', 'guestFName', 'guestLName', 'companyName', 'fecha_hora_acceso', 'fecha_hora_salida', 'hostFirstName',
+<<<<<<< HEAD
                   'hostLastName', 'pase_salida', 'estado')
 
 
@@ -244,3 +248,6 @@ class AccessDetailFull(serializers.ModelSerializer):
             'pase_salida',
             'estado',
         )
+=======
+                  'hostLastName', 'pase_salida', 'estado')
+>>>>>>> master

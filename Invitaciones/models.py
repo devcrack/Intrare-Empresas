@@ -3,9 +3,7 @@ from django.db import models
 
 from django.conf import settings
 from secrets import token_hex
-from datetime import datetime, date, time
 from django.utils import timezone
-import qrcode
 
 
 class Invitacion(models.Model):
@@ -18,7 +16,6 @@ class Invitacion(models.Model):
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
     dateInv = models.DateField(null=False) #
     timeInv = models.TimeField(null=False) #
-    expiration = models.DateField(null=False ) #
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
@@ -52,21 +49,30 @@ class InvitationByUsers(models.Model):
 
 
 class ReferredInvitation(models.Model):
-    referredMail = models.EmailField(default=None, null=True)
-    referredPhone = models.CharField(default=None, max_length=12, null=True)
-    qrCode = models.CharField(max_length=14, null=False, blank=True, unique=True)
-    referredExpiration = models.DateField(null=False, blank=False)
-    maxForwarding = models.IntegerField(default=3)
+    # Campos Necesarios para generar la invitacion Intrinseca
+    idCompany = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE, related_name='id_company_ReferredInv') # No Editable
+    idArea = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)  # No editable
+    dateSend = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)
+    dateInv = models.DateField(null=False)  # No Editable
+    timeInv = models.TimeField(null=False)  # No Editable
+    diary = models.CharField(max_length=7, default="")  # No Editable
+    subject = models.CharField(max_length=254, null=False, blank=False) #No Editable
+    vehicle = models.BooleanField(null=False, blank=False)
+    notes = models.CharField(max_length=256, null=True, blank=True, default="")
+    companyFrom = models.CharField(max_length=254, null=True, blank=True, default="") #No Editable
+
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
                              related_name='InvitationReferred_host')
+    Token = models.CharField(max_length=14, default=token_hex(7))  # No Editable
+    referredMail = models.EmailField(default=None, null=False)
+    referredPhone = models.CharField(default=None, max_length=12, null=True)
 
     def __str__(self):
-        return f"ID={self.id} HOST{self.host} Referido: {self.referredMail} Expiracion: {self.referredExpiration}"
-        #return "%s %s" % (str(self.id), self.email)
-
+        return f"ID={self.id} HOST{self.host} EmpresaGuest : {self.companyFrom} EmailInvitado: {self.referredMail}"
 
     class Meta:
-        verbose_name_plural = "InvitacionesReferido"
+        verbose_name_plural = "EnterpriseInvitation"
+
 
 class EquipoSeguridad(models.Model):
     """Se refiere al equipo de seguridad que cada invitado pudiese llevar.
