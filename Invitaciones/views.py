@@ -392,9 +392,11 @@ class GetInvitationByHOST(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         usr = self.request.user
-        _queryset = self.queryset =  InvitationByUsers.objects.filter(host=usr)
+        _queryset = self.queryset = InvitationByUsers.objects.filter(host=usr)
         serializers = InvitationToHostSerializer(_queryset, many=True)
         return Response(serializers.data)
+
+
 # How the fuck document p
 # https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
 
@@ -415,15 +417,15 @@ class Createreferredinvitation(generics.CreateAPIView):
 class GetReferredInv(viewsets.ModelViewSet):
     def get_queryset(self):
         try:
-            _querySet = ReferredInvitation.objects.get(qrCode=self.kwargs['token'])
+            _querySet = ReferredInvitation.objects.get(Token=self.kwargs['token'])
         except ObjectDoesNotExist:
             return None
         return _querySet
 
     def list(self, request, *args, **kwargs):
-        querySet = self.get_queryset()
-        if querySet is not None:
-            _serializer = GetReferralInvSerializer(querySet)
+        _querySet = self.get_queryset()
+        if _querySet is not None:
+            _serializer = GetReferralInvSerializer(_querySet)
             return Response(status=status.HTTP_200_OK, data=_serializer.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

@@ -32,6 +32,7 @@ urlpatterns = [
     #Regresa todas las Invitaciones hechas ya sea por un Administrador o por un Empleado
     path('getInv/Admin/Employee/', GetInvitationByHOST.as_view({'get': 'list'})),
     path('createReferred/Inv/', Createreferredinvitation.as_view()),
+    # Obtiene invitacion empresarial mediante un Token
     path('getReferralInv/<str:token>/', GetReferredInv.as_view({'get': 'list'})),
     # Creacion Invitacion Empresarial
     path('createReferredInv', Createreferredinvitation.as_view()),

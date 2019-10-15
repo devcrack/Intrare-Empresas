@@ -293,10 +293,18 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
         return _nwReferredInv
 
 class GetReferralInvSerializer(serializers.ModelSerializer):
+    companyName = serializers.CharField(source='idCompany.name')
+    areaName = serializers.CharField(source='idArea.nombre')
+    dateInv = serializers.DateField(format="%d-%m-%Y")
+    timeInv = serializers.TimeField(format="%H:%M")
+    hostFirstName = serializers.CharField(source='host.first_name')
+    hostLastName = serializers.CharField(source='host.last_name')
+    dateSend = serializers.DateTimeField(format="%d-%m-%Y")
 
     class Meta:
         model = ReferredInvitation
-        fields = ['referredMail', 'maxForwarding']
+        fields = ['companyName', 'areaName', 'dateInv', 'timeInv', 'hostFirstName', 'hostLastName', 'subject',
+                  'dateSend']
 
 
 

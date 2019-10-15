@@ -87,7 +87,6 @@ class ReferredInvitation(models.Model):
     dateSend = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)
     dateInv = models.DateField(null=False)  # No Editable
     timeInv = models.TimeField(null=False)  # No Editable
-    expiration = models.DateField(default=defaultExpiration())
     diary = models.CharField(max_length=7, default="")  # No Editable
     subject = models.CharField(max_length=254, null=False, blank=False) #No Editable
     vehicle = models.BooleanField(null=False, blank=False)
