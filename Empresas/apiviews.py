@@ -99,6 +99,20 @@ class AdministradorUpdate(generics.UpdateAPIView):
     serializer_class = AdministradorSerializers
 
 
+class AdministradoresViewSet(viewsets.ModelViewSet):
+    """
+    Filtro para precargar informacion de Administradores
+    por E-Mail/first_name/last_name/celular.
+    """
+    permission_classes = [IsAuthenticated, isAdmin | isEmployee]
+    serializer_class = AdministradoresFindSerializer
+
+    def get_queryset(self):
+        queryset = Administrador.objects.filter(id_empresa=self.kwargs["id_company"], id_usuario__is_active=True)
+        return queryset
+
+
+
 class AreaListAll(generics.ListCreateAPIView):
     """
     Clase AreaListAll, lista todas las Áreas de todas las Empresas.

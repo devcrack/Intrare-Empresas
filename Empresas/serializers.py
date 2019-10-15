@@ -55,6 +55,17 @@ class AdministradorSerializers(serializers.ModelSerializer):
         return instance
 
 
+class AdministradoresFindSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source='id_usuario.first_name')
+    last_name = serializers.CharField(source='id_usuario.last_name')
+    email = serializers.CharField(source='id_usuario.email')
+    celular = serializers.CharField(source='id_usuario.celular')
+
+    class Meta:
+        model = Administrador
+        fields = ('id', 'first_name', 'last_name', 'email', 'celular')
+
+
 class AreaSerializers(serializers.ModelSerializer):
     class Meta:
         model = Area
