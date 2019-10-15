@@ -82,9 +82,17 @@ http://127.0.0.1:8000/createReferredInv
 	"subject":"Nada en particular",
 	"idArea":1,
 	"idCompany":1, 
-	"companyFrom":"DaeLabs"
+	"companyFrom":"DaeLabs",
+  "expiration":"2019-11-15"
 }
 ```
+#### Descripcion de ciertos Campos
+- referredMail: Email del Referido, en este caso aquella persona que se designe como referido y que tenga 
+  los permisos necesarios en la compañia, es decir tiene que tener los permisos de  administrador en la compañia invitada.
+- host: Id del Anfritrion 
+-expiration: Fecha de caducidad de la invitacion. Este campo puede o no ir, es decir require=False.
+
+
 
 ***
 ## Cargar la informacion de Un Usuario Por Token.
