@@ -467,6 +467,17 @@ class ResendReferralInvitation(generics.UpdateAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"Error": "Email Invalido"})
 
 
+class CreateEnterpriseInvitation(generics.CreateAPIView):
+    """
+    Este metodo solo sirve para crear un registro ReferredInvitation
+    """
+    permission_classes = [IsAuthenticated, IsAdmin | IsEmployee, ]
+    queryset = ReferredInvitation.objects.all()
+    serializer_class = Createreferredinvitation
+
+
+
+
 
 
 

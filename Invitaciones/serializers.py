@@ -209,61 +209,88 @@ class MasiveInvSerializer(serializers.Serializer):
         return data
 
 
+# def get_Company(idUsr):
+#     try:
+#         _host = CustomUser.objects.get(id=idUsr)
+#     except ObjectDoesNotExist:
+#         return None
+#     try:
+#         admin = Administrador.objects.get(id_usuario=_host)
+#     except ObjectDoesNotExist:
+#         return None
+#     return admin.id_empresa
+
+
 class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
     referredMail = serializers.EmailField(allow_null=False)
     referredPhone = serializers.RegexField(regex=r'^(\d{10})(?:\s|$)', max_length=10, allow_null=True, required=False)
     # qrCode = serializers.CharField(required=False, max_length=100)
-    referredExpiration = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
-    host = serializers.IntegerField()
-    maxForwarding = serializers.IntegerField(allow_null=True)
+    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
+    # host = serializers.IntegerField()
+    timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])
+    notes = serializers.CharField(default="")
+    expiration = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], required=False)
 
     class Meta:
         model = ReferredInvitation
         fields = '__all__'
 
-
     def validate(self, data):
-        if data['referredMail'] is None and data['referredPhone'] is None:
-            raise serializers.ValidationError("Se debe de proporcionar al menos una direccion de correo o un numero telefonico")
+        _referredMail = data['referredMail']
+        usr = data['host']
+        try:
+            guest = CustomUser.objects.get(email=_referredMail)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError("El referido no es un Usuario de Intrare")
+        try:
+            _adminGuest = Administrador.objects.get(id_usuario=guest)
+        except ObjectDoesNotExist:
+            raise serializers.ValidationError("El referido no cumple con los permisos necesarios")
+        if usr.roll == settings.ADMIN:
+            try:
+                _admCompany = Administrador.objects.get(id_usuario=usr)
+            except ObjectDoesNotExist:
+                return None
+            _companyID = _admCompany.id_empresa
+        else:
+            try:
+                _employee = Empleado.objects.get(id_usuario=usr)
+            except ObjectDoesNotExist:
+                return None
+            _companyID = _employee.id_empresa
+        _companyGuest = _adminGuest.id_empresa
+        if _companyID == _companyGuest:
+            raise serializers.ValidationError("¿Quieres delegar tus obligaciones a alguien mas?")
         return data
 
     def create(self, validated_data):
-        _mailRef = validated_data['referredMail']
-        # _phoneRef = validated_data['referredPhone']
-        _maxForwarding = validated_data['maxForwarding']
-        _exp = validated_data['referredExpiration']
-        _token = token_hex(7)
-        _host = None
-        try:
-            _host = CustomUser.objects.get(id=validated_data['host'])
-        except ObjectDoesNotExist:
-            return None
-
-        if _maxForwarding is None:
-            _nwReferredInv = ReferredInvitation(referredMail=_mailRef, qrCode=_token,
-                                                referredExpiration=_exp, host=_host)
+        usr = validated_data['host']
+        _referredMail = validated_data['referredMail']
+        if usr.roll == settings.ADMIN:
+            try:
+                _admCompany = Administrador.objects.get(id_usuario=usr)
+            except ObjectDoesNotExist:
+                return None
+            _companyID = _admCompany.id_empresa
         else:
-            _nwReferredInv = ReferredInvitation(referredMail=_mailRef, qrCode=_token,
-                                                maxForwarding=_maxForwarding, host=_host, referredExpiration=_exp)
-
+            try:
+                _employee = Empleado.objects.get(id_usuario=usr)
+            except ObjectDoesNotExist:
+                return None
+            _companyID = _employee.id_empresa
+        _nwReferredInv = ReferredInvitation(idCompany=_companyID, idArea=validated_data['idArea'],
+                                            dateInv=validated_data['dateInv'], timeInv=validated_data['timeInv'],
+                                            subject=validated_data['subject'], vehicle=validated_data['vehicle'],
+                                            notes=validated_data['notes'], companyFrom=validated_data['companyFrom'],
+                                            host=usr, referredMail=_referredMail)
         _nwReferredInv.save()
-        _numForwarding = _nwReferredInv.maxForwarding
-        _link = "URL/" + _token
-        # if _mailRef is not None and _phoneRef is not None:
-        #     # Enviamos correo y sms
-        # else:
-        #     if _mailRef:
-        #         # Enviamos MAIL
-        #     else:
-        #         # Enviamos SMS
-        # html_message = render_to_string("referredMail.html",
-        #                                 {
-        #                                     "forwardNum": _nwReferredInv.maxForwarding,
-        #                                     "link": _link
-        #                                 })
-        send_IntrareEmail(html_message, _mailRef)
+        _link = "URL/" + _nwReferredInv.Token
+        html_message = render_to_string("referredMail.html",
+                                        {
+                                            "link": _link
+                                        })
+        send_IntrareEmail(html_message, _referredMail)
         return _nwReferredInv
-
 
 class GetReferralInvSerializer(serializers.ModelSerializer):
 

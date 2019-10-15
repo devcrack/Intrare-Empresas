@@ -4,6 +4,37 @@ from django.db import models
 from django.conf import settings
 from secrets import token_hex
 from django.utils import timezone
+from datetime import date
+
+
+def defaultExpiration():
+    _year = timezone.datetime.now().year
+    _month = timezone.datetime.now().month
+    _day = timezone.datetime.now().day
+    _date = date(_year, _month, _day)
+
+    _delta = timezone.timedelta(days=1)
+
+    return _date + _delta
+
+    """
+    Codigo de soporte
+    """
+    # return date(_year, _month, _day)
+    # # _DateExp = fecha_hora_envio.get_default()
+    #
+    # _delta = timezone.timedelta(days=1)
+    # _DateExp = _DateExp + _delta
+    # dateInv = models.DateField(default=_DateExp, null=False)
+    # timeInv = models.TimeField(default=time(), null=False)
+    # # _DateExp = dateInv.get_default()
+    # # _delta = timezone.timedelta(days=2)
+    # # _DateExp = _DateExp + _delta
+    # expiration = models.DateField(default=dateInv, null=False)
+    # _DateExp = dateInv.get_default()
+    # _delta = timezone.timedelta(days=2)
+    # _DateExp = _DateExp + _delta
+    # expiration = models.DateField(default=_DateExp, null=False)
 
 
 class Invitacion(models.Model):
@@ -16,6 +47,7 @@ class Invitacion(models.Model):
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
     dateInv = models.DateField(null=False) #
     timeInv = models.TimeField(null=False) #
+    expiration = models.DateField(default=defaultExpiration())
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
@@ -55,12 +87,12 @@ class ReferredInvitation(models.Model):
     dateSend = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)
     dateInv = models.DateField(null=False)  # No Editable
     timeInv = models.TimeField(null=False)  # No Editable
+    expiration = models.DateField(default=defaultExpiration())
     diary = models.CharField(max_length=7, default="")  # No Editable
     subject = models.CharField(max_length=254, null=False, blank=False) #No Editable
     vehicle = models.BooleanField(null=False, blank=False)
     notes = models.CharField(max_length=256, null=True, blank=True, default="")
     companyFrom = models.CharField(max_length=254, null=True, blank=True, default="") #No Editable
-
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
                              related_name='InvitationReferred_host')
     Token = models.CharField(max_length=14, default=token_hex(7))  # No Editable
@@ -68,7 +100,7 @@ class ReferredInvitation(models.Model):
     referredPhone = models.CharField(default=None, max_length=12, null=True)
 
     def __str__(self):
-        return f"ID={self.id} HOST{self.host} EmpresaGuest : {self.companyFrom} EmailInvitado: {self.referredMail}"
+        return f"HOST_{self.host} COMPANY_FROM : {self.companyFrom} GUESTEMAIL: {self.referredMail}"
 
     class Meta:
         verbose_name_plural = "EnterpriseInvitation"
