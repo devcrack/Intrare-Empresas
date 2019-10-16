@@ -228,7 +228,7 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
     dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
     host = serializers.IntegerField(required=False)
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])
-    notas = serializers.CharField(default="")
+    notes = serializers.CharField(default="")
     expiration = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], required=False)
 
     class Meta:
@@ -279,10 +279,10 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
             except ObjectDoesNotExist:
                 return None
             _companyID = _employee.id_empresa
-        _nwReferredInv = ReferredInvitation(id_empresa=_companyID, id_area=validated_data['id_area'],
+        _nwReferredInv = ReferredInvitation(id_empresa=_companyID, areaId=validated_data['areaId'],
                                             dateInv=validated_data['dateInv'], timeInv=validated_data['timeInv'],
-                                            asunto=validated_data['asunto'], automovil=validated_data['automovil'],
-                                            notas=validated_data['notas'], empresa=validated_data['empresa'],
+                                            subject=validated_data['subject'], vehicle=validated_data['vehicle'],
+                                            notes=validated_data['notes'], companyFrom=validated_data['companyFrom'],
                                             host=usr, referredMail=_referredMail)
         _nwReferredInv.save()
         _link = "URL/" + _nwReferredInv.Token

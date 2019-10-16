@@ -83,16 +83,16 @@ class InvitationByUsers(models.Model):
 class ReferredInvitation(models.Model):
     # Campos Necesarios para generar la invitacion Intrinseca
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE, related_name='id_company_ReferredInv') # No Editable
-    id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)  # No editable
+    areaId = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)  # No editable
     fecha_hora_envio = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)
     dateInv = models.DateField(null=False)  # No Editable
     timeInv = models.TimeField(null=False)  # No Editable
     expiration = models.DateField(default=defaultExpiration())
     diary = models.CharField(max_length=7, default="")  # No Editable
-    asunto = models.CharField(max_length=254, null=False, blank=False) #No Editable
-    automovil = models.BooleanField(null=False, blank=False)
-    notas = models.CharField(max_length=256, null=True, blank=True, default="")
-    empresa = models.CharField(max_length=254, null=True, blank=True, default="") #No Editable
+    subject = models.CharField(max_length=254, null=False, blank=False) #No Editable
+    vehicle = models.BooleanField(null=False, blank=False)
+    notes = models.CharField(max_length=256, null=True, blank=True, default="")
+    companyFrom = models.CharField(max_length=254, null=True, blank=True, default="") #No Editable
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
                              related_name='InvitationReferred_host')
     Token = models.CharField(max_length=14, default=token_hex(7))  # No Editable
