@@ -36,4 +36,5 @@ urlpatterns = [
     path('getReferralInv/<str:token>/', GetReferredInv.as_view({'get': 'list'})),
     # Creacion Invitacion Empresarial
     path('createReferredInv', Createreferredinvitation.as_view()),
+    path('createEnterpriseInv', CreateEnterpriseInvitation.as_view()),
 ]

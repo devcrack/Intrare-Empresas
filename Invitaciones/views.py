@@ -320,7 +320,6 @@ class InvitationListToSimpleUser(viewsets.ModelViewSet): ####
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 class MassiveInvitationCreate(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsEmployee, ]
 
@@ -377,7 +376,6 @@ class MassiveInvitationCreate(generics.CreateAPIView):
 
 class InvitationbyQRCode(generics.ListAPIView):
     serializer_class = InvitationToGuardSerializer
-
 
     def get_queryset(self):
         queryset = InvitationByUsers.objects.all()
@@ -470,7 +468,7 @@ class ResendReferralInvitation(generics.UpdateAPIView):
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"Error": "Email Invalido"})
 
 
-class CreateEnterpriseInvitation(generics.CreateAPIView):
+class CreateReferredInvitation(generics.CreateAPIView):
     """
     Este metodo solo sirve para crear un registro ReferredInvitation
     """
@@ -479,6 +477,37 @@ class CreateEnterpriseInvitation(generics.CreateAPIView):
     serializer_class = Createreferredinvitation
 
 
+class CreateEnterpriseInvitation(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def create(self, request, *args, **kwargs):
+        usr = self.request.user
+        self.serializer_class = EnterpriseSerializer
+        _serializer = self.serializer_class(data=request.data)
+
+        if _serializer.is_valid():
+            _serializer.save()
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+        return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+
+    # id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE,
+    #                                related_name='id_company_ReferredInv')  # No Editable
+    # areaId = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)  # No editable
+    # fecha_hora_envio = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)
+    # dateInv = models.DateField(null=False)  # No Editable
+    # timeInv = models.TimeField(null=False)  # No Editable
+    # expiration = models.DateField(default=defaultExpiration())
+    # diary = models.CharField(max_length=7, default="")  # No Editable
+    # subject = models.CharField(max_length=254, null=False, blank=False)  # No Editable
+    # vehicle = models.BooleanField(null=False, blank=False)
+    # notes = models.CharField(max_length=256, null=True, blank=True, default="")
+    # companyFrom = models.CharField(max_length=254, null=True, blank=True, default="")  # No Editable
+    # host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
+    #                          related_name='InvitationReferred_host')
+    # Token = models.CharField(max_length=14, default=token_hex(7))  # No Editable
+    # referredMail = models.EmailField(default=None, null=False)
+    # referredPhone = models.CharField(default=None, max_length=12, null=True)
 
 
 
