@@ -226,7 +226,7 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
     referredPhone = serializers.RegexField(regex=r'^(\d{10})(?:\s|$)', max_length=10, allow_null=True, required=False)
     # qrCode = serializers.CharField(required=False, max_length=100)
     dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
-    # host = serializers.IntegerField()
+    host = serializers.IntegerField(required=False)
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])
     notes = serializers.CharField(default="")
     expiration = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], required=False)
@@ -237,7 +237,7 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
 
     def validate(self, data):
         _referredMail = data['referredMail']
-        usr = data['host']
+        usr = self.context['request'].user
         try:
             guest = CustomUser.objects.get(email=_referredMail)
         except ObjectDoesNotExist:
@@ -264,7 +264,8 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        usr = validated_data['host']
+
+        usr = self.context['request'].user
         _referredMail = validated_data['referredMail']
         if usr.roll == settings.ADMIN:
             try:

@@ -406,7 +406,7 @@ class Createreferredinvitation(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         self.serializer_class = ReferredInvitationSerializerCreate
-        _serializer = self.serializer_class(data=request.data)
+        _serializer = self.serializer_class(data=request.data, context={'request': request})
         if _serializer.is_valid(raise_exception=True):
             _serializer.save()
             return Response(status=status.HTTP_201_CREATED)
