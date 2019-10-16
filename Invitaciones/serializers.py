@@ -293,6 +293,7 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
         send_IntrareEmail(html_message, _referredMail)
         return _nwReferredInv
 
+
 class GetReferralInvSerializer(serializers.ModelSerializer):
     companyName = serializers.CharField(source='idCompany.name')
     areaName = serializers.CharField(source='idArea.nombre')
