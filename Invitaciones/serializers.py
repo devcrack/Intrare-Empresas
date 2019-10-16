@@ -10,6 +10,8 @@ from ControlAccs.utils import send_IntrareEmail, send_sms
 from Empresas.models import Administrador, Empresa, Area
 from Empresas.models import Empleado
 
+_date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
+             day=timezone.datetime.now().day)  # Fecha actual
 
 class InvitacionSerializers(serializers.ModelSerializer):
     """ Serializer just for invitations.
@@ -196,9 +198,6 @@ class MasiveInvSerializer(serializers.Serializer):
         return MassiveInvObject(**validated_data)
 
     def validate(self, data):
-        # Validando la fecha de la invitacion
-        _date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
-                     day=timezone.datetime.now().day)  # Fecha actual
         if _date > data['dateInv']:
             raise serializers.ValidationError("La fecha de la invitacion esta vencida")
         # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
@@ -229,15 +228,20 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
     host = serializers.IntegerField(required=False)
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])
     notes = serializers.CharField(default="")
-    expiration = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], required=False)
+    exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], required=False)
+
 
     class Meta:
         model = ReferredInvitation
         fields = '__all__'
 
     def validate(self, data):
-        _referredMail = data['referredMail']
-        usr = self.context['request'].user
+        if _date > data['dateInv']:
+            raise serializers.ValidationError("La fecha de la invitacion esta vencida "
+                                              "acontezca la invitacion")
+
+        _referredMail = data['referredMail'] # Guest
+        usr = self.context['request'].user #Host
         try:
             guest = CustomUser.objects.get(email=_referredMail)
         except ObjectDoesNotExist:
@@ -261,6 +265,9 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
         _companyGuest = _adminGuest.id_empresa
         if _companyID == _companyGuest:
             raise serializers.ValidationError("¿Quieres delegar tus obligaciones a alguien mas?")
+        _fromCompany = _adminGuest.id_empresa.name
+        if _fromCompany != data['companyFrom']:
+            raise serializers.ValidationError("La empresa del referido No es la Correcta. Favor de Corregir")
         return data
 
     def create(self, validated_data):
@@ -295,18 +302,18 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
 
 
 class GetReferralInvSerializer(serializers.ModelSerializer):
-    companyName = serializers.CharField(source='idCompany.name')
-    areaName = serializers.CharField(source='idArea.nombre')
+    companyName = serializers.CharField(source='id_empresa.name')
+    areaName = serializers.CharField(source='areaId.nombre')
     dateInv = serializers.DateField(format="%d-%m-%Y")
     timeInv = serializers.TimeField(format="%H:%M")
     hostFirstName = serializers.CharField(source='host.first_name')
     hostLastName = serializers.CharField(source='host.last_name')
-    dateSend = serializers.DateTimeField(format="%d-%m-%Y")
+    fecha_hora_envio = serializers.DateTimeField(format="%d-%m-%Y")
 
     class Meta:
         model = ReferredInvitation
-        fields = ['companyName', 'areaName', 'dateInv', 'timeInv', 'hostFirstName', 'hostLastName', 'subject',
-                  'dateSend']
+        fields = ['id_empresa', 'companyName', 'areaId', 'areaName', 'dateInv', 'timeInv', 'host', 'hostFirstName',
+                  'hostLastName', 'subject', 'fecha_hora_envio', 'expiration', 'companyFrom']
 
 
 
