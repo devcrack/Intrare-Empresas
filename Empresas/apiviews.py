@@ -112,7 +112,6 @@ class AdministradoresViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-
 class AreaListAll(generics.ListCreateAPIView):
     """
     Clase AreaListAll, lista todas las Áreas de todas las Empresas.
@@ -179,7 +178,7 @@ class AreaUpdate(generics.UpdateAPIView):
 
 
 class VigilanteListAll(generics.ListCreateAPIView):
-    permission_classes = (isAdmin, )    
+    permission_classes = (isAdmin, )
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -194,7 +193,7 @@ class VigilanteListAll(generics.ListCreateAPIView):
 
 
 class VigilanteDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = (isAdmin, )    
+    permission_classes = (isAdmin, )
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -217,8 +216,8 @@ class VigilanteDetailUser(generics.ListCreateAPIView):
 
 
 class VigilanteUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdmin, )    
-    
+    permission_classes = (isAdmin, )
+
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -269,7 +268,7 @@ class EmpleadoEmpresaXArea(generics.ListCreateAPIView):
 
 
 class EmpleadoDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = (isAdmin, )    
+    permission_classes = (isAdmin, )
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -291,8 +290,8 @@ class EmpleadoDetailUser(generics.ListCreateAPIView):
 
 
 class EmpleadoUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdmin, )    
-    
+    permission_classes = (isAdmin, )
+
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -304,6 +303,23 @@ class EmpleadoUpdate(generics.UpdateAPIView):
         return queryset
     lookup_field = 'pk'
     serializer_class = EmpleadoSerializers
+
+
+class EmpleadosViewSet(viewsets.ModelViewSet):
+    """
+    Filtro para precargar informacion de Empleados.
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = EmpleadosFindSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['^id_usuario__celular', '^id_usuario__email']
+
+    def get_queryset(self):
+        user = self.request.user
+        admin_company = Administrador.objects.filter(id_usuario=user)[0]
+        id_company = admin_company.id_empresa
+        queryset = Empleado.objects.filter(id_empresa=id_company, id_usuario__is_active=True)
+        return queryset
 
 
 class CasetaListAll(generics.ListCreateAPIView):

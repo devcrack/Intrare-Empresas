@@ -164,6 +164,18 @@ class EmpleadoSerializers(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
+class EmpleadosFindSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source='id_usuario.first_name')
+    last_name = serializers.CharField(source='id_usuario.last_name')
+    email = serializers.CharField(source='id_usuario.email')
+    celular = serializers.CharField(source='id_usuario.celular')
+
+    class Meta:
+        model = Empleado
+        fields = ('id', 'first_name', 'last_name', 'email', 'celular')
+
+
 class CasetaSerializers(serializers.ModelSerializer):
     class Meta:
         model = Caseta
