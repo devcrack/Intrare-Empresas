@@ -123,6 +123,43 @@ Retorna un JSON, como el siguiente:
 }
 ```
 
+### Concretar la creacion de la Invitacion Empresarial
+
+***request** POST 
+
+**url**  http://127.0.0.1:8000/createEnterpriseInv 
+
+**header** 'authorization: Token a95e20dce4013b68c8949ea2fd39dccef40f60f7' \
+ 
+ **JSON**
+  ```json
+  {
+    "id_empresa": 1,
+	  "guest":
+    {
+			"email":"andes204@gmail.com",
+			"cellphone":4443227734
+		},
+    "areaId": 1,
+    "dateInv": "2019-10-14",
+    "timeInv": "12:50",
+    "host": 2,
+    "subject": "Nada en particular",
+    "fecha_hora_envio": "2019-10-12",
+    "expiration": "2019-10-16",
+    "companyFrom": "DaeLabs",
+    "diary": "",
+	  "notes":"nada de nada", 
+	  "idReferredInv":16
+  }
+```
+
+***Descripcion de Campos**
+
+- host : Id del Host(Anfitrion)
+- idReferredInv: Es el ID de la invitacion Referida. Si se consume  http://127.0.0.1:8000/getReferralInv/>TOKEN</
+  obtendra un json donde este viene contenido, y los campos necesarios para concretar la invitacion empresarial.
+
 
 ***
 

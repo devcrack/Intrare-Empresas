@@ -492,8 +492,12 @@ def justCreateEnterpriseInv(serializer, _host):
     _guestPhone = serializer.data['guest']['cellphone']
     _company = Empresa.objects.get(id=idCompany)
     _area = Area.objects.get(id=idArea)
-    _refInv = ReferredInvitation.objects.get(id=_idReferredInv)
-    _refInv.delete()
+    try:
+        _refInv = ReferredInvitation.objects.get(id=_idReferredInv)
+    except ObjectDoesNotExist:
+        error_response = {"error": "Esta invitación Referida no Existe Mas"}
+        return error_response, None
+
 
     inv = justCreateInvitation(_company, _area, 2, dateInv, timeInv, expDate, subject, vehicle, notes,
                                _fromCompany)
@@ -528,6 +532,7 @@ def justCreateEnterpriseInv(serializer, _host):
         _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
     else:
         print("Preregistro chato, HAY MAÑANA")
+    _refInv.delete()
     return error_response, inv
 
 
