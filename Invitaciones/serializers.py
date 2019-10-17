@@ -314,14 +314,14 @@ class GetReferralInvSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ReferredInvitation
-        fields = ['id_empresa', 'companyName', 'areaId', 'areaName', 'dateInv', 'timeInv', 'host', 'hostFirstName',
+        fields = ['id', 'id_empresa', 'companyName', 'areaId', 'areaName', 'dateInv', 'timeInv', 'host', 'hostFirstName',
                   'hostLastName', 'subject', 'fecha_hora_envio', 'expiration', 'companyFrom', 'diary']
 
 
 
 class EnterpriseInvObject():
     def __init__(self, areaId, fecha_hora_envio, dateInv, timeInv, expiration, diary,
-                 companyFrom, notes, vehicle, subject, guestMail, id_empresa, host):
+                 companyFrom, notes, vehicle, subject, id_empresa, host, guest, idReferredInv):
         self.areaId = areaId #
         self.fecha_hora_envio = fecha_hora_envio
         self.dateInv = dateInv
@@ -330,18 +330,19 @@ class EnterpriseInvObject():
         self.diary = diary
         self.subject = subject  #
         self.vehicle = vehicle
+        self.guest = guest
         self.companyFrom = companyFrom  #
         self.notes = notes
-        self.guestMail = guestMail #
         self.id_empresa = id_empresa
         self.host = host
-
+        self.idReferredInv = idReferredInv
 
 
 class EnterpriseSerializer(serializers.Serializer):
     areaId = serializers.IntegerField()
-    fecha_hora_envio = serializers.DateTimeField(format="%d-%m-%Y", input_formats=["%d-%m-%Y"])
-    dateInv = serializers.DateField(format="%d-%m-%Y", input_formats=["%d-%m-%Y"])
+    guest = BasicDataUserSerializer()
+    fecha_hora_envio = serializers.DateTimeField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
+    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
     timeInv = serializers.TimeField(format="%H:%M")
     expiration = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
     diary = serializers.CharField(max_length=7, allow_blank=True)
@@ -349,10 +350,10 @@ class EnterpriseSerializer(serializers.Serializer):
     vehicle = serializers.BooleanField(default=False)
     companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
     notes = serializers.CharField(max_length=300, allow_blank=True, allow_null=True)
-
     host = serializers.IntegerField()
-    guestMail = serializers.EmailField()
     id_empresa = serializers.IntegerField()
+    idReferredInv = serializers.IntegerField()
+
 
     def create(self, validated_data):
         return EnterpriseInvObject(**validated_data)

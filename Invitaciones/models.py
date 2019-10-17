@@ -100,7 +100,7 @@ class ReferredInvitation(models.Model):
     referredPhone = models.CharField(default=None, max_length=12, null=True)
 
     def __str__(self):
-        return f"HOST_{self.host} COMPANY_FROM : {self.companyFrom} GUESTEMAIL: {self.referredMail}"
+        return f"ID{self.id} HOST_{self.host} COMPANY_FROM : {self.companyFrom} GUESTEMAIL: {self.referredMail}"
 
     class Meta:
         verbose_name_plural = "EnterpriseInvitation"

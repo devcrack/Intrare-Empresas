@@ -429,14 +429,12 @@ class GetReferredInv(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
 class ResendReferralInvitation(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         _token = request.data.get("token")
         _newReferralMail = request.data.get("referralMail")
         if re.search(_regexMail, _newReferralMail):
-
             try:
                 _referralInvitation = ReferredInvitation.objects.get(qrCode=_token)
             except ObjectDoesNotExist:
@@ -477,37 +475,82 @@ class CreateReferredInvitation(generics.CreateAPIView):
     serializer_class = Createreferredinvitation
 
 
+
+def justCreateEnterpriseInv(serializer, _host):
+    error_response = None
+    idCompany = serializer.data['id_empresa']
+    idArea = serializer.data['areaId']
+    dateInv = serializer.data['dateInv']
+    timeInv = serializer.data['timeInv']
+    expDate = serializer.data['expiration']
+    subject = serializer.data['subject']
+    vehicle = serializer.data['vehicle']
+    notes = serializer.data['notes']
+    _fromCompany = serializer.data['companyFrom']
+    _idReferredInv = serializer.data['idReferredInv']
+    _guestMail = serializer.data['guest']['email']
+    _guestPhone = serializer.data['guest']['cellphone']
+    _company = Empresa.objects.get(id=idCompany)
+    _area = Area.objects.get(id=idArea)
+    _refInv = ReferredInvitation.objects.get(id=_idReferredInv)
+    _refInv.delete()
+
+    inv = justCreateInvitation(_company, _area, 2, dateInv, timeInv, expDate, subject, vehicle, notes,
+                               _fromCompany)
+    _idUser = guest_exist(_guestPhone, _guestMail)
+    if _idUser == _host:
+        error_response = {"error": "Una extraña sitaucion ha ocurrido. Estas ingresando tus propios datos en la invitacion"}
+        return error_response, None
+    if _idUser is None:
+        print("PREREGISTRANDO USUARIO")
+        error_response, _idUser = create_user(_guestMail, _guestPhone)
+        if error_response:
+            return error_response, None
+    _idUser.host = _host
+    _idUser.save()
+
+    _specialQR = token_hex(8) + str(_idUser.id)
+    _nwInByUSER = InvitationByUsers(idInvitation=inv, qr_code=_specialQR, host=_host, idGuest=_idUser)
+    _nwInByUSER.save()
+
+    if _idUser.is_active:
+        _userDevices = FCMDevice.objects.filter(user=_idUser)
+        host_name = _host.first_name + _host.last_name
+        _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
+        _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
+        _wallet = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _specialQR
+        _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
+                                      _nwInByUSER.qr_code, _wallet)
+        if len(_userDevices) > 0:
+            _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación. Anfitrion: " + host_name,
+                                      sound="Default")
+        send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
+        _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
+    else:
+        print("Preregistro chato, HAY MAÑANA")
+    return error_response, inv
+
+
+
+
 class CreateEnterpriseInvitation(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def create(self, request, *args, **kwargs):
-        usr = self.request.user
+        usr = self.request.user # REFERENCIADO. Persona encargada de cerrar la Invitacion.
         self.serializer_class = EnterpriseSerializer
         _serializer = self.serializer_class(data=request.data)
-
         if _serializer.is_valid():
             _serializer.save()
+            _errorResponse, invitation = justCreateEnterpriseInv(_serializer, usr)
+            if _errorResponse:
+                return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
 
-    # id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE,
-    #                                related_name='id_company_ReferredInv')  # No Editable
-    # areaId = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)  # No editable
-    # fecha_hora_envio = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)
-    # dateInv = models.DateField(null=False)  # No Editable
-    # timeInv = models.TimeField(null=False)  # No Editable
-    # expiration = models.DateField(default=defaultExpiration())
-    # diary = models.CharField(max_length=7, default="")  # No Editable
-    # subject = models.CharField(max_length=254, null=False, blank=False)  # No Editable
-    # vehicle = models.BooleanField(null=False, blank=False)
-    # notes = models.CharField(max_length=256, null=True, blank=True, default="")
-    # companyFrom = models.CharField(max_length=254, null=True, blank=True, default="")  # No Editable
-    # host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
-    #                          related_name='InvitationReferred_host')
-    # Token = models.CharField(max_length=14, default=token_hex(7))  # No Editable
-    # referredMail = models.EmailField(default=None, null=False)
-    # referredPhone = models.CharField(default=None, max_length=12, null=True)
+
+
 
 
 
