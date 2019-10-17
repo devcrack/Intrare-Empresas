@@ -562,7 +562,7 @@ class CreateEnterpriseInvitation(generics.CreateAPIView):
             _serializer.save()
             _idHost = _serializer.data['host']
             try:
-                _host = CustomUser.objects.get(_idHost)
+                _host = CustomUser.objects.get(id=_idHost)
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={"error" : "Error con su Cuenta de Administrador"})
 
