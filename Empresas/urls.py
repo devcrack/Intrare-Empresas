@@ -34,6 +34,8 @@ urlpatterns = [
     path('empresas/empleados/<int:pk>/', EmpleadoDetail.as_view(), name='empleado_detail'),
     path('empresas/empleados/user/<int:pk_user>/', EmpleadoDetailUser.as_view(), name='empleado_detail_user'),
     path('empresas/empleados/<int:pk>/update/', EmpleadoUpdate.as_view(), name='empleado_update'),
+    # Obtiene todos los empleados activos de la Empresa por Django Filter (celular, email)
+    path('empresas/empleados/filter', EmpleadosViewSet.as_view({'get': 'list'})),
 
     path('empresas/casetas/', CasetaListAll.as_view(), name='casetas_list'),
     path('empresas/casetas/<int:pk>/', CasetaDetail.as_view(), name='caseta_list'),
