@@ -294,7 +294,7 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
                                             notes=validated_data['notes'], companyFrom=validated_data['companyFrom'],
                                             host=usr, referredMail=_referredMail)
         _nwReferredInv.save()
-        _link = "URL/" + _nwReferredInv.Token
+        _link = "https://first-project-vuejs.herokuapp.com/form_invitation_data/" + _nwReferredInv.Token
         html_message = render_to_string("referredMail.html",
                                         {
                                             "link": _link
@@ -356,4 +356,5 @@ class EnterpriseSerializer(serializers.Serializer):
 
 
     def create(self, validated_data):
+
         return EnterpriseInvObject(**validated_data)
