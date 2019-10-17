@@ -20,6 +20,10 @@ from django.core.files.storage import default_storage
 import re
 
 _regexMail = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+linkWallet = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'
+linkPreregisterUser = 'https://first-project-vuejs.herokuapp.com/preregistro/'
+linkPreregisterEmployee = "URL"
+
 
 def guest_exist(cellphoneN, _email):
     if _email is None:
@@ -43,7 +47,7 @@ def create_user(_email, cellphone):
         nw_user = CustomUser(
             email=None, celular=cellphone, password='pass', username=cellphone, temporalToken=token_hex(4),
             is_active=False)
-    else:
+    else: # Se  ingreso un EMAIL
         _aEmail = _email.lower()
         nw_user = CustomUser( email=_aEmail, celular=cellphone, username=_aEmail, password='pass',
                               temporalToken=token_hex(4), is_active=False)
@@ -73,7 +77,6 @@ def render_MsgPregister(_headerMsg, msg, link):
     return html_message
 
 
-
 def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expDate,
                       subject, vehicle, notes, from_company):
     nw_invitation = Invitacion(
@@ -90,6 +93,7 @@ def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expD
     )
     nw_invitation.save()
     return nw_invitation
+
 
 ####DESHABILITADO ENVIO DE MENSAJES
 def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _dateInv, _timeInv, expDate,
@@ -109,7 +113,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         _idUser = guest_exist(_cellphone, _email)  # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
         if _idUser == _host:
             error_response = {"error": "Una extraña sitaucion ha ocurrido. Estas ingresando tus propios datos en la invitacion"}
-            return error_response, None  # SE SALE ALV!
+            return error_response, None
         if _idUser is None:
             error_response, _idUser = create_user(_email, _cellphone)
             if error_response:
@@ -127,7 +131,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             host_name = _host.first_name + _host.last_name
             _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
-            _wallet = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _specialQR
+            _wallet = linkWallet + _specialQR
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                           _nwInByUSER.qr_code, _wallet)
             if len(_userDevices) > 0:
@@ -138,8 +142,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         # Se envia al usuario una notificacion para que realize su preRegistro N VECES
         else:
             _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Preregistro en:"
-            _link = 'https://first-project-vuejs.herokuapp.com/preregistro/'
-            _link = _link + str(_idUser.temporalToken) + '/'
+            _link = linkPreregisterUser + str(_idUser.temporalToken) + '/'
             msg = _mainMsg + _msgReg + _link
             _smsResponse = send_sms(_idUser.celular, msg)  # SMS
             if _idUser.email:
@@ -237,7 +240,6 @@ class EquipoSeguridadList(generics.ListCreateAPIView):
     serializer_class = EquipoSeguridadSerializers
 
 
-
 class EquipoSeguridadXInvitacionList(generics.ListAPIView):
     def get_queryset(self):
         """
@@ -248,7 +250,6 @@ class EquipoSeguridadXInvitacionList(generics.ListAPIView):
         return queryset
 
     serializer_class = EquipoSeguridadXInvitacionSerializers
-
 
 
 class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
@@ -319,6 +320,7 @@ class InvitationListToSimpleUser(viewsets.ModelViewSet): ####
             return Response(_serializer.data)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class MassiveInvitationCreate(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, IsAdmin | IsEmployee, ]
@@ -475,7 +477,6 @@ class CreateReferredInvitation(generics.CreateAPIView):
     serializer_class = Createreferredinvitation
 
 
-
 def justCreateEnterpriseInv(serializer, _host):
     error_response = None
     idCompany = serializer.data['id_empresa']
@@ -522,32 +523,50 @@ def justCreateEnterpriseInv(serializer, _host):
         host_name = _host.first_name + _host.last_name
         _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
         _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
-        _wallet = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _specialQR
+        _wallet = linkWallet + _specialQR
         _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                       _nwInByUSER.qr_code, _wallet)
         if len(_userDevices) > 0:
-            _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación. Anfitrion: " + host_name,
+            _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación Empresarial. Anfitrion: " + host_name,
                                       sound="Default")
         send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
         _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
+    else:  # Preregistro Empleado
+        _msgReg = "Recibiste una invitacion Empresarial. Para acceder a ella realiza tu Preregistro en:"
+        link = linkPreregisterEmployee
+        link = link + _idUser.temporalToken + "/"
+        _smsMSG = "Bienvenido a Intrare. " + _msgReg + link
+        _smsResponse = send_sms(_idUser.celular, _smsMSG)  # SMS
+        if _idUser.email:
+            _htmlMessage = render_MsgPregister("Bienvenido a Intrare. ", _msgReg, link)
+            send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
+    if _smsResponse["messages"][0]["status"] == "0":
+        log = 'Mensaje SMS ENVIADO'
     else:
-        print("Preregistro chato, HAY MAÑANA")
+        log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+    print('LOGs SMS!! ')
+    print(log)
+    print(inv.id, ' INVITATION CREATED  200_OK')
     _refInv.delete()
     return error_response, inv
-
-
 
 
 class CreateEnterpriseInvitation(generics.CreateAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def create(self, request, *args, **kwargs):
-        usr = self.request.user # REFERENCIADO. Persona encargada de cerrar la Invitacion.
+        # usr = self.request.user # REFERENCIADO. Persona encargada de cerrar la Invitacion.
         self.serializer_class = EnterpriseSerializer
         _serializer = self.serializer_class(data=request.data)
         if _serializer.is_valid():
             _serializer.save()
-            _errorResponse, invitation = justCreateEnterpriseInv(_serializer, usr)
+            _idHost = _serializer.data['host']
+            try:
+                _host = CustomUser.objects.get(_idHost)
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_400_BAD_REQUEST, data={"error" : "Error con su Cuenta de Administrador"})
+
+            _errorResponse, invitation = justCreateEnterpriseInv(_serializer, _host)
             if _errorResponse:
                 return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
         else:

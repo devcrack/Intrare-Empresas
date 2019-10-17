@@ -140,6 +140,9 @@ class UpdateUserPartialByToken(generics.UpdateAPIView):
 
 
 class getUserByToken(generics.ListAPIView):
+    """
+    Obtene un Usuario mediante su token.
+    """
     serializer_class = CustomUserSerializer
 
     def get_queryset(self):
@@ -148,7 +151,10 @@ class getUserByToken(generics.ListAPIView):
 
 ####DESHABILITADO ENVIO DE MENSAJES
 class activateUser(generics.UpdateAPIView):
-
+    """
+    Activacion de un usuario cuando se ha confirmado su Identidad por parte del Anfitrion.
+    Se envian todas sus invitaciones
+    """
     permission_classes = [IsAuthenticated, IsAdmin | IsEmployee]  # Solo un Administrador o un Empleado pueden validar Invitados
 
     def update(self, request, *args, **kwargs):
@@ -253,4 +259,74 @@ class RestorePasswordUser(generics.UpdateAPIView):
         html_message = render_to_string('RestorePassword.html', {'password':_tmpPassword})
         send_IntrareEmail(html_message, _userMail)
         return Response(status=status.HTTP_200_OK)
+
+
+class ActivateEmployee(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def update(self, request, *args, **kwargs):
+        usr = self.request.user  # Administrador de Empresa.
+        _employeeToken = request.data.get("usrToken")
+        try:
+            instance = CustomUser.objects.get(temporalToken=_employeeToken)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error" : "El token de usuario ha sido corrompido"})
+        _tmpPassword = token_hex(3)
+        instance.set_password(_tmpPassword)
+        instance.is_active = True
+        instance.temporalToken = ""
+        instance.save()
+
+        addressee = instance.email
+        _userDevice = FCMDevice.objects.filter(user=instance)
+        _invitationSByUSR = InvitationByUsers.objects.filter(host=usr, idGuest=instance)
+
+        _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
+                            day=timezone.datetime.now().day)  # Fecha actual
+
+        index = 0
+
+        for _invByUSR in _invitationSByUSR:  # El Empleado puede tener mas de una invitacion vinculada a su cuenta
+            _idInv = _invByUSR.idInvitation
+            _inv = None
+            try:
+                _inv = Invitacion.objects.get(id=_idInv.id)  # Obtenemos datos de la invitacion.
+            except ObjectDoesNotExist:
+                return Response(status=status.HTTP_204_NO_CONTENT, data={'error': 'ERROR EN INVITACION'})
+            # Aqui verificamos si la Invitacion es Valida, en base a su fecha.
+            if _inv.dateInv >= _currentDate:
+                _walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _invByUSR.qr_code
+                _company = _inv.id_empresa.name
+                _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
+                _qrCode = _invByUSR.qr_code
+                _cellNumber = instance.celular
+                _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
+                html_message = render_to_string('FirstMailInv.html', {'empresa': _company, 'fecha': _dateTime,
+                                                                      'codigo': _qrCode, 'password': _tmpPassword,
+                                                                      'downloadFile': _walletLink})
+                if index == 0:
+                    if len(_userDevice) > 0:
+                        _userDevice.send_message(title="Intrare", body="Tienes una invitación", sound="Default") #PUSH
+                    _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
+                    if _smsResponse["messages"][0]["status"] == "0":
+                        log = 'Mensaje SMS ENVIADO'
+                    else:
+                        log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+                    print('LOGs SMS!! ')
+                    print(log)
+                print('Destinatario ', addressee)
+                send_IntrareEmail(html_message, addressee)  # MAIL
+                index += 1
+        return Response(status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
+
 
