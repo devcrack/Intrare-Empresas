@@ -24,7 +24,6 @@ linkWallet = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'
 linkPreregisterUser = 'https://first-project-vuejs.herokuapp.com/preregistro/'
 linkPreregisterEmployee = "URL"
 
-
 def guest_exist(cellphoneN, _email):
     if _email is None:
         try:
@@ -572,8 +571,6 @@ class CreateEnterpriseInvitation(generics.CreateAPIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
-
-
 
 
 
