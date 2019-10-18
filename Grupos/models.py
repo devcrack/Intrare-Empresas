@@ -15,7 +15,7 @@ class Grupo(models.Model):
         nombre(str): Nombre del Grupo.
 
     """
-    id_empleado = models.ForeignKey('Empresas.Empleado', on_delete=models.CASCADE)
+    id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=100, null=False, blank=False)
 
     def __str__(self):

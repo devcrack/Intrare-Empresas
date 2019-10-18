@@ -7,25 +7,23 @@ from rest_framework import status
 
 
 class GrupoDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = (isEmployee,)
+    permission_classes = (isEmployee | isAdmin,)
     queryset = Grupo.objects.all()
     serializer_class = GrupoSerializers
 
 
 class GrupoList(generics.ListCreateAPIView):
-    permission_classes = (isEmployee,)
+    permission_classes = (isEmployee | isAdmin,)
     serializer_class = GrupoSerializers
 
     def get_queryset(self):
         id_user = self.request.user.id
-        employee = Empleado.objects.filter(id_usuario=id_user)[0]
-        queryset = Grupo.objects.filter(id_empleado=employee)
+        queryset = Grupo.objects.filter(id_usuario=id_user)
         return queryset
 
     def create(self, request, *args, **kwargs):
         id_user = self.request.user.id
-        employee = Empleado.objects.filter(id_usuario=id_user)[0]
-        request.data['id_empleado'] = employee.id
+        request.data['id_usuario'] = id_user
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
@@ -34,28 +32,27 @@ class GrupoList(generics.ListCreateAPIView):
 
 
 class GrupoDelete(generics.DestroyAPIView):
-    permission_classes = (isEmployee,)
+    permission_classes = (isEmployee | isAdmin,)
     serializer_class = GrupoSerializers
     lookup_field = 'pk'
     queryset = Grupo.objects.all()
 
 
 class GrupoUpdate(generics.UpdateAPIView):
-    permission_classes = (isEmployee,)
+    permission_classes = (isEmployee | isAdmin,)
     queryset = Grupo.objects.all()
     lookup_field = 'pk'
     serializer_class = GrupoSerializers
 
     def put(self, request, *args, **kwargs):
         id_user = self.request.user.id
-        employee = Empleado.objects.filter(id_usuario=id_user)[0]
-        request.data['id_empleado'] = employee.id
+        request.data['id_usuario'] = id_user
         print(request.data)
         return self.update(request, *args, **kwargs)
 
 
 class ContactosXGrupoList(generics.ListAPIView):
-    permission_classes = (isEmployee,)
+    permission_classes = (isEmployee | isAdmin,)
     serializer_class = ContactosXGrupoSerializers
 
     def get_queryset(self):
@@ -64,7 +61,7 @@ class ContactosXGrupoList(generics.ListAPIView):
 
 
 class ContactosXGrupoCreate(generics.CreateAPIView):
-    permission_classes = (isEmployee,)
+    permission_classes = (isEmployee | isAdmin,)
     serializer_class = ContactosXGrupoSerializersCreate
 
     def create(self, request, *args, **kwargs):
@@ -76,7 +73,7 @@ class ContactosXGrupoCreate(generics.CreateAPIView):
 
 
 class ContactosXGrupoDelete(generics.DestroyAPIView):
-    permission_classes = (isEmployee,)
+    permission_classes = (isEmployee | isAdmin,)
     serializer_class = ContactosXGrupoSerializersCreate
 
     def destroy(self, request, *args, **kwargs):
