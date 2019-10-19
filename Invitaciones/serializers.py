@@ -65,7 +65,6 @@ class SecurityEquipmentSerializer(serializers.ModelSerializer):
 
 
 class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
-    # areaId = serializers.IntegerField(source='idInvitation.id_area')
     companyName = serializers.CharField(source='idInvitation.id_empresa.name')
     areaName = serializers.CharField(source='idInvitation.id_area.nombre')
     hostFirstName = serializers.CharField(source='host.first_name')
