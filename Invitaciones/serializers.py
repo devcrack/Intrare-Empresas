@@ -102,12 +102,19 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     asunto = serializers.CharField(source='idInvitation.asunto')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
     diary = serializers.CharField(source='idInvitation.diary')
+    secEqu = serializers.SerializerMethodField('getSecEqu')
 
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
-                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary')
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu')
 
+    def getSecEqu(self, obj):
+        _areaId = obj.idInvitation.id_area
+        _securityEquipment = SecurityEquipment.objects.filter(idArea=_areaId)
+        _serializerData = SecurityEquipmentSerializer(data=_securityEquipment, many=True)
+        _serializerData.is_valid()
+        return _serializerData.data
 
 
 
@@ -134,8 +141,8 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     asunto = serializers.CharField(source='idInvitation.asunto')
     empresa = serializers.CharField(source='idInvitation.empresa')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
-    # qr_code = serializers.CharField(source='idInvitation.qr_code')
     notas = serializers.CharField(source='idInvitation.notas')
+    secEqu = serializers.SerializerMethodField('getSecEqu')
 
     class Meta:
         model = InvitationByUsers
@@ -161,9 +168,17 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'guestCellPhone',
             'notas',
             'logoEmpresa',
-            'avatar'
+            'avatar',
+            'secEqu'
+
         )
 
+    def getSecEqu(self, obj):
+        _areaId = obj.idInvitation.id_area
+        _securityEquipment = SecurityEquipment.objects.filter(idArea=_areaId)
+        _serializerData = SecurityEquipmentSerializer(data=_securityEquipment, many=True)
+        _serializerData.is_valid()
+        return _serializerData.data
 
 class BasicUserObject():
     def __init__(self, email, cellphone):

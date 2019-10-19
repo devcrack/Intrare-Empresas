@@ -191,6 +191,54 @@ Para esto es necesario, el Id del Area a la que se asignara este equipo de Segur
 }
 ```
 
+### Obtener Datos Invitacion por QR(GUARDIAS)
+Obtiene el recurso con los datos relavantes para el guardia en el acceso.
+
+La invitacion se obtiene a partir del su codigo(qrcode). 
+
+**URL**
+http://127.0.0.1:8000/get_inv/qr/>qrcode</
+
+**JS0N**
+```json
+[
+  {
+    "id": 17,
+    "areaName": "Gerencia",
+    "areaColor": "#5ef026",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "host_ine_frente": null,
+    "host_ine_atras": null,
+    "host_celular": "7522141675",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "guest_ine_frente": null,
+    "guest_ine_atras": null,
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "empresa": "Dildos el potosi",
+    "automovil": true,
+    "qr_code": "65087dc8c927d37412",
+    "guestCellPhone": "4446354597",
+    "notas": "No quiero mi negro",
+    "logoEmpresa": "https://bucketeer-576c8228-7737-4878-8397-1c8403d07005.s3.amazonaws.com/PLC",
+    "avatar": "https://bucketeer-576c8228-7737-4878-8397-1c8403d07005.s3.amazonaws.com/avatar.png",
+    "secEqu": [
+      {
+        "nameEquipment": "Chaleco de Seguridad"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  }
+]
+```
+
+
+
 
 
 
