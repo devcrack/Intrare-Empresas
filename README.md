@@ -169,6 +169,32 @@ Solo cosuman GET /wallet/create/>qrCODE<
 regresa un pkpass.pkpass
 
 
+## Empresa
+
+### Dar de Alta Equipo de Seguridad 
+
+Para esto es necesario, el Id del Area a la que se asignara este equipo de Seguridad, y el nombre del equipo de seguridad que desea dar de alta.
+
+
+**Request:** POST
+
+**url:** http://127.0.0.1:8000/addSecurityEquipment 
+
+**header:** 'authorization: Token cfbced0fc65d1a3d2ba8044dc3035d146603c874' Este token tiene que ser de un administrador solamente.
+
+**json Ejemplo:**
+
+```json
+{
+	"nameEquipment": "Chaleco Seguridad",
+	"idArea":2
+}
+```
+
+
+
+
+
 
 
 
