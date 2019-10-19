@@ -43,18 +43,18 @@ class InvitacionSerializers(serializers.ModelSerializer):
             'leida'
         )
 
-class EquipoSeguridadSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = EquipoSeguridad
-        fields = '__all__'
-
-
-class EquipoSeguridadXInvitacionSerializers(serializers.ModelSerializer):
-    name_equipamnet = serializers.CharField(source='id_equipo_seguridad.nombre')
-
-    class Meta:
-        model = EquiposporInvitacion
-        fields = ('name_equipamnet',)
+# class EquipoSeguridadSerializers(serializers.ModelSerializer):
+#     class Meta:
+#         model = EquipoSeguridad
+#         fields = '__all__'
+#
+#
+# class EquipoSeguridadXInvitacionSerializers(serializers.ModelSerializer):
+#     name_equipamnet = serializers.CharField(source='id_equipo_seguridad.nombre')
+#
+#     class Meta:
+#         model = EquiposporInvitacion
+#         fields = ('name_equipamnet',)
 
 
 class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
@@ -68,6 +68,7 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     asunto = serializers.CharField(source='idInvitation.asunto')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
+    
     # qr_code = serializers.CharField(source='idInvitation.qr_code')
     diary = serializers.CharField(source='idInvitation.diary')
 
@@ -358,3 +359,9 @@ class EnterpriseSerializer(serializers.Serializer):
     def create(self, validated_data):
 
         return EnterpriseInvObject(**validated_data)
+
+
+
+
+
+

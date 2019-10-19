@@ -17,25 +17,6 @@ def defaultExpiration():
 
     return _date + _delta
 
-    """
-    Codigo de soporte
-    """
-    # return date(_year, _month, _day)
-    # # _DateExp = fecha_hora_envio.get_default()
-    #
-    # _delta = timezone.timedelta(days=1)
-    # _DateExp = _DateExp + _delta
-    # dateInv = models.DateField(default=_DateExp, null=False)
-    # timeInv = models.TimeField(default=time(), null=False)
-    # # _DateExp = dateInv.get_default()
-    # # _delta = timezone.timedelta(days=2)
-    # # _DateExp = _DateExp + _delta
-    # expiration = models.DateField(default=dateInv, null=False)
-    # _DateExp = dateInv.get_default()
-    # _delta = timezone.timedelta(days=2)
-    # _DateExp = _DateExp + _delta
-    # expiration = models.DateField(default=_DateExp, null=False)
-
 
 class Invitacion(models.Model):
     """Clase en la que se apoya el modelo para la creacion de la tabla invitacion.
@@ -106,35 +87,20 @@ class ReferredInvitation(models.Model):
         verbose_name_plural = "EnterpriseInvitation"
 
 
-class EquipoSeguridad(models.Model):
-    """Se refiere al equipo de seguridad que cada invitado pudiese llevar.
 
-
-    Attributes:
-        nombre(str): Nombre del equipo de seguridad.
-    """
-    nombre = models.CharField(max_length=254, null=False, blank=False, unique=True)
-
-    def __str__(self):
-        return f"ID->{self.id} NAME:{self.nombre}"
-
-    class Meta:
-        verbose_name_plural = "EquipoSeguridad"
-
-
-class EquiposporInvitacion(models.Model):
-    """Se refiere a los equipo de seguridad que cada invitado pudiese llevar.
-
-    Attributes:
-        id_equipo_seguridad(int): Clave foranea, que vincula con la tabla equipo seguridad.
-        id_invitacion(int):
-    """
-    id_equipo_seguridad = models.ForeignKey('EquipoSeguridad', on_delete=models.CASCADE)
-    id_invitacion = models.ForeignKey('Invitacion', on_delete=models.CASCADE)
-    
-
-    def __str__(self):        
-        return f"Invitation->{self.id_invitacion.id} Security Equipment:{self.id_equipo_seguridad.nombre}"
-
-    class Meta:
-        verbose_name_plural = "Security Equipment by Invitation"
+# class EquiposporInvitacion(models.Model):
+#     """Se refiere a los equipo de seguridad que cada invitado pudiese llevar.
+#
+#     Attributes:
+#         id_equipo_seguridad(int): Clave foranea, que vincula con la tabla equipo seguridad.
+#         id_invitacion(int):
+#     """
+#     id_equipo_seguridad = models.ForeignKey('EquipoSeguridad', on_delete=models.CASCADE)
+#     id_invitacion = models.ForeignKey('Invitacion', on_delete=models.CASCADE)
+#
+#
+#     def __str__(self):
+#         return f"Invitation->{self.id_invitacion.id} Security Equipment:{self.id_equipo_seguridad.nombre}"
+#
+#     class Meta:
+#         verbose_name_plural = "Security Equipment by Invitation"

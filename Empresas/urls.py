@@ -58,7 +58,8 @@ urlpatterns = [
     path('notifySignExitPass/<int:idAcc>/', NotifyHostSignPass.as_view()),
     #Obtiene todos los accesos que ha realizado un Administrador o un Empleado. Determina quien es por la sesion.
     path('getAccessBySession/', GetAccessBySession.as_view({'get':'list'})),
-    # path('empresas/access/getAccs/', AccessListGet.as_view({'get': 'list'}), name='getAccSession')
+    # Agrega equipo de seguridad por Area.
+    path('addSecurityEquipment', AddSecurityEquipment.as_view()),
 ]
 
 urlpatterns += router.urls

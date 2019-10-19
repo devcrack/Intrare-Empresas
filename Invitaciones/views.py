@@ -229,29 +229,6 @@ def expDate(dateInv):
     return exp
 
 
-class EquipoSeguridadList(generics.ListCreateAPIView):
-    """
-    Clase AdministradorList, lista todas los Administradores de las Empresas.
-    Esta clase hereda de ListCreateAPIView, provee un método GET
-    que Lista todos los Administradores.
-    Nota: Solo usuarios com permiso Staff pueden consumirla.
-    """
-    queryset = EquipoSeguridad.objects.all()
-    serializer_class = EquipoSeguridadSerializers
-
-
-class EquipoSeguridadXInvitacionList(generics.ListAPIView):
-    def get_queryset(self):
-        """
-        Método que devuelve el equipo de Seguridad por Invitación
-        :return: lista de equipos de seguridad
-        """
-        queryset = EquiposporInvitacion.objects.filter(id_invitacion=self.kwargs["id_invitation"])
-        return queryset
-
-    serializer_class = EquipoSeguridadXInvitacionSerializers
-
-
 class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
     permission_classes = [IsAuthenticated,IsAdmin | IsEmployee,]  # The user logged have to be and admin or an employee
 

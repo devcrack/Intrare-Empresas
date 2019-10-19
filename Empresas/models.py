@@ -188,3 +188,20 @@ class Acceso(models.Model):
         :return: id_empleado.id_usuario.username
         """
         return f'Id_Acc={self.id} qrCode:{self.qr_code}'
+
+class SecurityEquipment(models.Model):
+    """Se refiere al equipo de seguridad que cada invitado pudiese llevar.
+
+
+    Attributes:
+        nombre(str): Nombre del equipo de seguridad.
+    """
+    nameEquipment = models.CharField(max_length=254, null=False, blank=False, unique=False)
+    idArea = models.ForeignKey(Area, on_delete=models.CASCADE, default=None, related_name="SecurityEquipmentByArea")
+
+    def __str__(self):
+        return f"ID->{self.id} NAME:{self.nameEquipment}, AREA:{self.idArea}"
+
+    class Meta:
+        verbose_name_plural = "Equipment Security"
+

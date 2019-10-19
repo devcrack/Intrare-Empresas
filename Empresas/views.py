@@ -143,7 +143,6 @@ class AccessListGet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-
 class get_accestoEnterByDate(viewsets.ModelViewSet):
 
     permission_classes = (IsAuthenticated, IsAdmin | IsEmployee | isGuard,)
@@ -273,3 +272,18 @@ class GetAccessBySession(viewsets.ModelViewSet):
             return Response(_serializer.data)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class AddSecurityEquipment(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = SecurityEquipmentSerializer
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+
+
