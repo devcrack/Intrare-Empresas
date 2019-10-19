@@ -8,7 +8,7 @@ from ControlAccs.utils import send_IntrareEmail, send_sms
 
 
 from Empresas.models import Administrador, Empresa, Area
-from Empresas.models import Empleado
+from Empresas.models import Empleado, SecurityEquipment
 
 _date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
              day=timezone.datetime.now().day)  # Fecha actual
@@ -57,7 +57,15 @@ class InvitacionSerializers(serializers.ModelSerializer):
 #         fields = ('name_equipamnet',)
 
 
+class SecurityEquipmentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SecurityEquipment
+        fields = ['nameEquipment']
+
+
 class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
+    # areaId = serializers.IntegerField(source='idInvitation.id_area')
     companyName = serializers.CharField(source='idInvitation.id_empresa.name')
     areaName = serializers.CharField(source='idInvitation.id_area.nombre')
     hostFirstName = serializers.CharField(source='host.first_name')
@@ -68,15 +76,20 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     asunto = serializers.CharField(source='idInvitation.asunto')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
-    
-    # qr_code = serializers.CharField(source='idInvitation.qr_code')
+    secEqu = serializers.SerializerMethodField('getSecEqu')
     diary = serializers.CharField(source='idInvitation.diary')
 
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv',
-                  'asunto', 'automovil', 'qr_code', 'diary')
+                  'asunto', 'automovil', 'qr_code', 'diary', 'secEqu')
 
+    def getSecEqu(self, obj):
+        _areaId = obj.idInvitation.id_area
+        _securityEquipment = SecurityEquipment.objects.filter(idArea=_areaId)
+        _serializerData = SecurityEquipmentSerializer(data=_securityEquipment, many=True)
+        _serializerData.is_valid()
+        return _serializerData.data
 
 class InvitationToHostSerializer(serializers.ModelSerializer):
     companyName = serializers.CharField(source='idInvitation.id_empresa.name')
@@ -89,13 +102,14 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     asunto = serializers.CharField(source='idInvitation.asunto')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
-    # qr_code = serializers.CharField(source='idInvitation.qr_code')
     diary = serializers.CharField(source='idInvitation.diary')
 
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
                   'timeInv', 'asunto', 'automovil', 'qr_code', 'diary')
+
+
 
 
 class InvitationToGuardSerializer(serializers.ModelSerializer):
