@@ -508,6 +508,32 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
 ```
 
 
+### Listar Equipo de Seguridad por Area
+
+**REQUEST:** GET
+
+**URL:** http://127.0.0.1:8000/get_SecurityEquipment/ByArea/>IDAREA</
+
+**header:** authorization: Token bd9ae482ea1a77239cd4cd89eb6159221cb03584 El token pertenece a un administrador.
+
+**JSON** que retorna
+
+```json
+[
+  {
+    "id": 4,
+    "nameEquipment": "Lo que sea #1",
+    "idArea": 2
+  },
+  {
+    "id": 5,
+    "nameEquipment": "Lo que sea #2",
+    "idArea": 2
+  }
+]
+```
+
+
 
 
 
