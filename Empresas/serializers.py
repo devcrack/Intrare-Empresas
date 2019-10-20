@@ -22,18 +22,6 @@ class SecurityEquipmentSerializer(serializers.ModelSerializer):
         model = SecurityEquipment
         fields = '__all__'
 
-    # def create(self, validated_data):
-    #     _idArea = validated_data["idArea"]
-    #     try:
-    #         _idArea = Area.objects.get(validated_data["idArea"])
-    #     except ObjectDoesNotExist:
-    #         return None
-    #     print("que pedo")
-    #     _nwSecurityEquipment = SecurityEquipment(idArea=_idArea, nameEquipment=validated_data["nameEquipment"])
-    #     _nwSecurityEquipment.save()
-    #
-    #     return _nwSecurityEquipment
-
 
 class AdministradorSerializers(serializers.ModelSerializer):
     id_usuario = UserAdminSerializer(many=False)
@@ -41,7 +29,6 @@ class AdministradorSerializers(serializers.ModelSerializer):
     class Meta:
         model = Administrador
         fields = '__all__'
-
 
     def create(self, validated_data):
         id_usuario_data = validated_data.pop('id_usuario')
