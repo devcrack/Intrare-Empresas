@@ -231,7 +231,7 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])
     notes = serializers.CharField(default="")
     exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], required=False)
-
+    Token = serializers.CharField(required=False)
 
     class Meta:
         model = ReferredInvitation
