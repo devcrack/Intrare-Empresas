@@ -161,7 +161,252 @@ Retorna un JSON, como el siguiente:
   obtendra un json donde este viene contenido, y los campos necesarios para concretar la invitacion empresarial.
 
 
-***
+### Listar todas las invitacion que tiene un usuario, es decir en las que el Usuario es un INVITADO)
+
+**Request:** GET
+
+**url:** url http://127.0.0.1:8000/get_inv/user \
+
+**header:** Authorization: Token cec70e2a2c6bc7102d2a3d603c03b897fb30020e   Token de un usuario logueado.
+
+**Ejemplo JSON Que regresa**
+
+```json
+[
+  {
+    "id": 13,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "73735335fec30d9912",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "81b8fb8987bb21a512",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "65087dc8c927d37412",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "67e566a270d62ab012",[
+  {
+    "id": 13,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "73735335fec30d9912",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "81b8fb8987bb21a512",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "65087dc8c927d37412",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "67e566a270d62ab012",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "76c2d9aa5b466a2512",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  }
+]
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  },
+  {
+    "id": 21,
+    "typeInv": 0,
+    "colorArea": "#5ef026",
+    "companyName": "Rush-Parker",
+    "areaName": "Gerencia",
+    "hostFirstName": "Corey",
+    "hostLastName": "Adams",
+    "dateInv": "06-11-2019",
+    "timeInv": "12:50",
+    "asunto": "No quiero mi negro",
+    "automovil": true,
+    "qr_code": "76c2d9aa5b466a2512",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Guantes de Latex"
+      },
+      {
+        "nameEquipment": "Casco de  Minero"
+      }
+    ]
+  }
+]
+```
+
 
 ## Wallet
 Solo cosuman GET /wallet/create/>qrCODE< 
@@ -180,9 +425,9 @@ Para esto es necesario, el Id del Area a la que se asignara este equipo de Segur
 
 **url:** http://127.0.0.1:8000/addSecurityEquipment 
 
-**header:** 'authorization: Token cfbced0fc65d1a3d2ba8044dc3035d146603c874' Este token tiene que ser de un administrador solamente.
+**header:** 'authorization: Token cfbced0fc65d1a3d2ba8044dc3035d146603c874' Este token tiene que ser de un administrador.
 
-**json Ejemplo:**
+**JSON**
 
 ```json
 {
@@ -190,6 +435,22 @@ Para esto es necesario, el Id del Area a la que se asignara este equipo de Segur
 	"idArea":2
 }
 ```
+
+### Actualizar Equipo de Seguridad
+
+**request:** PATCH
+
+**URL:** http://127.0.0.1:8000/updateSecurityEquipment/>ID_EQUIPOSEGURIDAD</ 
+
+**header:** 'authorization: Token cfbced0fc65d1a3d2ba8044dc3035d146603c874' Este token tiene que ser de un administrador.
+
+**JSON**
+```json
+{
+	"nameEquipment":"Guantes de Latex"
+}
+```
+
 
 ### Obtener Datos Invitacion por QR(GUARDIAS)
 Obtiene el recurso con los datos relavantes para el guardia en el acceso.
@@ -236,6 +497,7 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
   }
 ]
 ```
+
 
 
 
