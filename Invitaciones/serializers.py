@@ -90,6 +90,7 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
         _serializerData.is_valid()
         return _serializerData.data
 
+
 class InvitationToHostSerializer(serializers.ModelSerializer):
     companyName = serializers.CharField(source='idInvitation.id_empresa.name')
     areaName = serializers.CharField(source='idInvitation.id_area.nombre')
@@ -195,7 +196,7 @@ class BasicDataUserSerializer(serializers.Serializer):
 
 
 class MassiveInvObject():
-    def __init__(self, areaId, guests, subject, typeInv, dateInv, timeInv, exp, diary, secEquip,
+    def __init__(self, areaId, guests, subject, typeInv, dateInv, timeInv, exp, diary,
                  companyFrom, notes, vehicle):
         self.areaId = areaId #
         self.guests = guests #
@@ -205,7 +206,6 @@ class MassiveInvObject():
         self.timeInv = timeInv #
         self.exp = exp #
         self.diary = diary #
-        self.secEquip = secEquip #
         self. companyFrom = companyFrom #
         self.notes = notes #
         self.vehicle = vehicle
@@ -220,7 +220,6 @@ class MasiveInvSerializer(serializers.Serializer):
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])  #
     exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True)  #
     diary = serializers.CharField(max_length=7, allow_blank=True)
-    secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
     vehicle = serializers.BooleanField(default=False)
     companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
     notes = serializers.CharField(max_length=300, allow_blank=True, allow_null=True)

@@ -311,7 +311,6 @@ class MassiveInvitationCreate(generics.CreateAPIView):
             _serializer.save()
 
             _areaId = _serializer.data['areaId']
-            _listSecEquip = _serializer.data['secEquip']
             _guests = _serializer.data['guests'] #Lista invitados 1 | +
             _dateInv = _serializer.data['dateInv']
             _timeInv = _serializer.data['timeInv']
@@ -322,7 +321,6 @@ class MassiveInvitationCreate(generics.CreateAPIView):
             _companyFrom = _serializer.data['companyFrom']
             _typeInv = _serializer.data['typeInv']
 
-            _arraySecEquip = _listSecEquip.split(',')
 
             if _exp is None:
                 _exp = expDate(_dateInv)
@@ -334,19 +332,12 @@ class MassiveInvitationCreate(generics.CreateAPIView):
                 _idCompany = _employee.id_empresa  # Obtener ID_EMPRESA via EMPLEADO
             _errorResponse, _area = validate_areas(_idCompany, _areaId)  # Validando AREAS
             if _area:
-                _securityEqu, _errorResponse = validateSecEqu(_arraySecEquip) # Validando equipo de seguridad
-                if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
             #  Creacion de Invitacion
                 _errorResponse, invitation = createOneMoreInvitaitons(_idCompany, _area, usr, _guests,_typeInv,
                                                                       _dateInv, _timeInv, _exp, _subject,_vehicle,
                                                                       _notes, _companyFrom)
                 if _errorResponse:
                     return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST) # Error al crear Invitacion
-                if _securityEqu:
-                    _errorResponse = add_sec_equ_by_inv(_securityEqu, invitation)
-                    if _errorResponse:
-                        return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
             else:
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)  # Error ID de Area
         else:

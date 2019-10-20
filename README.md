@@ -438,9 +438,9 @@ Para esto es necesario, el Id del Area a la que se asignara este equipo de Segur
 
 ### Actualizar Equipo de Seguridad
 
-**request:** PATCH
+**request:** DELETE
 
-**URL:** http://127.0.0.1:8000/updateSecurityEquipment/>ID_EQUIPOSEGURIDAD</ 
+**URL:** http://127.0.0.1:8000/deleteSecurityEquipment/>ID_EQUIPOSEGURIDAD</ 
 
 **header:** 'authorization: Token cfbced0fc65d1a3d2ba8044dc3035d146603c874' Este token tiene que ser de un administrador.
 
@@ -450,6 +450,15 @@ Para esto es necesario, el Id del Area a la que se asignara este equipo de Segur
 	"nameEquipment":"Guantes de Latex"
 }
 ```
+
+
+### Eliminar equipo de Seguridad
+
+**request:** PATCH
+
+**URL:** http://127.0.0.1:8000/updateSecurityEquipment/>ID_EQUIPOSEGURIDAD</ 
+
+**header:** 'authorization: Token cfbced0fc65d1a3d2ba8044dc3035d146603c874' Este token tiene que ser de un administrador.
 
 
 ### Obtener Datos Invitacion por QR(GUARDIAS)
