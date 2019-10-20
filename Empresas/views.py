@@ -173,7 +173,6 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
                                    fecha_hora_acceso__day=d)
         return queryset
 
-
     def list(self, request, *args, **kwargs):
         _queryset = self.get_queryset()
         _nReg = len(_queryset)
@@ -274,7 +273,7 @@ class GetAccessBySession(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class AddSecurityEquipment(generics.CreateAPIView):
+class AddSecurityEquipment(generics.CreateAPIView, generics.DestroyAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     def create(self, request, *args, **kwargs):
@@ -286,4 +285,30 @@ class AddSecurityEquipment(generics.CreateAPIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
 
+    def delete(self, request, *args, **kwargs):
+        return None
 
+
+class UpdateSecurityEquipment(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    queryset = SecurityEquipment.objects.all()
+    serializer_class = SecurityEquipmentSerializer
+    lookup_field = 'pk'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.nameEquipment = request.data.get('nameEquipment')
+        instance.save()
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class DeleteSecurityEquipment(generics.DestroyAPIView):
+    queryset = SecurityEquipment.objects.all()
+    serializer_class = SecurityEquipmentSerializer
+    lookup_field = 'pk'
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
