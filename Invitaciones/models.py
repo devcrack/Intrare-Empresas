@@ -95,7 +95,7 @@ class ReferredInvitation(models.Model):
     companyFrom = models.CharField(max_length=254, null=True, blank=True, default="") #No Editable
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
                              related_name='InvitationReferred_host')
-    Token = models.CharField(max_length=14, default=token_hex(7))  # No Editable
+    Token = models.CharField(max_length=14)  # No Editable
     referredMail = models.EmailField(default=None, null=False)
     referredPhone = models.CharField(default=None, max_length=12, null=True)
 

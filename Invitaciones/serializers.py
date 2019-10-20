@@ -288,11 +288,12 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
             except ObjectDoesNotExist:
                 return None
             _companyID = _employee.id_empresa
+        _token = token_hex(7)
         _nwReferredInv = ReferredInvitation(id_empresa=_companyID, areaId=validated_data['areaId'],
                                             dateInv=validated_data['dateInv'], timeInv=validated_data['timeInv'],
                                             subject=validated_data['subject'], vehicle=validated_data['vehicle'],
                                             notes=validated_data['notes'], companyFrom=validated_data['companyFrom'],
-                                            host=usr, referredMail=_referredMail)
+                                            host=usr, referredMail=_referredMail, Token=_token)
         _nwReferredInv.save()
         _link = "https://first-project-vuejs.herokuapp.com/form_invitation_data/" + _nwReferredInv.Token
         html_message = render_to_string("referredMail.html",
