@@ -312,3 +312,21 @@ class DeleteSecurityEquipment(generics.DestroyAPIView):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class GetSecEquByArea(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def list(self, request, *args, **kwargs):
+        _idArea = self.kwargs['idArea']
+        _secEquByArea = SecurityEquipment.objects.filter(idArea=_idArea)
+        if  len(_secEquByArea) > 0:
+            _serializer = SecurityEquipmentSerializer(_secEquByArea, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+

@@ -61,8 +61,11 @@ urlpatterns = [
     path('getAccessBySession/', GetAccessBySession.as_view({'get':'list'})),
     # Agrega equipo de seguridad por Area.
     path('addSecurityEquipment', AddSecurityEquipment.as_view()),
+    # Modifica Equipo de Seguridad, basicamente el Nombre solamente
     path('updateSecurityEquipment/<int:pk>/', UpdateSecurityEquipment.as_view()),
+    # Elimina el Equipo de Seguridad.
     path('deleteSecurityEquipment/<int:pk>/', DeleteSecurityEquipment.as_view()),
+    path('get_SecurityEquipment/ByArea/<idArea>/',GetSecEquByArea.as_view({'get':'list'})),
 ]
 
 urlpatterns += router.urls
