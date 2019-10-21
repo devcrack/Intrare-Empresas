@@ -216,7 +216,7 @@ class MasiveInvSerializer(serializers.Serializer):
     guests = BasicDataUserSerializer(many=True)
     subject = serializers.CharField(max_length=400)  #
     typeInv = serializers.IntegerField(default=0)  #
-    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
+    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True)
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])  #
     exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True)  #
     diary = serializers.CharField(max_length=7, allow_blank=True)
@@ -228,13 +228,13 @@ class MasiveInvSerializer(serializers.Serializer):
         return MassiveInvObject(**validated_data)
 
     def validate(self, data):
-        if _date > data['dateInv']:
-            raise serializers.ValidationError("La fecha de la invitacion esta vencida")
-        # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
+        if data['dateInv'] != None:
+            if _date > data['dateInv']:
+                raise serializers.ValidationError("La fecha de la invitacion esta vencida")
         if data['exp'] != None:
-            if data['exp'] < data['dateInv']:
-                raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que "
-                                                  "acontezca la invitacion")
+            if data['exp'] < _date:
+                raise serializers.ValidationError("La fecha de expiracion no puede ser en una fecha "
+                                                  "Vencida")
         return data
 
 
