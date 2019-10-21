@@ -320,6 +320,9 @@ class ActivateEmployee(generics.UpdateAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
+# class SendAllert()
+
+
 
 
 
