@@ -447,6 +447,8 @@ def justCreateEnterpriseInv(serializer, _host):
     _diary = serializer.data['diary']
     _company = Empresa.objects.get(id=idCompany)
     _area = Area.objects.get(id=idArea)
+    # _secEqu = SecurityEquipment.objects.filter(idArea=idArea)
+
     try:
         _refInv = ReferredInvitation.objects.get(id=_idReferredInv)
     except ObjectDoesNotExist:
@@ -483,6 +485,8 @@ def justCreateEnterpriseInv(serializer, _host):
         if len(_userDevices) > 0:
             _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación Empresarial. Anfitrion: " + host_name,
                                       sound="Default")
+
+
         send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
         _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
     else:  # Preregistro Empleado
