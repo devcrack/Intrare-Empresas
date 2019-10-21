@@ -230,17 +230,17 @@ class GetUsersNotActivated(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class DeleteFMCUserDevice(generics.DestroyAPIView):
+class DeleteFMCUserDevice(generics.CreateAPIView):
     permission_classes = [IsAuthenticated,]
 
-    def delete(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         _idDevice = request.data.get('idDevice')
         try:
-            _device =  FCMDevice.objects.get(device_id=_idDevice)
+            _device = FCMDevice.objects.get(device_id=_idDevice)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
         _device.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
 
 class RestorePasswordUser(generics.UpdateAPIView):
