@@ -452,17 +452,11 @@ def justCreateEnterpriseInv(serializer, _host):
     _diary = serializer.data['diary']
     _company = Empresa.objects.get(id=idCompany)
     _area = Area.objects.get(id=idArea)
-    _secEqus = SecurityEquipment.objects.filter(idArea=idArea)
-    _securityEquipment = []
-    for _SE in _secEqus:
-        _securityEquipment.append(_SE.nameEquipment)
-
     try:
         _refInv = ReferredInvitation.objects.get(id=_idReferredInv)
     except ObjectDoesNotExist:
         error_response = {"error": "Esta invitación Referida no Existe Mas"}
         return error_response, None
-
 
     inv = justCreateInvitation(_company, _area, 2, dateInv, timeInv, expDate, subject, vehicle, notes,
                                _fromCompany, _diary)
@@ -481,15 +475,18 @@ def justCreateEnterpriseInv(serializer, _host):
     _specialQR = token_hex(8) + str(_idUser.id)
     _nwInByUSER = InvitationByUsers(idInvitation=inv, qr_code=_specialQR, host=_host, idGuest=_idUser)
     _nwInByUSER.save()
-
     if _idUser.is_active:
+        _secEqu_s = SecurityEquipment.objects.filter(idArea=idArea)
+        _securityEquipments = []
+        for _SE in _secEqu_s:
+            _securityEquipments.append(_SE.nameEquipment)
         _userDevices = FCMDevice.objects.filter(user=_idUser)
         host_name = _host.first_name + _host.last_name
         _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
         _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
         _wallet = linkWallet + _specialQR
         _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
-                                      _nwInByUSER.qr_code, _wallet)
+                                      _nwInByUSER.qr_code, _wallet, _securityEquipments)
         if len(_userDevices) > 0:
             _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación Empresarial. Anfitrion: " + host_name,
                                       sound="Default")
