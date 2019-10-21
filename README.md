@@ -12,7 +12,7 @@
   -- header 'authorization: Token a405e2f1047905039d41800882d3afb162054ac1'
 ```  
 
-### Recuperacion de Contraseña
+### **Recuperacion de Contraseña**
 
   --request PATCH \
   --url http://127.0.0.1:8000/User/Reset/Passwordsita/ \
@@ -26,11 +26,28 @@
 
 ```
 
-### Cargar la informacion de Un Usuario Por Token.
+### **Cargar la informacion de Un Usuario Por Token.**
 
 **URL**: <urlHost>/getUser/**Token**/
 
 **Descripcion:** Retornara la informacion necesaria para validar al nuevo usuario.
+
+
+### **Eliminar un dispositivo de un Usuario**
+
+**request** DELETE
+
+**url** http://127.0.0.1:8000/User/Delete/Devices/
+
+**header:** Token bd9ae482ea1a77239cd4cd89eb6159221cb03584'  El token debe de ser de alguien logueado
+
+
+**json**
+```json
+{
+	"idDevice":"CD2EEF2E-2BF7-4353-864F-2163A6C35303"
+}
+```
 
 
 ## **Invitaciones**
@@ -523,6 +540,8 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
   }
 ]
 ```
+
+
 
 
 
