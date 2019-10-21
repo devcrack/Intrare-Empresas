@@ -240,7 +240,7 @@ class DeleteFMCUserDevice(generics.CreateAPIView):
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
         _device.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
 
 class RestorePasswordUser(generics.UpdateAPIView):
