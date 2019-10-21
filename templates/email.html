@@ -22,6 +22,16 @@
             <span style="color: #000000;">Codigo:{{ codigo }}</span>
         </strong>
     </p>
+    <br>
+    <p style="text-align: center">
+        Equipo de seguridad Necesario:
+       {% for secEqu in secEqus %}
+            <strong>*  {{ day }}</strong>
+        {% endfor %}
+    </p>
+
+
+
     <p style="text-align: center">
         <br>
         <a href={{downloadFile}}>

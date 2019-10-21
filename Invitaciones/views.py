@@ -59,12 +59,13 @@ def create_user(_email, cellphone):
     return _errorResponse, nw_user
 
 
-def render_InvMail(_nameEmpresa, _dateInv, _qrCode, _wallet):
+def render_InvMail(_nameEmpresa, _dateInv, _qrCode, _wallet, _secEqus):
     html_message = render_to_string('email.html',
                                     {'empresa': _nameEmpresa,
                                      'fecha': _dateInv,
                                      'codigo': _qrCode,
-                                     'downloadFile': _wallet})
+                                     'downloadFile': _wallet,
+                                     'secEqus': _secEqus})
     return html_message
 
 
@@ -106,8 +107,6 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
 
     inv = justCreateInvitation(id_company, id_area, typeInv, _dateInv, _timeInv, expDate,
                                subject, vehicle, notes, from_company, diary)
-
-    # _secEque = SecurityEquipment.objects.filter(idArea=id_area)
     for _guest in listGuest:
         _email = _guest['email']
         print(_email)
@@ -130,13 +129,18 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         _nwInByUSER.save()
 
         if _idUser.is_active:  # El proceso de notificacion de Invitacion se realiza normalmente
+            _secEqu_s = SecurityEquipment.objects.filter(idArea=id_area)
+            _securityEquipments = []
+            for _SE in _secEqu_s:
+                _securityEquipments.append(_SE.nameEquipment)
+
             _userDevices = FCMDevice.objects.filter(user=_idUser)
             host_name = _host.first_name + _host.last_name
             _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electrónico o en la aplicacion"
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
             _wallet = linkWallet + _specialQR
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
-                                          _nwInByUSER.qr_code, _wallet)
+                                          _nwInByUSER.qr_code, _wallet, _securityEquipments)
             if len(_userDevices) > 0:
                 _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación. Anfitrion: " + host_name,
                                           sound="Default")
@@ -224,7 +228,7 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
                                                       idInvitation__fecha_hora_envio__month=m,
                                                       idInvitation__fecha_hora_envio__day=d) # Todas las invitaciones que ha generado este Usuario.
         queryset = self.queryset = invsByUser
-        serializer = InvitationToGuardSerializer(queryset, many=True)
+        serializer = InvitationToHostSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
@@ -448,10 +452,10 @@ def justCreateEnterpriseInv(serializer, _host):
     _diary = serializer.data['diary']
     _company = Empresa.objects.get(id=idCompany)
     _area = Area.objects.get(id=idArea)
-    # _secEqus = SecurityEquipment.objects.filter(idArea=idArea)
-    # _securityEquipment = []
-    # for _SE in _secEqus:
-    #     _securityEquipment.append(_SE.nameEquipment)
+    _secEqus = SecurityEquipment.objects.filter(idArea=idArea)
+    _securityEquipment = []
+    for _SE in _secEqus:
+        _securityEquipment.append(_SE.nameEquipment)
 
     try:
         _refInv = ReferredInvitation.objects.get(id=_idReferredInv)
