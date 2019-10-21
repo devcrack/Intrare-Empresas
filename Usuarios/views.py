@@ -230,7 +230,7 @@ class GetUsersNotActivated(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class xDeleteFMCUserDevice(generics.DestroyAPIView):
+class DeleteFMCUserDevice(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated,]
 
     def delete(self, request, *args, **kwargs):
@@ -241,14 +241,7 @@ class xDeleteFMCUserDevice(generics.DestroyAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         _device.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        # _user = self.request.user
-        # # Obtener dispositivos de este usuario para eliminarlo.
-        # _userDevices = FCMDevice.objects.filter(user=_user)
-        # if len(_userDevices) > 0:
-        #     _userDevices.delete()
-        #     return Response(status=status.HTTP_204_NO_CONTENT)
-        # else:
-        #     return Response(status=status.HTTP_302_FOUND, data={"Error": "Este Usuario no tiene dispositivos registrados"})
+
 
 class RestorePasswordUser(generics.UpdateAPIView):
 
