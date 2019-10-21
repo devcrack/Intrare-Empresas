@@ -28,13 +28,14 @@ class Invitacion(models.Model):
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
     dateInv = models.DateField(null=False) #
     timeInv = models.TimeField(null=False) #
-    expiration = models.DateField(default=defaultExpiration())
+    expiration = models.DateField(null=False)
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
     notas = models.CharField(max_length=256, null=True, blank=True, default="")
     empresa = models.CharField(max_length=254, null=True, blank=True, default="")
     leida = models.BooleanField(default=False, null=False)
+    urlVideo = models.CharField(null=True, max_length=300)
 
     def __str__(self):
         return f"ID_Invitation: {self.id}   ;  COMPANY: {self.empresa};"

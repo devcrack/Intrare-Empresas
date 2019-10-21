@@ -67,10 +67,69 @@ curl --request POST \
 	"notes": "ninguna",
 	"companyFrom": "daelabs",
 	"employeeId":1,
-	"diary":""
+	"diary":"",
+  "typeInv":1
 }
-
 ```
+
+**Notas**
+* typeInv: Tiene que ser 0 o 1 da igual para este tipo de invitacion.
+* exp: null.
+* dateInv: Se tiene que especificar una fecha
+
+### Crear Recurrentes
+
+Son invitaciones que pueden utilizarse ciertos dias de la semana, 
+hasta una fecha de caducidad determinada.
+
+
+**URL**: <urlHost>/create_inv/
+
+
+curl --request POST \
+  --url http://127.0.0.1:8000/create_inv/ \
+  --header 'authorization: Token 835a8271fd0c7a934c79e54c1310b2db890e12ce' \
+  --header 'content-type: application/json' \
+  --data
+
+```json
+{
+	"areaId": 1,
+	"secEquip":"",
+	"guests":[
+    {
+      "email":"andes204@gmail.com",
+      "cellphone":4443227734
+    }],  
+	"dateInv":null,
+	"timeInv":"12:03",
+	"exp":"2019-09-30",
+	"subject":"nada en particular",
+	"vehicle":false,
+	"notes": "ninguna",
+	"companyFrom": "daelabs",
+	"employeeId":1,
+	"diary":"0136",
+  "typeInv":2
+}
+```
+
+**Notas**
+* typeInv: Tiene que ser **2** para este tipo de invitacion.
+* dateInv= null
+* exp: Fecha de expiracion se tiene que especificar.
+
+* diary: Es una cadena de longitud 7, en donde:
+  - 0: Lunes.
+  - 1: Martes.
+  - 2: Miercoles
+  - 3: Jueves.
+  - 4: Viernes.
+  - 5: Sabado.
+  - 6: Domingo.
+
+
+
 ### Crear Invitaciones Empresariales parte 1.
 Se usa cuando un anfitrion empieza el proceso de generacion de invitacion empresarial.
 
@@ -90,14 +149,18 @@ http://127.0.0.1:8000/createReferredInv
 	"idArea":1,
 	"idCompany":1, 
 	"companyFrom":"DaeLabs",
-  "expiration":"2019-11-15"
+  "expiration":"2019-11-15",
+  "type":0,
+  "diary":""
 }
 ```
 #### Descripcion de ciertos Campos
 - referredMail: Email del Referido, en este caso aquella persona que se designe como referido y que tenga 
   los permisos necesarios en la compañia, es decir tiene que tener los permisos de  administrador en la compañia invitada.
 - host: Id del Anfritrion 
--expiration: Fecha de caducidad de la invitacion. Este campo puede o no ir, es decir require=False.
+-expiration: Fecha de caducidad de la invitacion. Este campo puede o no ir, es decir require=False. 
+
+**Aqui pueden ocurrir las mismas variantes Invitacion Normal o Invitacion Recurrente**
 
 
 ### Obtener una invitacion Empresarial 
