@@ -48,8 +48,9 @@ def create_user(_email, cellphone):
             is_active=False)
     else: # Se  ingreso un EMAIL
         _aEmail = _email.lower()
-        nw_user = CustomUser( email=_aEmail, celular=cellphone, username=_aEmail, password='pass',
+        nw_user = CustomUser( email=_aEmail, celular=cellphone, username=_aEmail,
                               temporalToken=token_hex(4), is_active=False)
+        nw_user.set_password('mientras123')
     try:
         nw_user.save()
         print(nw_user.id, ' USER CREATED 200_OK')
@@ -77,7 +78,7 @@ def render_MsgPregister(_headerMsg, msg, link):
 
 
 def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expDate,
-                      subject, vehicle, notes, from_company):
+                      subject, vehicle, notes, from_company, _diary):
     nw_invitation = Invitacion(
         id_empresa=id_company,
         id_area=id_area,
@@ -88,7 +89,8 @@ def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expD
         notas=notes,
         expiration=expDate,
         empresa=from_company,
-        typeInv=_typeInv
+        typeInv=_typeInv,
+        diary=_diary
     )
     nw_invitation.save()
     return nw_invitation
@@ -96,14 +98,14 @@ def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expD
 
 ####DESHABILITADO ENVIO DE MENSAJES
 def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _dateInv, _timeInv, expDate,
-                             subject, vehicle, notes, from_company):
+                             subject, vehicle, notes, from_company, diary):
     error_response = None
     _mainMsg = 'Bienvenido a Intrare. '
     _msgReg = None
     _msgInv = None
 
     inv = justCreateInvitation(id_company, id_area, typeInv, _dateInv, _timeInv, expDate,
-                               subject, vehicle, notes, from_company)
+                               subject, vehicle, notes, from_company, diary)
     for _guest in listGuest:
         _email = _guest['email']
         print(_email)
@@ -194,62 +196,18 @@ def validate_areas(_id_company, _id_area):
     return error_response, area
 
 
-def validateSecEqu(listSecEq):
-    _idSecEqList = []
-    for i in listSecEq:
-        if i != '':
-            print(i)
-            _idSecEq = int(i)
-            try:
-                _secEqu = EquipoSeguridad.objects.get(id=_idSecEq)
-                _idSecEqList.append(_secEqu)
-            except ObjectDoesNotExist:
-                return None, {'Error': 'Error with Security Equipment supplied, please check it'}
-    return _idSecEqList, None
-
-
-def add_sec_equ_by_inv(list_equipment_security, inv):
-    error_response = None
-    for i in list_equipment_security:
-        _eqInv = EquiposporInvitacion(id_equipo_seguridad=i, id_invitacion=inv)
-        try:
-            _eqInv.save()
-            print('Equipment by Invitation Created 201_CREATED')
-        except ValueError:
-            error_response = {'Error': 'Can\'t create Equipment for invitation'}
-            return error_response
-    return error_response
-
-
 def expDate(dateInv):
     exp = timezone.datetime.strptime(dateInv , "%Y-%m-%d").date()
     delta = timezone.timedelta(days=2)
     exp = exp + delta
     return exp
 
-
-class EquipoSeguridadList(generics.ListCreateAPIView):
-    """
-    Clase AdministradorList, lista todas los Administradores de las Empresas.
-    Esta clase hereda de ListCreateAPIView, provee un método GET
-    que Lista todos los Administradores.
-    Nota: Solo usuarios com permiso Staff pueden consumirla.
-    """
-    queryset = EquipoSeguridad.objects.all()
-    serializer_class = EquipoSeguridadSerializers
-
-
-class EquipoSeguridadXInvitacionList(generics.ListAPIView):
-    def get_queryset(self):
-        """
-        Método que devuelve el equipo de Seguridad por Invitación
-        :return: lista de equipos de seguridad
-        """
-        queryset = EquiposporInvitacion.objects.filter(id_invitacion=self.kwargs["id_invitation"])
-        return queryset
-
-    serializer_class = EquipoSeguridadXInvitacionSerializers
-
+def dateInv():
+    _year = timezone.datetime.now().year
+    _month = timezone.datetime.now().month
+    _day = timezone.datetime.now().day
+    _date = date(_year, _month, _day)
+    return _date
 
 class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
     permission_classes = [IsAuthenticated,IsAdmin | IsEmployee,]  # The user logged have to be and admin or an employee
@@ -332,7 +290,6 @@ class MassiveInvitationCreate(generics.CreateAPIView):
             _serializer.save()
 
             _areaId = _serializer.data['areaId']
-            _listSecEquip = _serializer.data['secEquip']
             _guests = _serializer.data['guests'] #Lista invitados 1 | +
             _dateInv = _serializer.data['dateInv']
             _timeInv = _serializer.data['timeInv']
@@ -342,11 +299,14 @@ class MassiveInvitationCreate(generics.CreateAPIView):
             _notes = _serializer.data['notes']
             _companyFrom = _serializer.data['companyFrom']
             _typeInv = _serializer.data['typeInv']
+            _diary = _serializer.data['diary']
 
-            _arraySecEquip = _listSecEquip.split(',')
+            if _dateInv is None:
+                _dateInv = dateInv()
 
             if _exp is None:
-                _exp = expDate(_dateInv)
+                _exp = expDate(str(_dateInv))
+
             if usr.roll == settings.ADMIN:
                 _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
                 _idCompany = _admCompany.id_empresa # Obtener ID_EMPRESA via ADMIN
@@ -355,19 +315,12 @@ class MassiveInvitationCreate(generics.CreateAPIView):
                 _idCompany = _employee.id_empresa  # Obtener ID_EMPRESA via EMPLEADO
             _errorResponse, _area = validate_areas(_idCompany, _areaId)  # Validando AREAS
             if _area:
-                _securityEqu, _errorResponse = validateSecEqu(_arraySecEquip) # Validando equipo de seguridad
-                if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)
             #  Creacion de Invitacion
                 _errorResponse, invitation = createOneMoreInvitaitons(_idCompany, _area, usr, _guests,_typeInv,
                                                                       _dateInv, _timeInv, _exp, _subject,_vehicle,
-                                                                      _notes, _companyFrom)
+                                                                      _notes, _companyFrom, _diary)
                 if _errorResponse:
                     return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST) # Error al crear Invitacion
-                if _securityEqu:
-                    _errorResponse = add_sec_equ_by_inv(_securityEqu, invitation)
-                    if _errorResponse:
-                        return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
             else:
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)  # Error ID de Area
         else:
@@ -490,6 +443,7 @@ def justCreateEnterpriseInv(serializer, _host):
     _idReferredInv = serializer.data['idReferredInv']
     _guestMail = serializer.data['guest']['email']
     _guestPhone = serializer.data['guest']['cellphone']
+    _diary = serializer.data['diary']
     _company = Empresa.objects.get(id=idCompany)
     _area = Area.objects.get(id=idArea)
     try:
@@ -500,7 +454,7 @@ def justCreateEnterpriseInv(serializer, _host):
 
 
     inv = justCreateInvitation(_company, _area, 2, dateInv, timeInv, expDate, subject, vehicle, notes,
-                               _fromCompany)
+                               _fromCompany, _diary)
     _idUser = guest_exist(_guestPhone, _guestMail)
     if _idUser == _host:
         error_response = {"error": "Una extraña sitaucion ha ocurrido. Estas ingresando tus propios datos en la invitacion"}
@@ -571,6 +525,19 @@ class CreateEnterpriseInvitation(generics.CreateAPIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+
+
+class DeleteInvitation(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated,IsAdmin | IsEmployee,]
+
+    queryset = Invitacion.objects.all()
+    serializer_class = FullInvitationSerializer
+    lookup_field = 'pk'
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
 
 
 

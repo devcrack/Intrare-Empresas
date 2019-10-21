@@ -52,13 +52,19 @@ urlpatterns = [
     path('empresas/access/update/exitpass/<int:pk>/', AccessUpdateExitPass.as_view(), name='accessUpdate1'),
     #Actualiza el pase de salida del acceso pero los Filtra por QR.
     path('empresas/access/update/forExit/<qr_code>/', AccessUpdateData.as_view(), name='accessUpdate1'),
-    path('empresas/access/getAcc/by/date/', get_accestoEnterByDate.as_view({'get': 'list'}), name='getAccessbyDate'),
+    #Obtiene accesos para un determinado host especificados por una fecha.
     path('empresas/access/getAccs/<year>/<month>/<day>/', get_accestoEnterByDate.as_view({'get': 'list'}), name='getAccSession'),
     # Nootificar firmar pase de salida
     path('notifySignExitPass/<int:idAcc>/', NotifyHostSignPass.as_view()),
     #Obtiene todos los accesos que ha realizado un Administrador o un Empleado. Determina quien es por la sesion.
     path('getAccessBySession/', GetAccessBySession.as_view({'get':'list'})),
-    # path('empresas/access/getAccs/', AccessListGet.as_view({'get': 'list'}), name='getAccSession')
+    # Agrega equipo de seguridad por Area.
+    path('addSecurityEquipment', AddSecurityEquipment.as_view()),
+    # Modifica Equipo de Seguridad, basicamente el Nombre solamente
+    path('updateSecurityEquipment/<int:pk>/', UpdateSecurityEquipment.as_view()),
+    # Elimina el Equipo de Seguridad.
+    path('deleteSecurityEquipment/<int:pk>/', DeleteSecurityEquipment.as_view()),
+    path('get_SecurityEquipment/ByArea/<idArea>/',GetSecEquByArea.as_view({'get': 'list'})),
 ]
 
 urlpatterns += router.urls

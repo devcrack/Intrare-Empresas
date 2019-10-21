@@ -4,11 +4,11 @@ from .models import *
 from Usuarios.models import CustomUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
-from ControlAccs.utils import send_IntrareEmail, send_sms
+from ControlAccs.utils import send_IntrareEmail
 
 
 from Empresas.models import Administrador, Empresa, Area
-from Empresas.models import Empleado
+from Empresas.models import Empleado, SecurityEquipment
 
 _date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
              day=timezone.datetime.now().day)  # Fecha actual
@@ -43,18 +43,25 @@ class InvitacionSerializers(serializers.ModelSerializer):
             'leida'
         )
 
-class EquipoSeguridadSerializers(serializers.ModelSerializer):
+# class EquipoSeguridadSerializers(serializers.ModelSerializer):
+#     class Meta:
+#         model = EquipoSeguridad
+#         fields = '__all__'
+#
+#
+# class EquipoSeguridadXInvitacionSerializers(serializers.ModelSerializer):
+#     name_equipamnet = serializers.CharField(source='id_equipo_seguridad.nombre')
+#
+#     class Meta:
+#         model = EquiposporInvitacion
+#         fields = ('name_equipamnet',)
+
+
+class SecurityEquipmentSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = EquipoSeguridad
-        fields = '__all__'
-
-
-class EquipoSeguridadXInvitacionSerializers(serializers.ModelSerializer):
-    name_equipamnet = serializers.CharField(source='id_equipo_seguridad.nombre')
-
-    class Meta:
-        model = EquiposporInvitacion
-        fields = ('name_equipamnet',)
+        model = SecurityEquipment
+        fields = ['nameEquipment']
 
 
 class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
@@ -68,13 +75,21 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     asunto = serializers.CharField(source='idInvitation.asunto')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
-    # qr_code = serializers.CharField(source='idInvitation.qr_code')
+    secEqu = serializers.SerializerMethodField('getSecEqu')
     diary = serializers.CharField(source='idInvitation.diary')
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
 
     class Meta:
         model = InvitationByUsers
-        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv',
-                  'asunto', 'automovil', 'qr_code', 'diary')
+        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv',
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration')
+
+    def getSecEqu(self, obj):
+        _areaId = obj.idInvitation.id_area
+        _securityEquipment = SecurityEquipment.objects.filter(idArea=_areaId)
+        _serializerData = SecurityEquipmentSerializer(data=_securityEquipment, many=True)
+        _serializerData.is_valid()
+        return _serializerData.data
 
 
 class InvitationToHostSerializer(serializers.ModelSerializer):
@@ -88,13 +103,22 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     asunto = serializers.CharField(source='idInvitation.asunto')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
-    # qr_code = serializers.CharField(source='idInvitation.qr_code')
     diary = serializers.CharField(source='idInvitation.diary')
-
+    secEqu = serializers.SerializerMethodField('getSecEqu')
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
+    id_Invitation = serializers.IntegerField(source='idInvitation.id')
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
-                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary')
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration','id_Invitation')
+
+    def getSecEqu(self, obj):
+        _areaId = obj.idInvitation.id_area
+        _securityEquipment = SecurityEquipment.objects.filter(idArea=_areaId)
+        _serializerData = SecurityEquipmentSerializer(data=_securityEquipment, many=True)
+        _serializerData.is_valid()
+        return _serializerData.data
+
 
 
 class InvitationToGuardSerializer(serializers.ModelSerializer):
@@ -120,8 +144,9 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     asunto = serializers.CharField(source='idInvitation.asunto')
     empresa = serializers.CharField(source='idInvitation.empresa')
     automovil = serializers.BooleanField(source='idInvitation.automovil')
-    # qr_code = serializers.CharField(source='idInvitation.qr_code')
     notas = serializers.CharField(source='idInvitation.notas')
+    secEqu = serializers.SerializerMethodField('getSecEqu')
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
 
     class Meta:
         model = InvitationByUsers
@@ -147,9 +172,17 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'guestCellPhone',
             'notas',
             'logoEmpresa',
-            'avatar'
+            'avatar',
+            'secEqu',
+            'expiration'
         )
 
+    def getSecEqu(self, obj):
+        _areaId = obj.idInvitation.id_area
+        _securityEquipment = SecurityEquipment.objects.filter(idArea=_areaId)
+        _serializerData = SecurityEquipmentSerializer(data=_securityEquipment, many=True)
+        _serializerData.is_valid()
+        return _serializerData.data
 
 class BasicUserObject():
     def __init__(self, email, cellphone):
@@ -166,7 +199,7 @@ class BasicDataUserSerializer(serializers.Serializer):
 
 
 class MassiveInvObject():
-    def __init__(self, areaId, guests, subject, typeInv, dateInv, timeInv, exp, diary, secEquip,
+    def __init__(self, areaId, guests, subject, typeInv, dateInv, timeInv, exp, diary,
                  companyFrom, notes, vehicle):
         self.areaId = areaId #
         self.guests = guests #
@@ -176,7 +209,6 @@ class MassiveInvObject():
         self.timeInv = timeInv #
         self.exp = exp #
         self.diary = diary #
-        self.secEquip = secEquip #
         self. companyFrom = companyFrom #
         self.notes = notes #
         self.vehicle = vehicle
@@ -187,11 +219,10 @@ class MasiveInvSerializer(serializers.Serializer):
     guests = BasicDataUserSerializer(many=True)
     subject = serializers.CharField(max_length=400)  #
     typeInv = serializers.IntegerField(default=0)  #
-    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
+    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True)
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])  #
     exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True)  #
     diary = serializers.CharField(max_length=7, allow_blank=True)
-    secEquip = serializers.RegexField(regex=r'^[0-9,]+$', max_length=25, allow_null=True, allow_blank=True)
     vehicle = serializers.BooleanField(default=False)
     companyFrom = serializers.CharField(max_length=200, allow_blank=True, allow_null=True)
     notes = serializers.CharField(max_length=300, allow_blank=True, allow_null=True)
@@ -200,26 +231,14 @@ class MasiveInvSerializer(serializers.Serializer):
         return MassiveInvObject(**validated_data)
 
     def validate(self, data):
-        if _date > data['dateInv']:
-            raise serializers.ValidationError("La fecha de la invitacion esta vencida")
-        # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
+        if data['dateInv'] != None:
+            if _date > data['dateInv']:
+                raise serializers.ValidationError("La fecha de la invitacion esta vencida")
         if data['exp'] != None:
-            if data['exp'] < data['dateInv']:
-                raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que "
-                                                  "acontezca la invitacion")
+            if data['exp'] < _date:
+                raise serializers.ValidationError("La fecha de expiracion no puede ser en una fecha "
+                                                  "Vencida")
         return data
-
-
-# def get_Company(idUsr):
-#     try:
-#         _host = CustomUser.objects.get(id=idUsr)
-#     except ObjectDoesNotExist:
-#         return None
-#     try:
-#         admin = Administrador.objects.get(id_usuario=_host)
-#     except ObjectDoesNotExist:
-#         return None
-#     return admin.id_empresa
 
 
 class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
@@ -359,3 +378,17 @@ class EnterpriseSerializer(serializers.Serializer):
     def create(self, validated_data):
 
         return EnterpriseInvObject(**validated_data)
+<<<<<<< HEAD
+=======
+
+class FullInvitationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Invitacion
+        fields = '__all__'
+
+
+
+
+
+>>>>>>> api_v8

@@ -234,14 +234,14 @@ class DeleteFMCUserDevice(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated,]
 
     def delete(self, request, *args, **kwargs):
-        _user = self.request.user
-        # Obtener dispositivos de este usuario para eliminarlo.
-        _userDevices = FCMDevice.objects.filter(user=_user)
-        if len(_userDevices) > 0:
-            _userDevices.delete()
+        _idDevice = request.data.get('idDevice')
+        try:
+            _device =  FCMDevice.objects.get(device_id=_idDevice)
+        except ObjectDoesNotExist:
             return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_302_FOUND, data={"Error": "Este Usuario no tiene dispositivos registrados"})
+        _device.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class RestorePasswordUser(generics.UpdateAPIView):
 

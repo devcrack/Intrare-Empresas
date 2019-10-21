@@ -2,7 +2,8 @@ from rest_framework import serializers
 from .models import *
 from Usuarios.serializers import UserAdminSerializer, UserEmployeeSerializer, UserVigilanteSerializer
 from Usuarios.models import CustomUser
-from Invitaciones.models import Invitacion
+from django.core.exceptions import ObjectDoesNotExist
+
 
 class EmpresaSerializers(serializers.ModelSerializer):
     class Meta:
@@ -14,6 +15,12 @@ class EmpresaFindSerializer(serializers.ModelSerializer):
     class Meta:
         model = Empresa
         fields = ('id', 'name')
+
+
+class SecurityEquipmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SecurityEquipment
+        fields = '__all__'
 
 
 class AdministradorSerializers(serializers.ModelSerializer):
