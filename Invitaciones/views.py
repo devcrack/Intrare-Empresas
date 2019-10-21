@@ -229,7 +229,7 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
                                                       idInvitation__fecha_hora_envio__month=m,
                                                       idInvitation__fecha_hora_envio__day=d) # Todas las invitaciones que ha generado este Usuario.
         queryset = self.queryset = invsByUser
-        serializer = InvitationToGuardSerializer(queryset, many=True)
+        serializer = InvitationToHostSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
