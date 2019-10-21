@@ -470,6 +470,385 @@ Retorna un JSON, como el siguiente:
 ]
 ```
 
+### Listar Invitaciones Realizadas por un Host, es decir las que ha realizado un Empleado o un Administrador
+
+
+**url:**  http://127.0.0.1:8000/getInv/Admin/Employee/
+
+**header:** Authorization: Token bd9ae482ea1a77239cd4cd89eb6159221cb03584'
+
+
+**JSON** Que se retorna
+
+```json
+[
+  {
+    "id": 1,
+    "typeInv": 0,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "12:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "c2ee1828121ff0ca22",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 1
+  },
+  {
+    "id": 2,
+    "typeInv": 1,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "12:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "b917d13970c1e12c22",
+    "diary": "",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 2
+  },
+  {
+    "id": 3,
+    "typeInv": 2,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "12:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "b0824c18bc4f267d22",
+    "diary": "0246",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 3
+  },
+  {
+    "id": 4,
+    "typeInv": 2,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "21:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "8d7af75d1b1cd9c022",
+    "diary": "0246",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 4
+  },
+  {
+    "id": 5,
+    "typeInv": 2,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "4003a4702038dcd422",
+    "diary": "0246",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 5
+  },
+  {
+    "id": 6,
+    "typeInv": 2,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "e9788a00af97e43322",
+    "diary": "0246",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 6
+  },
+  {
+    "id": 7,
+    "typeInv": 1,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "5853cfd7d768f64c22",
+    "diary": "0246",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 7
+  },
+  {
+    "id": 8,
+    "typeInv": 2,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "20-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "4ce21995c7ea8f1c22",
+    "diary": "0246",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "22-10-2019",
+    "id_Invitation": 8
+  },
+  {
+    "id": 9,
+    "typeInv": 1,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "0b854f1d2b0efeb222",
+    "diary": "0246",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 9
+  },
+  {
+    "id": 10,
+    "typeInv": 2,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "20-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "62778803af0edda922",
+    "diary": "0246",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "30-10-2019",
+    "id_Invitation": 10
+  },
+  {
+    "id": 11,
+    "typeInv": 2,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "20-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "cfd83054fe49b33222",
+    "diary": "024",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "30-10-2019",
+    "id_Invitation": 11
+  },
+  {
+    "id": 12,
+    "typeInv": 1,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "21:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "1a19af9b102de13e22",
+    "diary": "024",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 12
+  },
+  {
+    "id": 13,
+    "typeInv": 1,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "bc4ff639512fdf8722",
+    "diary": "024",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 13
+  }
+]
+```
+
 
 ## Wallet
 Solo cosuman GET /wallet/create/>qrCODE< 

@@ -106,11 +106,11 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     diary = serializers.CharField(source='idInvitation.diary')
     secEqu = serializers.SerializerMethodField('getSecEqu')
     expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
-
+    id_Invitation = serializers.IntegerField(source='idInvitation.id')
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
-                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration')
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration','id_Invitation')
 
     def getSecEqu(self, obj):
         _areaId = obj.idInvitation.id_area
