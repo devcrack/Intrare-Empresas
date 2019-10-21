@@ -4,7 +4,7 @@ from .models import *
 from Usuarios.models import CustomUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
-from ControlAccs.utils import send_IntrareEmail, send_sms
+from ControlAccs.utils import send_IntrareEmail
 
 
 from Empresas.models import Administrador, Empresa, Area
@@ -77,11 +77,12 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     automovil = serializers.BooleanField(source='idInvitation.automovil')
     secEqu = serializers.SerializerMethodField('getSecEqu')
     diary = serializers.CharField(source='idInvitation.diary')
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
 
     class Meta:
         model = InvitationByUsers
-        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv',
-                  'asunto', 'automovil', 'qr_code', 'diary', 'secEqu')
+        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv',
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration')
 
     def getSecEqu(self, obj):
         _areaId = obj.idInvitation.id_area
@@ -104,11 +105,12 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     automovil = serializers.BooleanField(source='idInvitation.automovil')
     diary = serializers.CharField(source='idInvitation.diary')
     secEqu = serializers.SerializerMethodField('getSecEqu')
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
 
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
-                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu')
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration')
 
     def getSecEqu(self, obj):
         _areaId = obj.idInvitation.id_area
@@ -144,6 +146,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     automovil = serializers.BooleanField(source='idInvitation.automovil')
     notas = serializers.CharField(source='idInvitation.notas')
     secEqu = serializers.SerializerMethodField('getSecEqu')
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
 
     class Meta:
         model = InvitationByUsers
@@ -170,8 +173,8 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'notas',
             'logoEmpresa',
             'avatar',
-            'secEqu'
-
+            'secEqu',
+            'expiration'
         )
 
     def getSecEqu(self, obj):
@@ -236,18 +239,6 @@ class MasiveInvSerializer(serializers.Serializer):
                 raise serializers.ValidationError("La fecha de expiracion no puede ser en una fecha "
                                                   "Vencida")
         return data
-
-
-# def get_Company(idUsr):
-#     try:
-#         _host = CustomUser.objects.get(id=idUsr)
-#     except ObjectDoesNotExist:
-#         return None
-#     try:
-#         admin = Administrador.objects.get(id_usuario=_host)
-#     except ObjectDoesNotExist:
-#         return None
-#     return admin.id_empresa
 
 
 class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
