@@ -378,8 +378,7 @@ class EnterpriseSerializer(serializers.Serializer):
     def create(self, validated_data):
 
         return EnterpriseInvObject(**validated_data)
-<<<<<<< HEAD
-=======
+
 
 class FullInvitationSerializer(serializers.ModelSerializer):
 
@@ -391,4 +390,3 @@ class FullInvitationSerializer(serializers.ModelSerializer):
 
 
 
->>>>>>> api_v8
