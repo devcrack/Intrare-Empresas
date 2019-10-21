@@ -378,6 +378,11 @@ class EnterpriseSerializer(serializers.Serializer):
 
         return EnterpriseInvObject(**validated_data)
 
+class FullInvitationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Invitacion
+        fields = '__all__'
 
 
 
