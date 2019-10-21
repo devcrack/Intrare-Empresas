@@ -260,157 +260,6 @@ Retorna un JSON, como el siguiente:
     ]
   },
   {
-    "id": 15,
-    "typeInv": 0,
-    "colorArea": "#5ef026",
-    "companyName": "Rush-Parker",
-    "areaName": "Gerencia",
-    "hostFirstName": "Corey",
-    "hostLastName": "Adams",
-    "dateInv": "06-11-2019",
-    "timeInv": "12:50",
-    "asunto": "No quiero mi negro",
-    "automovil": true,
-    "qr_code": "81b8fb8987bb21a512",
-    "diary": "",
-    "secEqu": [
-      {
-        "nameEquipment": "Guantes de Latex"
-      },
-      {
-        "nameEquipment": "Casco de  Minero"
-      }
-    ]
-  },
-  {
-    "id": 17,
-    "typeInv": 0,
-    "colorArea": "#5ef026",
-    "companyName": "Rush-Parker",
-    "areaName": "Gerencia",
-    "hostFirstName": "Corey",
-    "hostLastName": "Adams",
-    "dateInv": "06-11-2019",
-    "timeInv": "12:50",
-    "asunto": "No quiero mi negro",
-    "automovil": true,
-    "qr_code": "65087dc8c927d37412",
-    "diary": "",
-    "secEqu": [
-      {
-        "nameEquipment": "Guantes de Latex"
-      },
-      {
-        "nameEquipment": "Casco de  Minero"
-      }
-    ]
-  },
-  {
-    "id": 19,
-    "typeInv": 0,
-    "colorArea": "#5ef026",
-    "companyName": "Rush-Parker",
-    "areaName": "Gerencia",
-    "hostFirstName": "Corey",
-    "hostLastName": "Adams",
-    "dateInv": "06-11-2019",
-    "timeInv": "12:50",
-    "asunto": "No quiero mi negro",
-    "automovil": true,
-    "qr_code": "67e566a270d62ab012",[
-  {
-    "id": 13,
-    "typeInv": 0,
-    "colorArea": "#5ef026",
-    "companyName": "Rush-Parker",
-    "areaName": "Gerencia",
-    "hostFirstName": "Corey",
-    "hostLastName": "Adams",
-    "dateInv": "06-11-2019",
-    "timeInv": "12:50",
-    "asunto": "No quiero mi negro",
-    "automovil": true,
-    "qr_code": "73735335fec30d9912",
-    "diary": "",
-    "secEqu": [
-      {
-        "nameEquipment": "Guantes de Latex"
-      },
-      {
-        "nameEquipment": "Casco de  Minero"
-      }
-    ]
-  },
-  {
-    "id": 15,
-    "typeInv": 0,
-    "colorArea": "#5ef026",
-    "companyName": "Rush-Parker",
-    "areaName": "Gerencia",
-    "hostFirstName": "Corey",
-    "hostLastName": "Adams",
-    "dateInv": "06-11-2019",
-    "timeInv": "12:50",
-    "asunto": "No quiero mi negro",
-    "automovil": true,
-    "qr_code": "81b8fb8987bb21a512",
-    "diary": "",
-    "secEqu": [
-      {
-        "nameEquipment": "Guantes de Latex"
-      },
-      {
-        "nameEquipment": "Casco de  Minero"
-      }
-    ]
-  },
-  {
-    "id": 17,
-    "typeInv": 0,
-    "colorArea": "#5ef026",
-    "companyName": "Rush-Parker",
-    "areaName": "Gerencia",
-    "hostFirstName": "Corey",
-    "hostLastName": "Adams",
-    "dateInv": "06-11-2019",
-    "timeInv": "12:50",
-    "asunto": "No quiero mi negro",
-    "automovil": true,
-    "qr_code": "65087dc8c927d37412",
-    "diary": "",
-    "secEqu": [
-      {
-        "nameEquipment": "Guantes de Latex"
-      },
-      {
-        "nameEquipment": "Casco de  Minero"
-      }
-    ]
-  },
-  {
-    "id": 19,
-    "typeInv": 0,
-    "colorArea": "#5ef026",
-    "companyName": "Rush-Parker",
-    "areaName": "Gerencia",
-    "hostFirstName": "Corey",
-    "hostLastName": "Adams",
-    "dateInv": "06-11-2019",
-    "timeInv": "12:50",
-    "asunto": "No quiero mi negro",
-    "automovil": true,
-    "qr_code": "67e566a270d62ab012",
-    "diary": "",
-    "secEqu": [
-      {
-        "nameEquipment": "Guantes de Latex"
-      },
-      {
-        "nameEquipment": "Casco de  Minero"
-      }
-    ]
-  },
-  {
     "id": 21,
     "typeInv": 0,
     "colorArea": "#5ef026",
@@ -470,6 +319,85 @@ Retorna un JSON, como el siguiente:
 ]
 ```
 
+### Listar Invitaciones Realizadas por un Host, es decir las que ha realizado un Empleado o un Administrador
+
+
+**url:**  http://127.0.0.1:8000/getInv/Admin/Employee/
+
+**header:** Authorization: Token bd9ae482ea1a77239cd4cd89eb6159221cb03584'
+
+
+**JSON** Que se retorna
+
+```json
+[
+  {
+    "id": 5,
+    "typeInv": 2,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "4003a4702038dcd422",
+    "diary": "0246",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 5
+  },
+  {
+    "id": 13,
+    "typeInv": 1,
+    "colorArea": "#a9e6f3",
+    "companyName": "Oconnor, Jones and Snyder",
+    "areaName": "Gerencia",
+    "guestFirstName": "",
+    "guestLastName": "",
+    "dateInv": "30-10-2019",
+    "timeInv": "22:03",
+    "asunto": "nada en particular",
+    "automovil": false,
+    "qr_code": "bc4ff639512fdf8722",
+    "diary": "024",
+    "secEqu": [
+      {
+        "nameEquipment": "Botas Antiderrapantes"
+      },
+      {
+        "nameEquipment": "Lentes de Proteccion"
+      },
+      {
+        "nameEquipment": "Guantes"
+      }
+    ],
+    "expiration": "01-11-2019",
+    "id_Invitation": 13
+  }
+]
+```
+### Eliminar Invitacion
+
+**request**  DELETE
+
+**url**  http://127.0.0.1:8000/deleteInvitation/>Id_Invitacion</
+
+**header** 'authorization: Token bd9ae482ea1a77239cd4cd89eb6159221cb03584'  
+
+Token debe de ser de un admin o un empleado. Obviamente el Id de la invitacion solmente lo va a tener el host que tiene acceso a sus propias invitaciones 
 
 ## Wallet
 Solo cosuman GET /wallet/create/>qrCODE< 

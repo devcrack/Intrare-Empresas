@@ -527,6 +527,19 @@ class CreateEnterpriseInvitation(generics.CreateAPIView):
         return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
 
 
+class DeleteInvitation(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated,IsAdmin | IsEmployee,]
+
+    queryset = Invitacion.objects.all()
+    serializer_class = FullInvitationSerializer
+    lookup_field = 'pk'
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+
 
 
 

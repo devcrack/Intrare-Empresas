@@ -334,6 +334,8 @@ class UpdateSecurityEquipment(generics.UpdateAPIView):
 
 
 class DeleteSecurityEquipment(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
     queryset = SecurityEquipment.objects.all()
     serializer_class = SecurityEquipmentSerializer
     lookup_field = 'pk'

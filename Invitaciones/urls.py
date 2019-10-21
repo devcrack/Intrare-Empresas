@@ -37,4 +37,5 @@ urlpatterns = [
     # Creacion Invitacion Empresarial
     path('createReferredInv', Createreferredinvitation.as_view()),
     path('createEnterpriseInv', CreateEnterpriseInvitation.as_view()),
+    path('deleteInvitation/<int:pk>/', DeleteInvitation.as_view()),
 ]

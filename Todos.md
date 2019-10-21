@@ -1,28 +1,13 @@
-# Jaha_devcrack Todo's
- - - -
-## Planning (Por planear)
- - - -
- 
- - - -
-## To Do(Por hacer)
-
-* En la creacion de las invitaciones establecer correctamente el serializador que corresponde cuando un determinado 
-  tipo de usario ha iniciado sesion.
-
- - - -
-* Validando ListField en el json que llega para esta peticion.
-  https://www.django-rest-framework.org/api-guide/fields/#jsonfield
-
-* Invitaciones masivas
- 
- - - - 
-## Doing(Haciendo)
-* Invitaciones masivas( Enviar N Numero de invitaciones aun grupo determinado de invitados)
-
- - - -
- 
- - - -
-## Done(Finalizado)
-* Validar que al actualizar el usuario, no exista el correo electronico
-* Validar que al actualizar el usuario, no exista el numero de telefono
- - - -
+- [X] Notificacion PUSH 
+- [X] Recuperacion de Contraseña
+- [X] Agregar Wallet al correo.
+- [X] Alta Equipo de Seguridad por Area.
+- [X] Modificaciones Equipo de Seguridad por Area.
+- [X] Bajas Equipo de Seguridad por Area.
+- [X] Invitaciones Empresariales.
+- [X] Agregar campo URL video de seguridad a modelo Invitacion, para 
+      cuestiones de seguridad que puedan ser consideradas a futuro.
+- [X] Invitaciones Recurrentes.
+- [ ] Listar invitaciones no Confirmadas.
+- [ ] Eliminar Invitaciion.  
+- [ ] Arreglar formato de Hora en notificaciones(movil. sms y correo).
