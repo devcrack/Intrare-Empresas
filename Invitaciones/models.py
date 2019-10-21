@@ -7,15 +7,15 @@ from django.utils import timezone
 from datetime import date
 
 
-# def defaultExpiration():
-#     _year = timezone.datetime.now().year
-#     _month = timezone.datetime.now().month
-#     _day = timezone.datetime.now().day
-#     _date = date(_year, _month, _day)
-#
-#     _delta = timezone.timedelta(days=1)
-#
-#     return _date + _delta
+def defaultExpiration():
+    _year = timezone.datetime.now().year
+    _month = timezone.datetime.now().month
+    _day = timezone.datetime.now().day
+    _date = date(_year, _month, _day)
+
+    _delta = timezone.timedelta(days=1)
+
+    return _date + _delta
 
 
 class Invitacion(models.Model):
