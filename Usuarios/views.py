@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import filters
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.utils import timezone
 from datetime import date
 from secrets import token_hex
@@ -236,9 +236,10 @@ class DeleteFMCUserDevice(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         _idDevice = request.data.get('idDevice')
         try:
-            _device = FCMDevice.objects.get(device_id=_idDevice)
-        except ObjectDoesNotExist:
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            _device = FCMDevice.objects.get(registration_id=_idDevice)
+        except(ObjectDoesNotExist, MultipleObjectsReturned):
+            return Response(status=status.HTTP_409_CONFLICT, data={"error":"Su Dispositivo no Existe o se corrompio es decir "
+                                                                           "existe mas de una vez en el origen de datos"})
         _device.delete()
         return Response(status=status.HTTP_200_OK)
 
