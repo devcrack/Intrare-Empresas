@@ -444,6 +444,7 @@ def justCreateEnterpriseInv(serializer, _host):
     _idReferredInv = serializer.data['idReferredInv']
     _guestMail = serializer.data['guest']['email']
     _guestPhone = serializer.data['guest']['cellphone']
+    _diary = serializer.data['diary']
     _company = Empresa.objects.get(id=idCompany)
     _area = Area.objects.get(id=idArea)
     try:
@@ -454,7 +455,7 @@ def justCreateEnterpriseInv(serializer, _host):
 
 
     inv = justCreateInvitation(_company, _area, 2, dateInv, timeInv, expDate, subject, vehicle, notes,
-                               _fromCompany)
+                               _fromCompany, _diary)
     _idUser = guest_exist(_guestPhone, _guestMail)
     if _idUser == _host:
         error_response = {"error": "Una extraña sitaucion ha ocurrido. Estas ingresando tus propios datos en la invitacion"}
