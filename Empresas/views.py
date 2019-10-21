@@ -4,7 +4,9 @@ from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from fcm_django.models import FCMDevice
-from datetime import datetime
+import datetime
+from datetime import date
+from django.utils import timezone
 
 from Empresas.models import Acceso
 from Usuarios.permissions import *
@@ -47,6 +49,34 @@ class AccessCreate(generics.CreateAPIView):
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={'Error':'Invitacion Corrompida'})
 
+            ## Cargando datos Invitacion ##
+            _typeInv = _invByUsers.idInvitation.typeInv
+            _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
+                                day=timezone.datetime.now().day)
+
+            if _typeInv == 2: # Invitacion Recurrente
+                _expiration = _invByUsers.idInvitation.expiration
+                _diary = _invByUsers.idInvitation.diary
+                _weekDay = str(timezone.datetime.now().weekday())
+                if _currentDate > _expiration: # La invitacion esta en fecha
+                    return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                    data={"error": "Esta invitacion ha expirado. Acceso Negado"})
+                if _weekDay not in _diary: # El dia de la invitacion es el correcto
+                    return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                    data={"error": "No esta autorizado para este dia. Acceso Negado"})
+            else:
+                _dateInv = _invByUsers.idInvitation.dateInv
+                if _currentDate > _dateInv:
+                    return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                    data={"error": "Esta invitacion esta fuera de fecha. Acceso Negado"})
+
+            _timeInv = _invByUsers.idInvitation.timeInv
+            _currentHour = timezone.datetime.now().hour
+            _currentMinute = timezone.datetime.now().minute
+            _currentTime = datetime.time(_currentHour, _currentMinute)
+            if _currentTime > _timeInv:
+                return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                data={"error": "El invitado ha llegado tarde. Acceso Negado"})
 
             self.createAcces(_guard_ent, _invByUsers, _datos_coche, _qr_code)
             # Enviar Correo y SMS
@@ -61,10 +91,10 @@ class AccessCreate(generics.CreateAPIView):
                                             { 'guestName':_guestFullName,
                                               'from':_from
                                             })
-            if len(_hostDevices) > 0:
+            if len(_hostDevices) > 0: # Envio NOTIFICACION  PUSH
                 _hostDevices.send_message(title="Intrare", body=_msg, sound="Default")
-            send_IntrareEmail(html_message, _emailHost)
-            send_sms(_cellphoneHost, _msg)
+            send_IntrareEmail(html_message, _emailHost) # Envio Notificacion EMAIL
+            send_sms(_cellphoneHost, _msg)  # Envio Notificacion SMS
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED)
