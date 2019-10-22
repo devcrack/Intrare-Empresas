@@ -492,23 +492,23 @@ def justCreateEnterpriseInv(serializer, _host):
             _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación Empresarial. Anfitrion: " + host_name,
                                       sound="Default")
         send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-        # _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
+        _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
     else:  # Preregistro Empleado
         _msgReg = "Recibiste una invitacion Empresarial. Para acceder a ella realiza tu Preregistro en:"
         link = linkPreregisterEmployee
         link = link + _idUser.temporalToken + "/"
         _smsMSG = "Bienvenido a Intrare. " + _msgReg + link
-        # _smsResponse = send_sms(_idUser.celular, _smsMSG)  # SMS
+        _smsResponse = send_sms(_idUser.celular, _smsMSG)  # SMS
         if _idUser.email:
             _htmlMessage = render_MsgPregister("Bienvenido a Intrare. ", _msgReg, link)
             send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-    # if _smsResponse["messages"][0]["status"] == "0":
-    #     log = 'Mensaje SMS ENVIADO'
-    # else:
-    #     log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-    # print('LOGs SMS!! ')
-    # print(log)
-    # print(inv.id, ' INVITATION CREATED  200_OK')
+    if _smsResponse["messages"][0]["status"] == "0":
+        log = 'Mensaje SMS ENVIADO'
+    else:
+        log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+    print('LOGs SMS!! ')
+    print(log)
+    print(inv.id, ' INVITATION CREATED  200_OK')
     _refInv.delete()
     return error_response, inv
 
