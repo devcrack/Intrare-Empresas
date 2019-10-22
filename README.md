@@ -542,6 +542,16 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
 ```
 
 
+### **Enviar Alerta** (Boton de Panico)
+
+**request GET**
+
+**url** http://127.0.0.1:8000/SendAlert
+
+**header**  Authorization: Token bd5faeaaea1dc792721c228b309c333e6cd11d5f Token de un Administrador o un Empleado
+
+
+
 
 
 
