@@ -256,7 +256,7 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
     dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
     host = serializers.IntegerField(required=False)
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])
-    notes = serializers.CharField(default="")
+    notes = serializers.CharField(default="", allow_blank="")
     exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], required=False)
     Token = serializers.CharField(required=False)
 
