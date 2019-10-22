@@ -23,6 +23,20 @@
 <p style="text-align: center;">
     <strong><span style="color: #000000;">Codigo:{{ codigo }}</span></strong>
 </p>
+
+{% if secEqus %}
+    <p>Equipo de seguridad Necesario:</p>
+    <ul>
+        {% for secEqu in secEqus %}
+            <li><strong>{{ secEqu }}</strong></li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p style="text-align: center"><strong>Equipo de seguridad No Requerido</strong></p>
+    <br>
+    {% endif %}
+
+
 <p style="text-align: center">
         <br>
         <a href={{downloadFile}}>

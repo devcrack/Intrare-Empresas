@@ -15,6 +15,7 @@ from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
 from Invitaciones.models import Invitacion, InvitationByUsers
+from Empresas.models import SecurityEquipment
 from django.db.models import Q
 
 # Create your views here.
@@ -188,13 +189,21 @@ class activateUser(generics.UpdateAPIView):
             if _inv.dateInv >= _currentDate:
                 _walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _invByUSR.qr_code
                 _company = _inv.id_empresa.name
-                _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
+                # _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
+                _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
                 _qrCode = _invByUSR.qr_code
                 _cellNumber = instance.celular
+                _idArea = _inv.id_area
+                _secEqu_s = SecurityEquipment.objects.filter(idArea=_idArea)
+                _securityEquipments = []
+                for _SE in _secEqu_s:
+                    _securityEquipments.append(_SE.nameEquipment)
+
                 _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
                 html_message = render_to_string('FirstMailInv.html', {'empresa': _company, 'fecha': _dateTime,
                                                                       'codigo': _qrCode, 'password': _tmpPassword,
-                                                                      'downloadFile': _walletLink})
+                                                                      'downloadFile': _walletLink,
+                                                                      'secEqus': _securityEquipments})
                 if index == 0:
                     if len(_userDevice) > 0:
                         _userDevice.send_message(title="Intrare", body="Tienes una invitación", sound="Default") #PUSH
