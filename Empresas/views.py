@@ -269,11 +269,11 @@ class NotifyHostSignPass(generics.ListAPIView):
 
         _guest = acc.invitationByUsers.idGuest
         _guestFullName = _guest.first_name + " " + _guest.last_name
-        _dateTimeAcc = str(acc.fecha_hora_acceso)
+        _dateTimeAcc = str(acc.fecha_hora_acceso.strftime("%Y/%m/%d, %H:%M"))
         _msg = "Firma el pase de salida del Invitado: " + _guestFullName + "\nFecha y Hora de Acceso:" + _dateTimeAcc
         html_message = render_to_string('notifyHostSigAccess.html',
-                                        { 'guestName':_guestFullName,
-                                          'dateTimeAcc':_dateTimeAcc
+                                        { 'guestName': _guestFullName,
+                                          'dateTimeAcc': _dateTimeAcc
                                         })
         if len(_hostDevice) > 0:
             _hostDevice.send_message(title="Intrare", body=_msg, sound="Default")
