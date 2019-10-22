@@ -459,7 +459,7 @@ def justCreateEnterpriseInv(serializer, _host):
         error_response = {"error": "Esta invitación Referida no Existe Mas"}
         return error_response, None
 
-    inv = justCreateInvitation(_company, _area, 2, dateInv, timeInv, expDate, subject, vehicle, notes,
+    inv = justCreateInvitation(_company, _area, 1, dateInv, timeInv, expDate, subject, vehicle, notes,
                                _fromCompany, _diary)
     _idUser = guest_exist(_guestPhone, _guestMail)
     if _idUser == _host:
