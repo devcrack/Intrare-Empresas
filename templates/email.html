@@ -24,14 +24,14 @@
     </p>
     <br>
     {% if secEqus %}
-    <p style="text-align: center">Equipo de seguridad Necesario:</p>
-    <ul style="text-align: center">
+    <p>Equipo de seguridad Necesario:</p>
+    <ul>
         {% for secEqu in secEqus %}
             <li><strong>{{ secEqu }}</strong></li>
         {% endfor %}
     </ul>
     {% else %}
-        <p style="text-align: center">Equipo de seguridad No Requerido:</p>
+        <p style="text-align: center"><strong>Equipo de seguridad No Requerido</strong></p>
     <br>
     {% endif %}
 
