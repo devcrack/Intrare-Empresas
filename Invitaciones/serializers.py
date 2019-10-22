@@ -147,6 +147,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     notas = serializers.CharField(source='idInvitation.notas')
     secEqu = serializers.SerializerMethodField('getSecEqu')
     expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
+    # Mamadas del Andres
     typeInv = serializers.IntegerField(source='idInvitation.typeInv')
     diary = serializers.CharField(source='idInvitation.diary')
     id_Invitation = serializers.IntegerField(source='idInvitation.id')
@@ -178,6 +179,7 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'avatar',
             'secEqu',
             'expiration',
+            # Mamadas del Andres
             'typeInv',
             'diary',
             'id_Invitation'
