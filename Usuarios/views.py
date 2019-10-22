@@ -15,10 +15,15 @@ from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
 from Invitaciones.models import Invitacion, InvitationByUsers
-from Empresas.models import SecurityEquipment
+from Empresas.models import SecurityEquipment, Administrador, Empleado
 from django.db.models import Q
 
 # Create your views here.
+
+def sendPushNotifies(idUser, msg):
+    _userDevices = FCMDevice.objects.filter(user=idUser)
+    if len(_userDevices) > 0:
+        _userDevices.send_message(title="Intrare", body=msg, sound="Default")
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -330,7 +335,40 @@ class ActivateEmployee(generics.UpdateAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
-# class SendAllert()
+class SendAlert(generics.ListAPIView):
+    permission_classes = [IsAuthenticated, isAdmin | isEmployee]
+
+    def get(self, request, *args, **kwargs):
+        _user = self.request.user
+        _idCompany = None
+
+        if _user.roll is settings.ADMIN:
+            try:
+                _adminCompany = Administrador.objects.get(id_usuario=_user)
+            except(ObjectDoesNotExist, MultipleObjectsReturned):
+                return Response(status=status.HTTP_409_CONFLICT, data={"erro": "Usuario no Existente o existe multiples"
+                                                                               "veces en el origen de datos. USUARIO "
+                                                                               "CORROMPIDO"})
+            _idCompany = _adminCompany.id_empresa
+        else:
+            try:
+                _employee = Empleado.objects.get(id_usuario=_user)
+            except(ObjectDoesNotExist, MultipleObjectsReturned):
+                return Response(status=status.HTTP_409_CONFLICT, data={"erro": "Usuario no Existente o existe multiples"
+                                                                               "veces en el origen de datos. USUARIO "
+                                                                               "CORROMPIDO"})
+            _idCompany = _employee.id_empresa
+
+        _adminSet = Administrador.objects.filter(id_empresa=_idCompany)
+        _employeeSet = Empleado.objects.filter(id_empresa=_idCompany)
+        for admin in _adminSet:
+            _idUser = admin.id_usuario
+            sendPushNotifies(_idUser, "¡Alerta! ha Ocurrido una Incidencia Negativa en la Planta")
+        for _employee in _employeeSet:
+            _idUser = _employee.id_usuario
+            sendPushNotifies(_idUser, "¡Alerta! ha Ocurrido una Incidencia Negativa en la Planta")
+
+        return Response(status=status.HTTP_200_OK)
 
 
 
