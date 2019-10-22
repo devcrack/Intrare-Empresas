@@ -23,14 +23,15 @@
         </strong>
     </p>
     <br>
-    <p style="text-align: center">
-        Equipo de seguridad Necesario:
-       {% for secEqu in secEqus %}
-            <strong>*  {{ secEqu }}</strong>
+    {% if len(secEqus) > 0 %}
+    <p style="text-align: center">Equipo de seguridad Necesario:</p>
+    <ul style="text-align: center">
+        {% for secEqu in secEqus %}
+            <li><strong>{{ secEqu }}</strong></li>
         {% endfor %}
-    </p>
-
-
+    </ul>
+    <br>
+    {% endif %}
 
     <p style="text-align: center">
         <br>
