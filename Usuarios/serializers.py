@@ -12,7 +12,7 @@ from ControlAccs.utils import send_IntrareEmail, send_sms
 from .models import *
 from rest_framework.validators import UniqueValidator
 
-
+linkConfirmIdentity = "https://web-intrare.herokuapp.com/confirmar_identidad/"
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
         fields = (
@@ -29,6 +29,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(allow_blank=False, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
     celular = serializers.IntegerField(required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
     ine_frente = serializers.ImageField(required=True, allow_empty_file=False)
+    ine_atras = serializers.ImageField(required=True, allow_empty_file=False)
     avatar = serializers.ImageField(required=True, allow_empty_file=False)
 
     class Meta:
@@ -39,6 +40,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'email',
             'celular',
             'ine_frente',
+            'ine_atras',
             'avatar'
         ]
 
@@ -46,7 +48,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # Enviar Notificaciones correo a Anfitrion(HOST)
         msg = "Hola Anfitrion, valida a tu Invitado para que empieze a usar Intrare."
-        link = "https://first-project-vuejs.herokuapp.com/confirmar_identidad/" + instance.temporalToken + "/"
+        link = linkConfirmIdentity + instance.temporalToken + "/"
 
         instance.first_name = validated_data.pop('first_name')
         instance.last_name = validated_data.pop('last_name')
@@ -55,22 +57,25 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.email = _email
         instance.celular = validated_data.pop('celular')
         instance.ine_frente = validated_data.pop('ine_frente')
+        instance.ine_atras = validated_data.pop('ine_atras')
         instance.avatar = validated_data.pop('avatar')
         instance.save()
+
+        ## <<Envio de Mail a Host para que valide al nuevo Usuario>>##
         html_message = render_to_string('nwUserMail.html',
                                         {'headerMsg': 'Intrare',
                                          'msg': msg,
                                          'link': link
                                          })
         mail_host = instance.host.email
-        numberHost = instance.host.celular
+        _numberHost = instance.host.celular
         print(mail_host)
         _hostDevices = FCMDevice.objects.filter(user=instance.host)
         if len(_hostDevices) > 0:
             _hostDevices.send_message(title="Intrare", body = msg, sound="Default")
         send_IntrareEmail(html_message, mail_host)  # Envio de mail para validar la identidad de Usuario.
         msg = msg + " " + link
-        send_sms(numberHost, msg)
+        send_sms(_numberHost, msg)
         return instance
 
 

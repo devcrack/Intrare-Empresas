@@ -64,6 +64,7 @@ urlpatterns = [
     path('updateSecurityEquipment/<int:pk>/', UpdateSecurityEquipment.as_view()),
     # Elimina el Equipo de Seguridad.
     path('deleteSecurityEquipment/<int:pk>/', DeleteSecurityEquipment.as_view()),
+    ##<<Obtener equipo de seguridad por ID de Area>>##
     path('get_SecurityEquipment/ByArea/<idArea>/',GetSecEquByArea.as_view({'get': 'list'})),
 ]
 
