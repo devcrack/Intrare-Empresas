@@ -192,7 +192,7 @@ class activateUser(generics.UpdateAPIView):
                 return Response(status=status.HTTP_204_NO_CONTENT, data={'error': 'ERROR EN INVITACION'})
             # Aqui verificamos si la Invitacion es Valida, en base a su fecha.
             if _inv.dateInv >= _currentDate:
-                _walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _invByUSR.qr_code
+                _walletLink = 'https://api-intrare-development.herokuapp.com/wallet/create/' + _invByUSR.qr_code
                 _company = _inv.id_empresa.name
                 # _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
                 _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
@@ -310,7 +310,7 @@ class ActivateEmployee(generics.UpdateAPIView):
                 return Response(status=status.HTTP_204_NO_CONTENT, data={'error': 'ERROR EN INVITACION'})
             # Aqui verificamos si la Invitacion es Valida, en base a su fecha.
             if _inv.dateInv >= _currentDate:
-                _walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _invByUSR.qr_code
+                _walletLink = 'https://api-intrare-development.herokuapp.com/wallet/create/' + _invByUSR.qr_code
                 _company = _inv.id_empresa.name
                 _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
                 _qrCode = _invByUSR.qr_code

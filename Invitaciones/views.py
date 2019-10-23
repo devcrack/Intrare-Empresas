@@ -20,8 +20,8 @@ from django.core.files.storage import default_storage
 import re
 
 _regexMail = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
-linkWallet = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'
-linkPreregisterUser = 'https://first-project-vuejs.herokuapp.com/preregistro/'
+linkWallet = 'https://api-intrare-development.herokuapp.com/wallet/create/'
+linkPreregisterUser = 'https://web-intrare.herokuapp.com/preregistro/'
 linkPreregisterEmployee = "URL"
 
 def guest_exist(cellphoneN, _email):
