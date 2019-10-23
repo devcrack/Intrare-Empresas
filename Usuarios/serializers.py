@@ -12,7 +12,10 @@ from ControlAccs.utils import send_IntrareEmail, send_sms
 from .models import *
 from rest_framework.validators import UniqueValidator
 
-linkConfirmIdentity = "https://web-intrare.herokuapp.com/confirmar_identidad/"
+linkConfirmIdentity = "https://web-intrare.herokuapp.com/confirmar_identidad/"  # Development
+# linkConfirmIdentity = "https://first-project-vuejs.herokuapp.com/confirmar_identidad/"  # Production
+
+
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
         fields = (
