@@ -4,7 +4,9 @@ from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import IsAuthenticated
 from fcm_django.models import FCMDevice
-from datetime import datetime
+import datetime
+from datetime import date
+from django.utils import timezone
 
 from Empresas.models import Acceso
 from Usuarios.permissions import *
@@ -40,16 +42,51 @@ class AccessCreate(generics.CreateAPIView):
         if _serializer.is_valid():
             _serializer.save()
             _guard_ent = Vigilante.objects.filter(id_usuario=self.request.user)[0]
+            _currentCompany = _guard_ent.id_empresa
+
+            ## <<Cargando Datos de JSON>>##
             _datos_coche = _serializer.data['datos_coche']
             _qr_code = _serializer.data['qr_code']
             try:
                 _invByUsers = InvitationByUsers.objects.get(qr_code=_qr_code)
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={'Error':'Invitacion Corrompida'})
+            ## <<Cargando Fecha Actual>> ##
+            _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
+                                day=timezone.datetime.now().day)
 
+            ## << Cargando datos Invitacion>>
+            _typeInv = _invByUsers.idInvitation.typeInv
+            _companyHost = _invByUsers.idInvitation.id_empresa # Empresa que invita a esta persona.
+            if _currentCompany is not _companyHost:
+                return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                data={"error": "!ACCESO NEGADO¡. Este invitado no ha sido Invitado por la Empresa"})
+            if _typeInv == 2: # Invitacion Recurrente
+                _expiration = _invByUsers.idInvitation.expiration
+                _diary = _invByUsers.idInvitation.diary
+                _weekDay = str(timezone.datetime.now().weekday())
+                if _currentDate > _expiration: # La invitacion esta en fecha
+                    return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                    data={"error": "!ACCESO NEGADO¡. Esta invitacion ha expirado."})
+                if _weekDay not in _diary: # El dia de la invitacion es el correcto
+                    return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                    data={"error": "!ACCESO NEGADO¡. No esta autorizado para este dia."})
+            else:
+                _dateInv = _invByUsers.idInvitation.dateInv
+                if _currentDate > _dateInv:
+                    return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                    data={"error": "!ACCESO NEGADO¡.Esta invitacion esta fuera de fecha."})
+
+            _timeInv = _invByUsers.idInvitation.timeInv
+            _currentHour = timezone.datetime.now().hour
+            _currentMinute = timezone.datetime.now().minute
+            _currentTime = datetime.time(_currentHour, _currentMinute)
+            if _currentTime > _timeInv:
+                return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                data={"error": "El invitado ha llegado tarde. Acceso Negado"})
 
             self.createAcces(_guard_ent, _invByUsers, _datos_coche, _qr_code)
-            # Enviar Correo y SMS
+            ## <<Enviar Correo y SMS>> ##
             _host = _invByUsers.host
             _guestFullName = _invByUsers.idGuest.first_name + " " + _invByUsers.idGuest.last_name
             _emailHost = _host.email
@@ -61,10 +98,10 @@ class AccessCreate(generics.CreateAPIView):
                                             { 'guestName':_guestFullName,
                                               'from':_from
                                             })
-            if len(_hostDevices) > 0:
+            if len(_hostDevices) > 0: # Envio NOTIFICACION  PUSH
                 _hostDevices.send_message(title="Intrare", body=_msg, sound="Default")
-            send_IntrareEmail(html_message, _emailHost)
-            send_sms(_cellphoneHost, _msg)
+            send_IntrareEmail(html_message, _emailHost) # Envio Notificacion EMAIL
+            send_sms(_cellphoneHost, _msg)  # Envio Notificacion SMS
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
         return Response(status=status.HTTP_201_CREATED)
@@ -239,11 +276,11 @@ class NotifyHostSignPass(generics.ListAPIView):
 
         _guest = acc.invitationByUsers.idGuest
         _guestFullName = _guest.first_name + " " + _guest.last_name
-        _dateTimeAcc = str(acc.fecha_hora_acceso)
+        _dateTimeAcc = str(acc.fecha_hora_acceso.strftime("%Y/%m/%d, %H:%M"))
         _msg = "Firma el pase de salida del Invitado: " + _guestFullName + "\nFecha y Hora de Acceso:" + _dateTimeAcc
         html_message = render_to_string('notifyHostSigAccess.html',
-                                        { 'guestName':_guestFullName,
-                                          'dateTimeAcc':_dateTimeAcc
+                                        { 'guestName': _guestFullName,
+                                          'dateTimeAcc': _dateTimeAcc
                                         })
         if len(_hostDevice) > 0:
             _hostDevice.send_message(title="Intrare", body=_msg, sound="Default")
@@ -304,6 +341,8 @@ class UpdateSecurityEquipment(generics.UpdateAPIView):
 
 
 class DeleteSecurityEquipment(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
     queryset = SecurityEquipment.objects.all()
     serializer_class = SecurityEquipmentSerializer
     lookup_field = 'pk'
@@ -312,3 +351,21 @@ class DeleteSecurityEquipment(generics.DestroyAPIView):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_202_ACCEPTED)
+
+
+class GetSecEquByArea(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def list(self, request, *args, **kwargs):
+        _idArea = self.kwargs['idArea']
+        _secEquByArea = SecurityEquipment.objects.filter(idArea=_idArea)
+        if  len(_secEquByArea) > 0:
+            _serializer = SecurityEquipmentSerializer(_secEquByArea, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+

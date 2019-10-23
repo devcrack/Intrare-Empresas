@@ -28,13 +28,14 @@ class Invitacion(models.Model):
     typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
     dateInv = models.DateField(null=False) #
     timeInv = models.TimeField(null=False) #
-    expiration = models.DateField(default=defaultExpiration())
+    expiration = models.DateField(null=False)
     diary = models.CharField(max_length=7, default="")  # Dias de la semana que asistira recurrentemente LMXJVSD
     asunto = models.CharField(max_length=254, null=False, blank=False)
     automovil = models.BooleanField(null=False, blank=False)
     notas = models.CharField(max_length=256, null=True, blank=True, default="")
     empresa = models.CharField(max_length=254, null=True, blank=True, default="")
     leida = models.BooleanField(default=False, null=False)
+    urlVideo = models.CharField(null=True, max_length=300)
 
     def __str__(self):
         return f"ID_Invitation: {self.id}   ;  COMPANY: {self.empresa};"
@@ -76,7 +77,7 @@ class ReferredInvitation(models.Model):
     companyFrom = models.CharField(max_length=254, null=True, blank=True, default="") #No Editable
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None,
                              related_name='InvitationReferred_host')
-    Token = models.CharField(max_length=14, default=token_hex(7))  # No Editable
+    Token = models.CharField(max_length=14)  # No Editable
     referredMail = models.EmailField(default=None, null=False)
     referredPhone = models.CharField(default=None, max_length=12, null=True)
 

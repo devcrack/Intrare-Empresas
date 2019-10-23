@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import filters
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.utils import timezone
 from datetime import date
 from secrets import token_hex
@@ -15,9 +15,15 @@ from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
 from Invitaciones.models import Invitacion, InvitationByUsers
+from Empresas.models import SecurityEquipment, Administrador, Empleado
 from django.db.models import Q
 
 # Create your views here.
+
+def sendPushNotifies(idUser, msg):
+    _userDevices = FCMDevice.objects.filter(user=idUser)
+    if len(_userDevices) > 0:
+        _userDevices.send_message(title="Intrare", body=msg, sound="Default")
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -188,13 +194,21 @@ class activateUser(generics.UpdateAPIView):
             if _inv.dateInv >= _currentDate:
                 _walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/' + _invByUSR.qr_code
                 _company = _inv.id_empresa.name
-                _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
+                # _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
+                _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
                 _qrCode = _invByUSR.qr_code
                 _cellNumber = instance.celular
+                _idArea = _inv.id_area
+                _secEqu_s = SecurityEquipment.objects.filter(idArea=_idArea)
+                _securityEquipments = []
+                for _SE in _secEqu_s:
+                    _securityEquipments.append(_SE.nameEquipment)
+
                 _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
                 html_message = render_to_string('FirstMailInv.html', {'empresa': _company, 'fecha': _dateTime,
                                                                       'codigo': _qrCode, 'password': _tmpPassword,
-                                                                      'downloadFile': _walletLink})
+                                                                      'downloadFile': _walletLink,
+                                                                      'secEqus': _securityEquipments})
                 if index == 0:
                     if len(_userDevice) > 0:
                         _userDevice.send_message(title="Intrare", body="Tienes una invitación", sound="Default") #PUSH
@@ -230,18 +244,19 @@ class GetUsersNotActivated(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class DeleteFMCUserDevice(generics.DestroyAPIView):
+class DeleteFMCUserDevice(generics.CreateAPIView):
     permission_classes = [IsAuthenticated,]
 
-    def delete(self, request, *args, **kwargs):
-        _user = self.request.user
-        # Obtener dispositivos de este usuario para eliminarlo.
-        _userDevices = FCMDevice.objects.filter(user=_user)
-        if len(_userDevices) > 0:
-            _userDevices.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(status=status.HTTP_302_FOUND, data={"Error": "Este Usuario no tiene dispositivos registrados"})
+    def create(self, request, *args, **kwargs):
+        _idDevice = request.data.get('idDevice')
+        try:
+            _device = FCMDevice.objects.get(registration_id=_idDevice)
+        except(ObjectDoesNotExist, MultipleObjectsReturned):
+            return Response(status=status.HTTP_409_CONFLICT, data={"error":"Su Dispositivo no Existe o se corrompio es decir "
+                                                                           "existe mas de una vez en el origen de datos"})
+        _device.delete()
+        return Response(status=status.HTTP_200_OK)
+
 
 class RestorePasswordUser(generics.UpdateAPIView):
 
@@ -317,6 +332,42 @@ class ActivateEmployee(generics.UpdateAPIView):
                 print('Destinatario ', addressee)
                 send_IntrareEmail(html_message, addressee)  # MAIL
                 index += 1
+        return Response(status=status.HTTP_200_OK)
+
+
+class SendAlert(generics.ListAPIView):
+    permission_classes = [IsAuthenticated, isAdmin | isEmployee]
+
+    def get(self, request, *args, **kwargs):
+        _user = self.request.user
+        _idCompany = None
+
+        if _user.roll is settings.ADMIN:
+            try:
+                _adminCompany = Administrador.objects.get(id_usuario=_user)
+            except(ObjectDoesNotExist, MultipleObjectsReturned):
+                return Response(status=status.HTTP_409_CONFLICT, data={"erro": "Usuario no Existente o existe multiples"
+                                                                               "veces en el origen de datos. USUARIO "
+                                                                               "CORROMPIDO"})
+            _idCompany = _adminCompany.id_empresa
+        else:
+            try:
+                _employee = Empleado.objects.get(id_usuario=_user)
+            except(ObjectDoesNotExist, MultipleObjectsReturned):
+                return Response(status=status.HTTP_409_CONFLICT, data={"erro": "Usuario no Existente o existe multiples"
+                                                                               "veces en el origen de datos. USUARIO "
+                                                                               "CORROMPIDO"})
+            _idCompany = _employee.id_empresa
+
+        _adminSet = Administrador.objects.filter(id_empresa=_idCompany)
+        _employeeSet = Empleado.objects.filter(id_empresa=_idCompany)
+        for admin in _adminSet:
+            _idUser = admin.id_usuario
+            sendPushNotifies(_idUser, "¡Alerta! ha Ocurrido una Incidencia Negativa en la Planta")
+        for _employee in _employeeSet:
+            _idUser = _employee.id_usuario
+            sendPushNotifies(_idUser, "¡Alerta! ha Ocurrido una Incidencia Negativa en la Planta")
+
         return Response(status=status.HTTP_200_OK)
 
 

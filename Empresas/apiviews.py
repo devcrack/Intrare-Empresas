@@ -122,25 +122,35 @@ class AreaListAll(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated, )
     def get_queryset(self):
         user = self.request.user
+        queryset = None
         if user.is_staff:
             queryset = Area.objects.all()
         else:
             if user.roll == settings.ADMIN:
-                admin_company = Administrador.objects.filter(id_usuario=user)[0]
+                try:
+                    admin_company = Administrador.objects.get(id_usuario=user)
+                except ObjectDoesNotExist:
+                    return None
+                # admin_company = Administrador.objects.filter(id_usuario=user)[0]
                 id_company = admin_company.id_empresa
-                print("id Company = " + str(id_company))
                 queryset = Area.objects.filter(id_empresa=id_company)
             else:
                 if user.roll == settings.EMPLEADO:
-                    admin_company = Empleado.objects.filter(id_usuario=user)[0]
+                    try:
+                        admin_company = Empleado.objects.get(id_usuario=user)
+                    except ObjectDoesNotExist:
+                        return None
+                    # admin_company = Empleado.objects.filter(id_usuario=user)[0]
                     id_company = admin_company.id_empresa
                     print("id Company = " + str(id_company))
                     queryset = Area.objects.filter(id_empresa=id_company)
                 else:
                     if user.roll == settings.VIGILANTE:
-                        guard_company = Vigilante.objects.filter(id_usuario=user)[0]
+                        try:
+                            guard_company = Vigilante.objects.get(id_usuario=user)
+                        except ObjectDoesNotExist:
+                            return None
                         id_company = guard_company.id_empresa
-                        print("id Company = " + str(id_company))
                         queryset = Area.objects.filter(id_empresa=id_company)
         return queryset
     serializer_class = AreaSerializers
