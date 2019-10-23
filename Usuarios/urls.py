@@ -16,7 +16,6 @@ urlpatterns = [
     # Activa  Usuario cuando el Anfitrion confirma su Identidad, ademas le envia sus invitaciones
     path('activateUser/', activateUser.as_view(), name='ActivateUser'),
     # Activa Empleado cuando el Administrador confirma su Identida, y le envia su invitacion en caso de tener.
-
     #Lista los Usuarios no Activados
     path('GetUsers/NoActivated', GetUsersNotActivated.as_view({'get':'list'})),
     path('User/Delete/Devices/', DeleteFMCUserDevice.as_view()),

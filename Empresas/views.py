@@ -42,33 +42,40 @@ class AccessCreate(generics.CreateAPIView):
         if _serializer.is_valid():
             _serializer.save()
             _guard_ent = Vigilante.objects.filter(id_usuario=self.request.user)[0]
+            _currentCompany = _guard_ent.id_empresa
+
+            ## <<Cargando Datos de JSON>>##
             _datos_coche = _serializer.data['datos_coche']
             _qr_code = _serializer.data['qr_code']
             try:
                 _invByUsers = InvitationByUsers.objects.get(qr_code=_qr_code)
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={'Error':'Invitacion Corrompida'})
-
-            ## Cargando datos Invitacion ##
-            _typeInv = _invByUsers.idInvitation.typeInv
+            ## <<Cargando Fecha Actual>> ##
             _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
                                 day=timezone.datetime.now().day)
 
+            ## << Cargando datos Invitacion>>
+            _typeInv = _invByUsers.idInvitation.typeInv
+            _companyHost = _invByUsers.idInvitation.id_empresa # Empresa que invita a esta persona.
+            if _currentCompany is not _companyHost:
+                return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                data={"error": "!ACCESO NEGADO¡. Este invitado no ha sido Invitado por la Empresa"})
             if _typeInv == 2: # Invitacion Recurrente
                 _expiration = _invByUsers.idInvitation.expiration
                 _diary = _invByUsers.idInvitation.diary
                 _weekDay = str(timezone.datetime.now().weekday())
                 if _currentDate > _expiration: # La invitacion esta en fecha
                     return Response(status=status.HTTP_401_UNAUTHORIZED,
-                                    data={"error": "Esta invitacion ha expirado. Acceso Negado"})
+                                    data={"error": "!ACCESO NEGADO¡. Esta invitacion ha expirado."})
                 if _weekDay not in _diary: # El dia de la invitacion es el correcto
                     return Response(status=status.HTTP_401_UNAUTHORIZED,
-                                    data={"error": "No esta autorizado para este dia. Acceso Negado"})
+                                    data={"error": "!ACCESO NEGADO¡. No esta autorizado para este dia."})
             else:
                 _dateInv = _invByUsers.idInvitation.dateInv
                 if _currentDate > _dateInv:
                     return Response(status=status.HTTP_401_UNAUTHORIZED,
-                                    data={"error": "Esta invitacion esta fuera de fecha. Acceso Negado"})
+                                    data={"error": "!ACCESO NEGADO¡.Esta invitacion esta fuera de fecha."})
 
             _timeInv = _invByUsers.idInvitation.timeInv
             _currentHour = timezone.datetime.now().hour
