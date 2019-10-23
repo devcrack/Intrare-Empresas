@@ -4,7 +4,7 @@ from .models import *
 from Usuarios.models import CustomUser
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
-from ControlAccs.utils import send_IntrareEmail, send_sms
+from ControlAccs.utils import send_IntrareEmail
 
 
 from Empresas.models import Administrador, Empresa, Area
@@ -77,11 +77,12 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     automovil = serializers.BooleanField(source='idInvitation.automovil')
     secEqu = serializers.SerializerMethodField('getSecEqu')
     diary = serializers.CharField(source='idInvitation.diary')
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
 
     class Meta:
         model = InvitationByUsers
-        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv', 'timeInv',
-                  'asunto', 'automovil', 'qr_code', 'diary', 'secEqu')
+        fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv',
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration')
 
     def getSecEqu(self, obj):
         _areaId = obj.idInvitation.id_area
@@ -104,11 +105,12 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     automovil = serializers.BooleanField(source='idInvitation.automovil')
     diary = serializers.CharField(source='idInvitation.diary')
     secEqu = serializers.SerializerMethodField('getSecEqu')
-
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
+    id_Invitation = serializers.IntegerField(source='idInvitation.id')
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
-                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu')
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration','id_Invitation')
 
     def getSecEqu(self, obj):
         _areaId = obj.idInvitation.id_area
@@ -144,6 +146,11 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
     automovil = serializers.BooleanField(source='idInvitation.automovil')
     notas = serializers.CharField(source='idInvitation.notas')
     secEqu = serializers.SerializerMethodField('getSecEqu')
+    expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
+    # Mamadas del Andres
+    typeInv = serializers.IntegerField(source='idInvitation.typeInv')
+    diary = serializers.CharField(source='idInvitation.diary')
+    id_Invitation = serializers.IntegerField(source='idInvitation.id')
 
     class Meta:
         model = InvitationByUsers
@@ -170,8 +177,12 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             'notas',
             'logoEmpresa',
             'avatar',
-            'secEqu'
-
+            'secEqu',
+            'expiration',
+            # Mamadas del Andres
+            'typeInv',
+            'diary',
+            'id_Invitation'
         )
 
     def getSecEqu(self, obj):
@@ -216,7 +227,7 @@ class MasiveInvSerializer(serializers.Serializer):
     guests = BasicDataUserSerializer(many=True)
     subject = serializers.CharField(max_length=400)  #
     typeInv = serializers.IntegerField(default=0)  #
-    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
+    dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True)
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])  #
     exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], allow_null=True)  #
     diary = serializers.CharField(max_length=7, allow_blank=True)
@@ -228,26 +239,14 @@ class MasiveInvSerializer(serializers.Serializer):
         return MassiveInvObject(**validated_data)
 
     def validate(self, data):
-        if _date > data['dateInv']:
-            raise serializers.ValidationError("La fecha de la invitacion esta vencida")
-        # Validando que la fecha de expiracion sea mayor o igual a la fecha de la invitacion.
+        if data['dateInv'] != None:
+            if _date > data['dateInv']:
+                raise serializers.ValidationError("La fecha de la invitacion esta vencida")
         if data['exp'] != None:
-            if data['exp'] < data['dateInv']:
-                raise serializers.ValidationError("La fecha de expiracion no puede ser antes de que "
-                                                  "acontezca la invitacion")
+            if data['exp'] < _date:
+                raise serializers.ValidationError("La fecha de expiracion no puede ser en una fecha "
+                                                  "Vencida")
         return data
-
-
-# def get_Company(idUsr):
-#     try:
-#         _host = CustomUser.objects.get(id=idUsr)
-#     except ObjectDoesNotExist:
-#         return None
-#     try:
-#         admin = Administrador.objects.get(id_usuario=_host)
-#     except ObjectDoesNotExist:
-#         return None
-#     return admin.id_empresa
 
 
 class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
@@ -257,9 +256,9 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
     dateInv = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"])
     host = serializers.IntegerField(required=False)
     timeInv = serializers.TimeField(format="%H:%M", input_formats=['%H:%M'])
-    notes = serializers.CharField(default="")
+    notes = serializers.CharField(default="", max_length=300, allow_blank=True)
     exp = serializers.DateField(format="%Y-%m-%d", input_formats=["%Y-%m-%d"], required=False)
-
+    Token = serializers.CharField(required=False)
 
     class Meta:
         model = ReferredInvitation
@@ -316,11 +315,12 @@ class ReferredInvitationSerializerCreate(serializers.ModelSerializer):
             except ObjectDoesNotExist:
                 return None
             _companyID = _employee.id_empresa
+        _token = token_hex(7)
         _nwReferredInv = ReferredInvitation(id_empresa=_companyID, areaId=validated_data['areaId'],
                                             dateInv=validated_data['dateInv'], timeInv=validated_data['timeInv'],
                                             subject=validated_data['subject'], vehicle=validated_data['vehicle'],
                                             notes=validated_data['notes'], companyFrom=validated_data['companyFrom'],
-                                            host=usr, referredMail=_referredMail)
+                                            host=usr, referredMail=_referredMail, Token=_token)
         _nwReferredInv.save()
         _link = "https://first-project-vuejs.herokuapp.com/form_invitation_data/" + _nwReferredInv.Token
         html_message = render_to_string("referredMail.html",
@@ -387,6 +387,12 @@ class EnterpriseSerializer(serializers.Serializer):
 
         return EnterpriseInvObject(**validated_data)
 
+
+class FullInvitationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Invitacion
+        fields = '__all__'
 
 
 
