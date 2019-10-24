@@ -20,6 +20,7 @@ def send_sms(number, message):
         to_number = strNumber
     else:
         to_number = '52' + strNumber
+    message = message.encode("utf-8")
     print("PUTO MENSAJE", message)
     responseData = CLIENT.send_message(
         {
