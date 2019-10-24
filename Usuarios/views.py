@@ -179,13 +179,13 @@ class activateUser(generics.UpdateAPIView):
         instance.temporalToken = None  # Limpiamos su token Temporal.
         instance.save()
 
-        #  Envio de invitacion0 y contraseña.
+        #  Envio de invitacion y contraseña.
+        _currentDate = timezone.datetime.now()
         addressee = instance.email # Destinatario
         _userDevice = FCMDevice.objects.filter(user=instance)
-        _invitationSByUSR = InvitationByUsers.objects.filter(host=usr, idGuest=instance)
-        _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
-                            day=timezone.datetime.now().day)  # Fecha actual
+        _invitationSByUSR = InvitationByUsers.objects.filter(idInvitation__dateInv__gte=_currentDate, idGuest=instance)
         index = 0
+
         for _invByUSR in _invitationSByUSR:  # El usuario puede tener mas de una invitacion vinculada a su cuenta
             _idInv = _invByUSR.idInvitation
             _inv = None
@@ -194,37 +194,35 @@ class activateUser(generics.UpdateAPIView):
             except ObjectDoesNotExist:
                 return Response(status=status.HTTP_204_NO_CONTENT, data={'error': 'ERROR EN INVITACION'})
             # Aqui verificamos si la Invitacion es Valida, en base a su fecha.
-            if _inv.dateInv >= _currentDate:
-                _walletLink = walletLink + _invByUSR.qr_code
-                _company = _inv.id_empresa.name
-                # _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
-                _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
-                _qrCode = _invByUSR.qr_code
-                _cellNumber = instance.celular
-                _idArea = _inv.id_area
-                _secEqu_s = SecurityEquipment.objects.filter(idArea=_idArea)
-                _securityEquipments = []
-                for _SE in _secEqu_s:
-                    _securityEquipments.append(_SE.nameEquipment)
-
-                _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
-                html_message = render_to_string('FirstMailInv.html', {'empresa': _company, 'fecha': _dateTime,
-                                                                      'codigo': _qrCode, 'password': _tmpPassword,
-                                                                      'downloadFile': _walletLink,
-                                                                      'secEqus': _securityEquipments})
-                if index == 0:
-                    if len(_userDevice) > 0:
-                        _userDevice.send_message(title="Intrare", body="Tienes una invitación", sound="Default") #PUSH
-                    _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
-                    if _smsResponse["messages"][0]["status"] == "0":
-                        log = 'Mensaje SMS ENVIADO'
-                    else:
-                        log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
-                    print('LOGs SMS!! ')
-                    print(log)
-                print('Destinatario ', addressee)
-                send_IntrareEmail(html_message, addressee)  # MAIL
-                index += 1
+            _walletLink = walletLink + _invByUSR.qr_code
+            _company = _inv.id_empresa.name
+            # _dateTime = str(_inv.dateInv) + " " + _inv.timeInv.strftime("%H:%M")
+            _dateTime = str(_inv.dateInv) + " " + str(_inv.timeInv)
+            _qrCode = _invByUSR.qr_code
+            _cellNumber = instance.celular
+            _idArea = _inv.id_area
+            _secEqu_s = SecurityEquipment.objects.filter(idArea=_idArea)
+            _securityEquipments = []
+            for _SE in _secEqu_s:
+                _securityEquipments.append(_SE.nameEquipment)
+            _msgInv = "Se te ha enviado una invitacion, verifica desde tu correo electronico o en la aplicacion"
+            html_message = render_to_string('FirstMailInv.html', {'empresa': _company, 'fecha': _dateTime,
+                                                                  'codigo': _qrCode, 'password': _tmpPassword,
+                                                                  'downloadFile': _walletLink,
+                                                                  'secEqus': _securityEquipments})
+            if index == 0:
+                if len(_userDevice) > 0:
+                    _userDevice.send_message(title="Intrare", body="Tienes una invitación", sound="Default") #PUSH
+                _smsResponse = send_sms(_cellNumber, _msgInv)  # SMS
+                if _smsResponse["messages"][0]["status"] == "0":
+                    log = 'Mensaje SMS ENVIADO'
+                else:
+                    log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
+                print('LOGs SMS!! ')
+                print(log)
+            print('Destinatario ', addressee)
+            send_IntrareEmail(html_message, addressee)  # MAIL
+            index += 1
         return Response(status=status.HTTP_200_OK)
 
 
