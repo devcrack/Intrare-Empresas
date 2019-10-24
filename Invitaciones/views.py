@@ -47,12 +47,10 @@ def create_user(_email, cellphone):
     
     if _email is None: # No se dio Ningun EMAIL
         nw_user = CustomUser(
-            email=None, celular=cellphone, password='pass', username=cellphone, temporalToken=token_hex(4),
-            is_active=False)
+            email=None, celular=cellphone, password='pass', username=cellphone, is_active=False)
     else: # Se  ingreso un EMAIL
         _aEmail = _email.lower()
-        nw_user = CustomUser( email=_aEmail, celular=cellphone, username=_aEmail,
-                              temporalToken=token_hex(4), is_active=False)
+        nw_user = CustomUser( email=_aEmail, celular=cellphone, username=_aEmail, is_active=False)
         nw_user.set_password('mientras123')
     try:
         nw_user.save()

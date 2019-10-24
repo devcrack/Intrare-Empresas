@@ -176,7 +176,7 @@ class activateUser(generics.UpdateAPIView):
         _tmpPassword = token_hex(3)  # tmp PASS
         instance.set_password(_tmpPassword)  # Se establece contraseña temporal del usuario.
         instance.is_active = True  # Activamos el usuario.
-        instance.temporalToken = ""  # Limpiamos su token Temporal.
+        instance.temporalToken = None  # Limpiamos su token Temporal.
         instance.save()
 
         #  Envio de invitacion0 y contraseña.
@@ -292,7 +292,7 @@ class ActivateEmployee(generics.UpdateAPIView):
         _tmpPassword = token_hex(3)
         instance.set_password(_tmpPassword)
         instance.is_active = True
-        instance.temporalToken = ""
+        instance.temporalToken = None
         instance.save()
 
         addressee = instance.email
