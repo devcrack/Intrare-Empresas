@@ -20,24 +20,15 @@ def send_sms(number, message):
         to_number = strNumber
     else:
         to_number = '52' + strNumber
-    _message = message.encode("utf-8")
-    print("PUTO MENSAJE", _message)
+
     responseData = CLIENT.send_message(
         {
             "from": "Intrare Empresarial",
             "to": to_number,
-            "text": _message,
+            "text": message,
             }
         )
-    _message = message.encode("unicode_escape")
-    print("PUTO MENSAJE", _message)
-    responseData = CLIENT.send_message(
-        {
-            "from": "Intrare Empresarial",
-            "to": to_number,
-            "text": _message,
-        }
-    )
+    print(CLIENT.get_balance())
     return responseData
 
 def send_IntrareEmail(html_message, email):
