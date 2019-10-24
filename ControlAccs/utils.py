@@ -20,7 +20,7 @@ def send_sms(number, message):
         to_number = strNumber
     else:
         to_number = '52' + strNumber
-
+    print("PUTO MENSAJE", message)
     responseData = CLIENT.send_message(
         {
             "from": "Intrare Empresarial",
