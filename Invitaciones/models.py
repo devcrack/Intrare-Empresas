@@ -12,7 +12,6 @@ def defaultExpiration():
     _month = timezone.datetime.now().month
     _day = timezone.datetime.now().day
     _date = date(_year, _month, _day)
-
     _delta = timezone.timedelta(days=1)
 
     return _date + _delta
