@@ -33,7 +33,7 @@ class Invitacion(models.Model):
     automovil = models.BooleanField(null=False, blank=False)
     notas = models.CharField(max_length=256, null=True, blank=True, default="")
     empresa = models.CharField(max_length=254, null=True, blank=True, default="")
-    leida = models.BooleanField(default=False, null=False)
+    confirmed = models.BooleanField(default=False, null=False)
     urlVideo = models.CharField(null=True, max_length=300)
 
     def __str__(self):
