@@ -58,7 +58,7 @@ class AccessCreate(generics.CreateAPIView):
             ## << Cargando datos Invitacion>>
             _typeInv = _invByUsers.idInvitation.typeInv
             _companyHost = _invByUsers.idInvitation.id_empresa # Empresa que invita a esta persona.
-            if _currentCompany is not _companyHost:
+            if _currentCompany.id is not _companyHost.id:
                 return Response(status=status.HTTP_401_UNAUTHORIZED,
                                 data={"error": "!ACCESO NEGADO¡. Este invitado no ha sido Invitado por la Empresa"})
             if _typeInv == 2: # Invitacion Recurrente
