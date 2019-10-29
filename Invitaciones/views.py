@@ -25,6 +25,7 @@ linkWallet = 'https://api-intrare-development.herokuapp.com/wallet/create/'  # D
 # linkWallet = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'  # Production V1
 linkPreregisterUser = 'https://web-intrare.herokuapp.com/preregistro/'  # Development
 # linkPreregisterUser = 'https://first-project-vuejs.herokuapp.com/preregistro/'  # Production V1
+linkConfirmAppointment = "url"
 linkPreregisterEmployee = "URL"
 
 
