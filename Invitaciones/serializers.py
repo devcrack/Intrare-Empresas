@@ -400,6 +400,14 @@ class FullInvitationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class InvitationByUsersSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = InvitationByUsers
+        fields = '__all__'
+
+
+
 
 
 

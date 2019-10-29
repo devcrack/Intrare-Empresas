@@ -35,5 +35,9 @@ urlpatterns = [
     # Creacion Invitacion Empresarial
     path('createReferredInv', Createreferredinvitation.as_view()),
     path('createEnterpriseInv', CreateEnterpriseInvitation.as_view()),
+    # Elimina una invitacion
     path('deleteInvitation/<int:pk>/', DeleteInvitation.as_view()),
+    # Concertar Invitacion(Invitado confirma que asistirá a la cita)
+    path('setConfirmed_Appointment/<str:qr_code>/<flag>/', SetConfirmAppointment.as_view()),
+
 ]

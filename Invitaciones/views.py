@@ -27,7 +27,12 @@ linkPreregisterUser = 'https://web-intrare.herokuapp.com/preregistro/'  # Develo
 # linkPreregisterUser = 'https://first-project-vuejs.herokuapp.com/preregistro/'  # Production V1
 linkPreregisterEmployee = "URL"
 
+
 def guest_exist(cellphoneN, _email):
+    print("¿Usuario Existe?")
+    print("mail ", _email)
+    print("celular", cellphoneN)
+
     if _email is None:
         try:
             user = CustomUser.objects.get(celular=cellphoneN)
@@ -44,13 +49,12 @@ def guest_exist(cellphoneN, _email):
 def create_user(_email, cellphone):
     _errorResponse = None
 
-    
-    if _email is None: # No se dio Ningun EMAIL
+    if _email is None:  # No se dio Ningun EMAIL
         nw_user = CustomUser(
             email=None, celular=cellphone, password='pass', username=cellphone, is_active=False)
-    else: # Se  ingreso un EMAIL
+    else:  # Se  ingreso un EMAIL
         _aEmail = _email.lower()
-        nw_user = CustomUser( email=_aEmail, celular=cellphone, username=_aEmail, is_active=False)
+        nw_user = CustomUser(email=_aEmail, celular=cellphone, username=_aEmail, is_active=False)
         nw_user.set_password('mientras123')
     try:
         nw_user.save()
@@ -80,7 +84,7 @@ def render_MsgPregister(_headerMsg, msg, link):
 
 
 def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expDate,
-                      subject, vehicle, notes, from_company, _diary):
+                         subject, vehicle, notes, from_company, _diary):
     nw_invitation = Invitacion(
         id_empresa=id_company,
         id_area=id_area,
@@ -113,9 +117,11 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         print(_email)
         _cellphone = _guest['cellphone']
         print(_cellphone)
-        _idUser = guest_exist(_cellphone, _email)  # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
+        _idUser = guest_exist(_cellphone,
+                              _email)  # Si el Usuario no existe, forzosamente proporcionar el Numero de celular y email.
         if _idUser == _host:
-            error_response = {"error": "Una extraña sitaucion ha ocurrido. Estas ingresando tus propios datos en la invitacion"}
+            error_response = {
+                "error": "Una extraña sitaucion ha ocurrido. Estas ingresando tus propios datos en la invitacion"}
             return error_response, None
         if _idUser is None:
             error_response, _idUser = create_user(_email, _cellphone)
@@ -125,7 +131,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
         _idUser.host = _host
         _idUser.save()
 
-        _specialQR = token_hex(8) + str(_idUser.id) # CONCATENADO
+        _specialQR = token_hex(8) + str(_idUser.id)  # CONCATENADO
         _nwInByUSER = InvitationByUsers(idInvitation=inv, qr_code=_specialQR, host=_host, idGuest=_idUser)
         _nwInByUSER.save()
 
@@ -143,10 +149,11 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                           _nwInByUSER.qr_code, _wallet, _securityEquipments)
             if len(_userDevices) > 0:
-                _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación. Anfitrion: " + host_name,
+                _userDevices.send_message(title="Intrare",
+                                          body="Se te ha enviado una invitación. Anfitrion: " + host_name,
                                           sound="Default")
             send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-            _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
+            _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS
         # Se envia al usuario una notificacion para que realize su preRegistro N VECES
         else:
             _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Preregistro en:"
@@ -206,10 +213,11 @@ def validate_areas(_id_company, _id_area):
 
 
 def expDate(dateInv):
-    exp = timezone.datetime.strptime(dateInv , "%Y-%m-%d").date()
+    exp = timezone.datetime.strptime(dateInv, "%Y-%m-%d").date()
     delta = timezone.timedelta(days=2)
     exp = exp + delta
     return exp
+
 
 def dateInv():
     _year = timezone.datetime.now().year
@@ -218,8 +226,10 @@ def dateInv():
     _date = date(_year, _month, _day)
     return _date
 
-class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
-    permission_classes = [IsAuthenticated,IsAdmin | IsEmployee,]  # The user logged have to be and admin or an employee
+
+class InvitationListAdminEmployee(viewsets.ModelViewSet):  ####
+    permission_classes = [IsAuthenticated,
+                          IsAdmin | IsEmployee, ]  # The user logged have to be and admin or an employee
 
     def list(self, request, *args, **kwargs):
         y = self.kwargs['year']
@@ -229,14 +239,14 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet): ####
 
         invsByUser = InvitationByUsers.objects.filter(host=usr, idInvitation__fecha_hora_envio__year=y,
                                                       idInvitation__fecha_hora_envio__month=m,
-                                                      idInvitation__fecha_hora_envio__day=d) # Todas las invitaciones que ha generado este Usuario.
+                                                      idInvitation__fecha_hora_envio__day=d)  # Todas las invitaciones que ha generado este Usuario.
         queryset = self.queryset = invsByUser
         # serializer = InvitationToHostSerializer(queryset, many=True) #Cagadas del Andres
         serializer = InvitationToGuardSerializer(queryset, many=True)
         return Response(serializer.data)
 
 
-class InvitationListToGuard(viewsets.ModelViewSet): ####
+class InvitationListToGuard(viewsets.ModelViewSet):  ####
     permission_classes = (isGuard,)
 
     def list(self, request, *args, **kwargs):
@@ -273,7 +283,7 @@ class InvitationListToManagerAndEmployee(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class InvitationListToSimpleUser(viewsets.ModelViewSet): ####
+class InvitationListToSimpleUser(viewsets.ModelViewSet):  ####
     permission_classes = [IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
@@ -300,7 +310,7 @@ class MassiveInvitationCreate(generics.CreateAPIView):
             _serializer.save()
 
             _areaId = _serializer.data['areaId']
-            _guests = _serializer.data['guests'] #Lista invitados 1 | +
+            _guests = _serializer.data['guests']  # Lista invitados 1 | +
             _dateInv = _serializer.data['dateInv']
             _timeInv = _serializer.data['timeInv']
             _exp = _serializer.data['exp']
@@ -319,18 +329,19 @@ class MassiveInvitationCreate(generics.CreateAPIView):
 
             if usr.roll == settings.ADMIN:
                 _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
-                _idCompany = _admCompany.id_empresa # Obtener ID_EMPRESA via ADMIN
+                _idCompany = _admCompany.id_empresa  # Obtener ID_EMPRESA via ADMIN
             else:  # Logged as Employee
                 _employee = Empleado.objects.filter(id_usuario=usr)[0]
                 _idCompany = _employee.id_empresa  # Obtener ID_EMPRESA via EMPLEADO
             _errorResponse, _area = validate_areas(_idCompany, _areaId)  # Validando AREAS
             if _area:
-            #  Creacion de Invitacion
-                _errorResponse, invitation = createOneMoreInvitaitons(_idCompany, _area, usr, _guests,_typeInv,
-                                                                      _dateInv, _timeInv, _exp, _subject,_vehicle,
+                #  Creacion de Invitacion
+                _errorResponse, invitation = createOneMoreInvitaitons(_idCompany, _area, usr, _guests, _typeInv,
+                                                                      _dateInv, _timeInv, _exp, _subject, _vehicle,
                                                                       _notes, _companyFrom, _diary)
                 if _errorResponse:
-                    return Response(data=_errorResponse, status=status.HTTP_400_BAD_REQUEST) # Error al crear Invitacion
+                    return Response(data=_errorResponse,
+                                    status=status.HTTP_400_BAD_REQUEST)  # Error al crear Invitacion
             else:
                 return Response(data=_errorResponse, status=status.HTTP_404_NOT_FOUND)  # Error ID de Area
         else:
@@ -351,7 +362,8 @@ class InvitationbyQRCode(generics.ListAPIView):
 
 
 class GetInvitationByHOST(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated,IsAdmin | IsEmployee, ]  # The user logged have to be and admin or an employee
+    permission_classes = [IsAuthenticated,
+                          IsAdmin | IsEmployee, ]  # The user logged have to be and admin or an employee
 
     def list(self, request, *args, **kwargs):
         usr = self.request.user
@@ -365,7 +377,8 @@ class GetInvitationByHOST(viewsets.ModelViewSet):
 
 
 class Createreferredinvitation(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated,IsAdmin | IsEmployee, ]  # The user logged have to be and admin or an employee
+    permission_classes = [IsAuthenticated,
+                          IsAdmin | IsEmployee, ]  # The user logged have to be and admin or an employee
 
     def create(self, request, *args, **kwargs):
         self.serializer_class = ReferredInvitationSerializerCreate
@@ -406,7 +419,8 @@ class ResendReferralInvitation(generics.UpdateAPIView):
             _numForwarding = _referralInvitation.maxForwarding
             _referralExpiration = _referralInvitation.referredExpiration
             if _numForwarding < 1:
-                return Response(status=status.HTTP_403_FORBIDDEN, data={'error':'Se ha excedido el numero maximo de reenvios'})
+                return Response(status=status.HTTP_403_FORBIDDEN,
+                                data={'error': 'Se ha excedido el numero maximo de reenvios'})
             _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
                                 day=timezone.datetime.now().day)  # Fecha actual
             if _referralInvitation < _currentDate:
@@ -418,7 +432,7 @@ class ResendReferralInvitation(generics.UpdateAPIView):
             _referralInvitation.maxForwarding = _numForwarding
             _referralInvitation.referredMail = _newReferralMail
             _referralInvitation.save()
-            _link = "URL/"+_token
+            _link = "URL/" + _token
             html_message = render_to_string("referredMail.html",
                                             {
                                                 "forwardNum": _numForwarding,
@@ -466,7 +480,8 @@ def justCreateEnterpriseInv(serializer, _host):
                                _fromCompany, _diary)
     _idUser = guest_exist(_guestPhone, _guestMail)
     if _idUser == _host:
-        error_response = {"error": "Una extraña sitaucion ha ocurrido. Estas ingresando tus propios datos en la invitacion"}
+        error_response = {
+            "error": "Una extraña sitaucion ha ocurrido. Estas ingresando tus propios datos en la invitacion"}
         return error_response, None
     if _idUser is None:
         print("PREREGISTRANDO USUARIO")
@@ -492,10 +507,11 @@ def justCreateEnterpriseInv(serializer, _host):
         _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
                                       _nwInByUSER.qr_code, _wallet, _securityEquipments)
         if len(_userDevices) > 0:
-            _userDevices.send_message(title="Intrare", body="Se te ha enviado una invitación Empresarial. Anfitrion: " + host_name,
+            _userDevices.send_message(title="Intrare",
+                                      body="Se te ha enviado una invitación Empresarial. Anfitrion: " + host_name,
                                       sound="Default")
         send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
-        _smsResponse = send_sms(_idUser.celular, _msgInv) #SMS
+        _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS
     else:  # Preregistro Empleado
         _msgReg = "Recibiste una invitacion Empresarial. Para acceder a ella realiza tu Preregistro en:"
         link = linkPreregisterEmployee
@@ -529,7 +545,8 @@ class CreateEnterpriseInvitation(generics.CreateAPIView):
             try:
                 _host = CustomUser.objects.get(id=_idHost)
             except ObjectDoesNotExist:
-                return Response(status=status.HTTP_400_BAD_REQUEST, data={"error" : "Error con su Cuenta de Administrador"})
+                return Response(status=status.HTTP_400_BAD_REQUEST,
+                                data={"error": "Error con su Cuenta de Administrador"})
 
             _errorResponse, invitation = justCreateEnterpriseInv(_serializer, _host)
             if _errorResponse:
@@ -540,7 +557,7 @@ class CreateEnterpriseInvitation(generics.CreateAPIView):
 
 
 class DeleteInvitation(generics.DestroyAPIView):
-    permission_classes = [IsAuthenticated,IsAdmin | IsEmployee,]
+    permission_classes = [IsAuthenticated, IsAdmin | IsEmployee, ]
 
     queryset = Invitacion.objects.all()
     serializer_class = FullInvitationSerializer
@@ -552,17 +569,52 @@ class DeleteInvitation(generics.DestroyAPIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
+class SetConfirmAppointment(generics.UpdateAPIView):
+    """
+    Confirmacion para concertar invitacion. Esto ocurre, por parte del invitado.
+    Notificar  anfitrion.
+    """
+    permission_classes = [IsAuthenticated]
+    queryset = InvitationByUsers.objects.all()
+    serializer_class = InvitationByUsersSerializer
+    lookup_field = 'qr_code'
 
+    def update(self, request, *args, **kwargs):
+        _appointmentAccepted = bool(self.kwargs["flag"])
 
+        instance = self.get_object()
+        instance.confirmed = _appointmentAccepted
+        instance.save()
 
+        # << Obtener datos de cita>>
+        _host = instance.host
+        _hostFullName = _host.first_name + " " + _host.last_name
+        _hostMail = _host.email
+        _guest = instance.idGuest
+        _guestFullName = _guest.first_name + " " + _guest.last_name
+        _dateInv = instance.idInvitation.dateInv
 
+        # <<Determinar el tipo de respuestas que el host recibira >>
+        _msgHeader = "Hola " + _hostFullName
 
+        _msgMail = "Tu invitado " + _guestFullName
+        _status = None
+        if _appointmentAccepted:
+            _msgMail = _msgMail + " " + "Ha Aceptado la Invitacion "
+            _msgPush = " Un invitado ha Aceptado la Invitacion"
+            _status = status.HTTP_200_OK
+        else:
+            _msgMail = _msgMail + " " + "Ha Declinado la Invitacion "
+            _msgPush = " Un invitado ha Declinado la Invitacion"
+            _status = status.HTTP_400_BAD_REQUEST
+        _msgMail = _msgMail + "con fecha de: " + str(_dateInv)
+        html_message = render_to_string("genericEmail.html", {"messageHeader": _msgHeader,
+                                                               "msg": _msgMail})
+        # << Enviar notificacion a host de que el usuario a aceptado o declinado >>.
+        _hostDevices = FCMDevice.objects.filter(user=_host)
+        if len(_hostDevices):
+            msg = _msgHeader + _msgPush
+            _hostDevices.send_message(title="Intrare", body=msg, sound="Default")
+        send_IntrareEmail(html_message, _hostMail)
 
-
-
-
-
-
-
-
-
+        return Response(status=_status)
