@@ -2,6 +2,8 @@
 import nexmo
 from django.core.mail import send_mail
 from django.conf import settings
+import random
+
 
 CLIENT = nexmo.Client(key='532e50a4', secret='7Rh1PbAbDRApW2jw')
 subject = 'Intrare Industrial - Invitación'
@@ -28,6 +30,7 @@ def send_sms(number, message):
             "text": message,
             }
         )
+    print(CLIENT.get_balance())
     return responseData
 
 def send_IntrareEmail(html_message, email):
@@ -36,3 +39,9 @@ def send_IntrareEmail(html_message, email):
     msg = ''
     send_mail(subject=_subject, from_email=email_from, message= msg, recipient_list=recipient_list,
               html_message=html_message)
+
+def phn():
+    n = '0000000000'
+    while '9' in n[3:6] or n[3:6]=='000' or n[6]==n[7]==n[8]==n[9]:
+        n = str(random.randint(10**9, 10**10-1))
+    return n[:3] + n[3:6] + n[6:]

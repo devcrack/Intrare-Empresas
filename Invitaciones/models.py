@@ -12,7 +12,6 @@ def defaultExpiration():
     _month = timezone.datetime.now().month
     _day = timezone.datetime.now().day
     _date = date(_year, _month, _day)
-
     _delta = timezone.timedelta(days=1)
 
     return _date + _delta
@@ -34,7 +33,7 @@ class Invitacion(models.Model):
     automovil = models.BooleanField(null=False, blank=False)
     notas = models.CharField(max_length=256, null=True, blank=True, default="")
     empresa = models.CharField(max_length=254, null=True, blank=True, default="")
-    leida = models.BooleanField(default=False, null=False)
+    # confirmed = models.BooleanField(default=False, null=False)
     urlVideo = models.CharField(null=True, max_length=300)
 
     def __str__(self):
@@ -54,6 +53,7 @@ class InvitationByUsers(models.Model):
     qr_code = models.CharField(max_length=30, null=False)
     host = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, default=None, related_name='Invitation_host')
     idGuest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=False, related_name='Invitation_guest')
+    confirmed = models.BooleanField(default=False, null=False)
 
     def __str__(self):
         return f"ID = {self.id} QRCode {self.qr_code} INV:{self.idInvitation}  GUEST = {self.idGuest}"

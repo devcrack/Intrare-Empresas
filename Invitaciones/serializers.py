@@ -10,11 +10,13 @@ from ControlAccs.utils import send_IntrareEmail
 from Empresas.models import Administrador, Empresa, Area
 from Empresas.models import Empleado, SecurityEquipment
 
-# linkInvitationData = "https://web-intrare.herokuapp.com/form_invitation_data/"  # Link Development
-linkInvitationData = "https://first-project-vuejs.herokuapp.com/form_invitation_data/"  # Link Production V1
+
+linkInvitationData = "https://web-intrare.herokuapp.com/form_invitation_data/"  # Link Development
+# linkInvitationData = "https://first-project-vuejs.herokuapp.com/form_invitation_data/"  # Link Production V1
 
 _date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
              day=timezone.datetime.now().day)  # Fecha actual
+
 
 class InvitacionSerializers(serializers.ModelSerializer):
     """ Serializer just for invitations.
@@ -396,6 +398,14 @@ class FullInvitationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Invitacion
         fields = '__all__'
+
+
+class InvitationByUsersSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = InvitationByUsers
+        fields = '__all__'
+
 
 
 
