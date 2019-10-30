@@ -575,7 +575,7 @@ class SetConfirmAppointment(generics.UpdateAPIView):
     Confirmacion para concertar invitacion. Esto ocurre, por parte del invitado.
     Notificar  anfitrion.
     """
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     queryset = InvitationByUsers.objects.all()
     serializer_class = InvitationByUsersSerializer
     lookup_field = 'qr_code'

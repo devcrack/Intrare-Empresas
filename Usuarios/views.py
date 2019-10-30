@@ -372,7 +372,31 @@ class SendAlert(generics.ListAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
+class DeleteEmployee(generics.DestroyAPIView):
+    permission_classes = [IsAuthenticated, isAdmin]
 
+    def delete(self, request, *args, **kwargs):
+        _currentUser = self.request.user
+        try:
+            admin =Administrador.objects.get(id_usuario=_currentUser)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Usuario de Administrador Corrompido"})
+        _adminCompany = admin.id_empresa
+        _idEmployee = self.kwargs["idEmployee"]
+        try:
+            _employee = Empleado.objects.get(id=_idEmployee)
+        except(ObjectDoesNotExist, MultipleObjectsReturned):
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Datos de empleado corrompidos"})
+        _employeeCompany = _employee.id_empresa
+
+        if _adminCompany.id is not _employeeCompany.id:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Intento de Eliminacion de Empleado de "
+                                                                               "una empresa externa"})
+        _idUser = _employee.id_usuario
+        _idUser.roll = 0
+        _idUser.save()
+        _employee.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 

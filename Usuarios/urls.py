@@ -23,4 +23,5 @@ urlpatterns = [
     path('User/Reset/Passwordsita/', RestorePasswordUser.as_view()),
     # Envia alertas a todos los miembros de una compañia determinada por la sesion de un administrador o empleado
     path('SendAlert', SendAlert.as_view()),
+    path('deleteEmployee/<int:idEmployee>/', DeleteEmployee.as_view()),
 ]
