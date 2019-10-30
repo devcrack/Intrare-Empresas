@@ -416,6 +416,22 @@ Retorna un JSON, como el siguiente:
 
 Token debe de ser de un admin o un empleado. Obviamente el Id de la invitacion solmente lo va a tener el host que tiene acceso a sus propias invitaciones 
 
+
+### Confirmacion de Invitacion GUEST->HOST
+
+**request:** PATCH
+
+**url:** http://127.0.0.1:8000/setConfirmed_Appointment/**>TOKEN_InvitaionByUser</>TRUE/FLASE<**/
+
+**header** Authorization: Token 20c5c98b94f099bbd9c1c28a38475b77b6ddc91d
+
+**Ejemplo:**
+```
+http://127.0.0.1:8000/setConfirmed_Appointment/dae7316d72b9a7fe32/true/
+```
+Aqui se esta señalando que la invitacion con el qrCode ```dae7316d72b9a7fe32``` es una invitacion confirmada.
+
+
 ## Wallet
 Solo cosuman GET /wallet/create/>qrCODE< 
 
@@ -517,11 +533,11 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
 
 ### **Enviar Alerta** (Boton de Panico)
 
-<<<<<<< HEAD
 **request GET**
 
 **url** http://127.0.0.1:8000/SendAlert
-=======
+
+
 ### Listar Equipo de Seguridad por Area
 
 **REQUEST:** GET
@@ -558,15 +574,21 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
 
 
 
+### Eliminar Empleados
 
+**request:** DELETE
+  
+**url:** http://127.0.0.1:8000/deleteEmployee/>ID_Empleado</
 
->>>>>>> c35307643d4526008bbfb7b365cb1dc2e25ac503
+**Header:** Authorization: Token 20c5c98b94f099bbd9c1c28a38475b77b6ddc91d
 
-**header**  Authorization: Token bd5faeaaea1dc792721c228b309c333e6cd11d5f Token de un Administrador o un Empleado
+**Ejemplo:**
 
+```
+http://127.0.0.1:8000/deleteEmployee/1/
+```
 
-
-
+Aqui se esta eliminado el empleado con el Id 1.
 
 
 
