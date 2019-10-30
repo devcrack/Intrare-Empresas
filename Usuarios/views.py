@@ -431,7 +431,7 @@ class UpgradeUserToEmployee(generics.UpdateAPIView):
         _user.save()
         _nwEmployee = Empleado(id_empresa=_Company, id_usuario=_user, id_area=_area, extension=_extension)
         _nwEmployee.save()
-
+        
         return Response(status=status.HTTP_200_OK)
 
 

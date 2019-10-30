@@ -49,6 +49,25 @@
 }
 ```
 
+### Upgrade Usuarios Empleado
+
+**request:** PATCH 
+
+**url**  http://127.0.0.1:8000/upgradeUserEmployee/
+
+**header** Authorization: Token 20c5c98b94f099bbd9c1c28a38475b77b6ddc91d
+  
+**json** 
+```json
+{
+	"idUsuario":32,
+	"idArea":1,
+	"extension":324
+}
+```
+
+Si no se tiene idea de que extension poner, ingrese 00000 o cualquier numero sin sentido, ya que el modelo lo indica como un campo obligatorio
+
 
 ## **Invitaciones**
 
