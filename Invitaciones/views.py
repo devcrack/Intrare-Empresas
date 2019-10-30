@@ -581,11 +581,10 @@ class SetConfirmAppointment(generics.UpdateAPIView):
     lookup_field = 'qr_code'
 
     def update(self, request, *args, **kwargs):
-        _appointmentAccepted = bool(self.kwargs["flag"])
+        _appointmentAccepted = self.kwargs["flag"]
 
         instance = self.get_object()
-        instance.confirmed = _appointmentAccepted
-        instance.save()
+
 
         # << Obtener datos de cita>>
         _host = instance.host
@@ -600,17 +599,22 @@ class SetConfirmAppointment(generics.UpdateAPIView):
 
         _msgMail = "Tu invitado " + _guestFullName
         _status = None
-        if _appointmentAccepted:
+
+        if _appointmentAccepted == "True":
             _msgMail = _msgMail + " " + "Ha Aceptado la Invitacion "
             _msgPush = " Un invitado ha Aceptado la Invitacion"
             _status = status.HTTP_200_OK
+            instance.confirmed = True
         else:
             _msgMail = _msgMail + " " + "Ha Declinado la Invitacion "
             _msgPush = " Un invitado ha Declinado la Invitacion"
             _status = status.HTTP_400_BAD_REQUEST
+            instance.confirmed = False
         _msgMail = _msgMail + "con fecha de: " + str(_dateInv)
         html_message = render_to_string("genericEmail.html", {"messageHeader": _msgHeader,
                                                                "msg": _msgMail})
+        instance.save()
+
         # << Enviar notificacion a host de que el usuario a aceptado o declinado >>.
         _hostDevices = FCMDevice.objects.filter(user=_host)
         if len(_hostDevices):
