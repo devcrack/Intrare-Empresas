@@ -373,12 +373,16 @@ class SendAlert(generics.ListAPIView):
 
 
 class DeleteEmployee(generics.DestroyAPIView):
+    """"
+    Downgrade Empleado -> Usuario Normal.
+    Elimina un empleado de una determinada compañia, dejandolo solamente como un usuario normal.
+    """
     permission_classes = [IsAuthenticated, isAdmin]
 
     def delete(self, request, *args, **kwargs):
         _currentUser = self.request.user
         try:
-            admin =Administrador.objects.get(id_usuario=_currentUser)
+            admin = Administrador.objects.get(id_usuario=_currentUser)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Usuario de Administrador Corrompido"})
         _adminCompany = admin.id_empresa
@@ -399,7 +403,36 @@ class DeleteEmployee(generics.DestroyAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
+class UpgradeUserToEmployee(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, isAdmin]
 
+    def update(self, request, *args, **kwargs):
+        _currentUser = self.request.user
+        try:
+            admin = Administrador.objects.get(id_usuario=_currentUser)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Usuario de Administrador Corrompido"})
+        # <<<Se obtiene empresa, a partir del administrador logueado>>>
+        _Company = admin.id_empresa
+
+        # <<Datos JSON >>
+        _idUser = int(request.data.get("idUsuario"))
+        _idArea = int(request.data.get("idArea"))
+        _extension = request.data.get("extension")
+        try:
+            _area = Area.objects.get(id_empresa=_Company, id=_idArea)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "No existe el area especificada"})
+        try:
+            _user = CustomUser.objects.get(id=_idUser)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "El usuario especificado no se existe"})
+        _user.roll = 1
+        _user.save()
+        _nwEmployee = Empleado(id_empresa=_Company, id_usuario=_user, id_area=_area, extension=_extension)
+        _nwEmployee.save()
+
+        return Response(status=status.HTTP_200_OK)
 
 
 

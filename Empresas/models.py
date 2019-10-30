@@ -57,10 +57,7 @@ class Empleado(models.Model):
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     id_area = models.ForeignKey('Area', on_delete=models.CASCADE)
     extension = models.CharField(max_length=10, null=False, blank=False)
-    puede_enviar = models.BooleanField(null=False, blank=False)
-    id_notificaciones = models.CharField(max_length=100, null=False, blank=False)
-    codigo = models.CharField(max_length=20, null=False, blank=False)
-
+    puede_enviar = models.BooleanField(null=False, blank=False, default=True)
     def __str__(self):
         """
         Método que devuelve el nombre de usuario
@@ -70,7 +67,7 @@ class Empleado(models.Model):
         # return self.id_usuario.username
         return f"EMPLOYEE->{self.id}; User->{self.id_usuario.id}{self.id_usuario.first_name} {self.id_usuario.last_name}; Company->{self.id_empresa.name}"
     class Meta:
-        verbose_name_plural = "Empleados"
+        verbose_name_plural = "Employee"
 
 
 class Vigilante(models.Model):

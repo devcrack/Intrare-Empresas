@@ -23,5 +23,7 @@ urlpatterns = [
     path('User/Reset/Passwordsita/', RestorePasswordUser.as_view()),
     # Envia alertas a todos los miembros de una compañia determinada por la sesion de un administrador o empleado
     path('SendAlert', SendAlert.as_view()),
+    # Hace un downgrade de un empleado a un usuario normal.
     path('deleteEmployee/<int:idEmployee>/', DeleteEmployee.as_view()),
+    path('upgradeUserEmployee/', UpgradeUserToEmployee.as_view()),
 ]
