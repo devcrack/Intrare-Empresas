@@ -25,5 +25,6 @@ urlpatterns = [
     path('SendAlert', SendAlert.as_view()),
     # Hace un downgrade de un empleado a un usuario normal.
     path('deleteEmployee/<int:idEmployee>/', DeleteEmployee.as_view()),
+    # Hace un upgrade de un usuario normal a un empleado.
     path('upgradeUserEmployee/', UpgradeUserToEmployee.as_view()),
 ]

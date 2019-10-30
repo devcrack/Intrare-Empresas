@@ -87,7 +87,7 @@ class InvitationToSimpleUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'hostFirstName', 'hostLastName', 'dateInv',
-                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration')
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration', 'confirmed')
 
     def getSecEqu(self, obj):
         _areaId = obj.idInvitation.id_area
@@ -115,7 +115,8 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
-                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration','id_Invitation')
+                  'timeInv', 'asunto', 'automovil', 'qr_code', 'diary', 'secEqu', 'expiration','id_Invitation',
+                  'confirmed')
 
     def getSecEqu(self, obj):
         _areaId = obj.idInvitation.id_area
@@ -187,7 +188,8 @@ class InvitationToGuardSerializer(serializers.ModelSerializer):
             # Mamadas del Andres
             'typeInv',
             'diary',
-            'id_Invitation'
+            'id_Invitation',
+            'confirmed'
         )
 
     def getSecEqu(self, obj):
