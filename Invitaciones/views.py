@@ -603,12 +603,10 @@ class SetConfirmAppointment(generics.UpdateAPIView):
         if _appointmentAccepted == "True":
             _msgMail = _msgMail + " " + "Ha Aceptado la Invitacion "
             _msgPush = " Un invitado ha Aceptado la Invitacion"
-            _status = status.HTTP_200_OK
             instance.confirmed = True
         else:
             _msgMail = _msgMail + " " + "Ha Declinado la Invitacion "
             _msgPush = " Un invitado ha Declinado la Invitacion"
-            _status = status.HTTP_400_BAD_REQUEST
             instance.confirmed = False
         _msgMail = _msgMail + "con fecha de: " + str(_dateInv)
         html_message = render_to_string("genericEmail.html", {"messageHeader": _msgHeader,
@@ -622,4 +620,4 @@ class SetConfirmAppointment(generics.UpdateAPIView):
             _hostDevices.send_message(title="Intrare", body=msg, sound="Default")
         send_IntrareEmail(html_message, _hostMail)
 
-        return Response(status=_status)
+        return Response(status=status.HTTP_200_OK)

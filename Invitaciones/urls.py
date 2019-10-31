@@ -39,5 +39,4 @@ urlpatterns = [
     path('deleteInvitation/<int:pk>/', DeleteInvitation.as_view()),
     # Concertar Invitacion(Invitado confirma que asistirá a la cita)
     path('setConfirmed_Appointment/<str:qr_code>/<flag>/', SetConfirmAppointment.as_view()),
-
 ]
