@@ -68,6 +68,15 @@
 
 Si no se tiene idea de que extension poner, ingrese 00000 o cualquier numero sin sentido, ya que el modelo lo indica como un campo obligatorio
 
+### Filtrado de Usuarios simples y Activos 
+
+**request:** PATCH 
+
+**url:** http://127.0.0.1:8000/simpleUser/filter
+
+**search_fields:**  = ['^celular', '^email']
+
+
 
 ## **Invitaciones**
 

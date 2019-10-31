@@ -3,6 +3,7 @@ from .views import *
 
 urlpatterns = [
     path('users/filter', UserViewSet.as_view({'get': 'list'})),
+    path('simpleUser/filter', SimpleUserFilter.as_view({'get': 'list'})),
     path('UserPlatformCreate/', UserPlatformCreateOrList.as_view(), name='CreateUserPlatform'),
     path('UserPlatformUpdate/<pk>/', UserUpdateParcial.as_view(), name='UpdateUserPlatform'),
     path('UserPasswordUpdate/', UserPasswordUpdate.as_view(), name='UpdateUserPlatform'),

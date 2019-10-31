@@ -112,6 +112,7 @@ class InvitationToHostSerializer(serializers.ModelSerializer):
     secEqu = serializers.SerializerMethodField('getSecEqu')
     expiration = serializers.DateField(source='idInvitation.expiration', format="%d-%m-%Y")
     id_Invitation = serializers.IntegerField(source='idInvitation.id')
+
     class Meta:
         model = InvitationByUsers
         fields = ('id', 'typeInv', 'colorArea', 'companyName', 'areaName', 'guestFirstName', 'guestLastName', 'dateInv',
