@@ -164,8 +164,6 @@ class EmpleadoSerializers(serializers.ModelSerializer):
         instance.id_usuario.password = usuario.password
         instance.extension = validated_data['extension']
         instance.puede_enviar = validated_data['puede_enviar']
-        instance.id_notificaciones = validated_data['id_notificaciones']
-        instance.codigo = validated_data['codigo']
         instance.id_empresa = validated_data['id_empresa']
         instance.id_area = validated_data['id_area']
         instance.save()
