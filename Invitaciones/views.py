@@ -585,6 +585,8 @@ class SetConfirmAppointment(generics.UpdateAPIView):
 
         instance = self.get_object()
 
+        if instance.confirmed:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error:": "Este usuario ya ha confirmado la invitacion"})
 
         # << Obtener datos de cita>>
         _host = instance.host
