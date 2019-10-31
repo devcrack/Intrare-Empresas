@@ -42,6 +42,17 @@ class UserViewSet(viewsets.ModelViewSet):
         return CustomUser.objects.exclude(Q(id=self.request.user.id) | Q(is_active=False))
 
 
+class SimpleUserFilter(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, isAdmin]
+    serializer_class = CustomFindSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['^celular', '^email']
+
+    def get_queryset(self):
+        return CustomUser.objects.filter(is_active=True, roll=0)
+
+    
+    
 class UserPlatformCreateOrList(generics.CreateAPIView):
     """
     Vista para crear un Usuario de la plataforma desde 0.
