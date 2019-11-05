@@ -50,13 +50,19 @@ class AccessCreate(generics.CreateAPIView):
             try:
                 _invByUsers = InvitationByUsers.objects.get(qr_code=_qr_code)
             except ObjectDoesNotExist:
-                return Response(status=status.HTTP_400_BAD_REQUEST, data={'Error':'Invitacion Corrompida'})
+                return Response(status=status.HTTP_400_BAD_REQUEST, data={'Error': 'Invitacion Corrompida'})
             ## <<Cargando Fecha Actual>> ##
             _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
                                 day=timezone.datetime.now().day)
 
+            ## <<Verificandop si la invitacion ha sido confirmada>>
+            if not _invByUsers.confirmed:
+                return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                data={"error": "!ACCESO NEGADO¡. Este invitado no ha declinado para esta invitación"})
+
             ## << Cargando datos Invitacion>>
             _typeInv = _invByUsers.idInvitation.typeInv
+
             _companyHost = _invByUsers.idInvitation.id_empresa # Empresa que invita a esta persona.
             if _currentCompany.id is not _companyHost.id:
                 return Response(status=status.HTTP_401_UNAUTHORIZED,

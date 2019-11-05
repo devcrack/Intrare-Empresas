@@ -22,7 +22,7 @@ class CustomUser(AbstractUser):
     ine_atras = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True, default=None)
     avatar = models.ImageField(upload_to=nameFile, max_length=256, blank=True, null=True, default="avatar.png")
     roll = models.IntegerField(null=False, default=0, blank=False, name='roll')
-    temporalToken = models.CharField(max_length=10, default=phn(), null=True, blank=True)
+    temporalToken = models.CharField(max_length=12, null=True, blank=True)
     plataforma = models.CharField(max_length=25, default='web', name='plataforma')  # Tipo de aplicacion que es el sistema(Web, Android, iOs)
     host = models.ForeignKey("self", null=True, on_delete=models.SET_NULL, related_name="anfitrion", blank=True)  # Campo que ayuda a referenciar el anfitrion para este invitado.
     
