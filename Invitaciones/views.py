@@ -49,13 +49,14 @@ def guest_exist(cellphoneN, _email):
 
 def create_user(_email, cellphone):
     _errorResponse = None
-
+    _token = token_hex(6)
+    _token = _token.replace('f', '')
     if _email is None:  # No se dio Ningun EMAIL
         nw_user = CustomUser(
-            email=None, celular=cellphone, password='pass', username=cellphone, is_active=False)
+            email=None, celular=cellphone, password='pass', username=cellphone, is_active=False, temporalToken=_token)
     else:  # Se  ingreso un EMAIL
         _aEmail = _email.lower()
-        nw_user = CustomUser(email=_aEmail, celular=cellphone, username=_aEmail, is_active=False)
+        nw_user = CustomUser(email=_aEmail, celular=cellphone, username=_aEmail, is_active=False, temporalToken=_token)
         nw_user.set_password('mientras123')
     try:
         nw_user.save()
