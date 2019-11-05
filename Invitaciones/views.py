@@ -157,7 +157,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS
         # Se envia al usuario una notificacion para que realize su preRegistro N VECES
         else:
-            _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Preregistro en:"
+            _msgReg = "Intrare.Recibiste invitacion por favor realiza tu Preregistro "
 
             _link = linkPreregisterUser + _idUser.temporalToken + '/'
             msg = _mainMsg + _msgReg + _link
