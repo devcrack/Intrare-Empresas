@@ -58,7 +58,7 @@ class AccessCreate(generics.CreateAPIView):
             ## <<Verificandop si la invitacion ha sido confirmada>>
             if not _invByUsers.confirmed:
                 return Response(status=status.HTTP_401_UNAUTHORIZED,
-                                data={"error": "!ACCESO NEGADO¡. Este invitado no ha declinado para esta invitación"})
+                                data={"error": "!ACCESO NEGADO¡. Este invitado ha declinado para esta invitación"})
 
             ## << Cargando datos Invitacion>>
             _typeInv = _invByUsers.idInvitation.typeInv
@@ -79,10 +79,9 @@ class AccessCreate(generics.CreateAPIView):
                                     data={"error": "!ACCESO NEGADO¡. No esta autorizado para este dia."})
             else:
                 _dateInv = _invByUsers.idInvitation.dateInv
-                if _currentDate > _dateInv:
+                if _currentDate != _dateInv:
                     return Response(status=status.HTTP_401_UNAUTHORIZED,
                                     data={"error": "!ACCESO NEGADO¡.Esta invitacion esta fuera de fecha."})
-
             _timeInv = _invByUsers.idInvitation.timeInv
             _currentHour = timezone.datetime.now().hour
             _currentMinute = timezone.datetime.now().minute
