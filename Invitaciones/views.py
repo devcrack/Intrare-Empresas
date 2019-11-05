@@ -107,7 +107,7 @@ def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expD
 def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _dateInv, _timeInv, expDate,
                              subject, vehicle, notes, from_company, diary):
     error_response = None
-    _mainMsg = 'Bienvenido a Intrare. '
+    _mainMsg = 'Intrare. '
     _msgReg = None
     _msgInv = None
 
@@ -157,7 +157,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS
         # Se envia al usuario una notificacion para que realize su preRegistro N VECES
         else:
-            _msgReg = "Intrare.Recibiste invitacion por favor realiza tu Preregistro "
+            _msgReg = ".Recibiste invitacion por favor realiza tu Preregistro "
 
             _link = linkPreregisterUser + _idUser.temporalToken + '/'
             msg = _mainMsg + _msgReg + _link
