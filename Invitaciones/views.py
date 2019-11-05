@@ -18,7 +18,6 @@ from fcm_django.models import FCMDevice
 from django.db.models import Q
 from django.core.files.storage import default_storage
 import re
-import urllib.parse
 
 _regexMail = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 linkWallet = 'https://api-intrare-development.herokuapp.com/wallet/create/'  # Development
@@ -161,7 +160,6 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             _msgReg = "Recibiste una invitacion. Para acceder a ella realiza tu Preregistro en:"
 
             _link = linkPreregisterUser + _idUser.temporalToken + '/'
-            _link = urllib.parse.quote(_link)
             msg = _mainMsg + _msgReg + _link
             _smsResponse = send_sms(_idUser.celular, msg)  # SMS
             if _idUser.email:
@@ -515,7 +513,7 @@ def justCreateEnterpriseInv(serializer, _host):
         send_IntrareEmail(_htmlMessage, _idUser.email)  # EMAIL
         _smsResponse = send_sms(_idUser.celular, _msgInv)  # SMS
     else:  # Preregistro Empleado
-        _msgReg = "Recibiste una invitacion Empresarial. Para acceder a ella realiza tu Preregistro en:"
+        _msgReg = "Intrare. Por favor realiza tu Preregistro en:"
         link = linkPreregisterEmployee
         link = link + _idUser.temporalToken + "/"
         _smsMSG = "Bienvenido a Intrare. " + _msgReg + link
