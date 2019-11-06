@@ -54,12 +54,6 @@ class AccessCreate(generics.CreateAPIView):
             ## <<Cargando Fecha Actual>> ##
             _currentDate = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
                                 day=timezone.datetime.now().day)
-
-            ## <<Verificandop si la invitacion ha sido confirmada>>
-            if not _invByUsers.confirmed:
-                return Response(status=status.HTTP_401_UNAUTHORIZED,
-                                data={"error": "!ACCESO NEGADO¡. Este invitado no ha confirmado la invitación"})
-
             ## << Cargando datos Invitacion>>
             _typeInv = _invByUsers.idInvitation.typeInv
 
@@ -78,6 +72,10 @@ class AccessCreate(generics.CreateAPIView):
                     return Response(status=status.HTTP_401_UNAUTHORIZED,
                                     data={"error": "!ACCESO NEGADO¡. No esta autorizado para este dia."})
             else:
+                ## <<Verificandop si la invitacion ha sido confirmada>>
+                if not _invByUsers.confirmed:
+                    return Response(status=status.HTTP_401_UNAUTHORIZED,
+                                    data={"error": "!ACCESO NEGADO¡. Este invitado no ha confirmado la invitación"})
                 _dateInv = _invByUsers.idInvitation.dateInv
                 if _currentDate != _dateInv:
                     return Response(status=status.HTTP_401_UNAUTHORIZED,

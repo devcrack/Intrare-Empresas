@@ -211,6 +211,7 @@ class activateUser(generics.UpdateAPIView):
             _qrCode = _invByUSR.qr_code
             _cellNumber = instance.celular
             _idArea = _inv.id_area
+            _typeInv = _inv.typeInv
             _secEqu_s = SecurityEquipment.objects.filter(idArea=_idArea)
             _securityEquipments = []
             for _SE in _secEqu_s:
@@ -221,7 +222,8 @@ class activateUser(generics.UpdateAPIView):
                                                                   'codigo': _qrCode, 'password': _tmpPassword,
                                                                   'downloadFile': _walletLink,
                                                                   'secEqus': _securityEquipments,
-                                                                  'linkConfirm': _linkConfirm})
+                                                                  'linkConfirm': _linkConfirm,
+                                                                  'typeInv': _typeInv})
             if index == 0:
                 if len(_userDevice) > 0:
                     _userDevice.send_message(title="Intrare", body="Tienes una invitación", sound="Default") #PUSH

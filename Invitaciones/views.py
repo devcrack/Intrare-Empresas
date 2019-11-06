@@ -67,7 +67,7 @@ def create_user(_email, cellphone):
     return _errorResponse, nw_user
 
 
-def render_InvMail(_nameEmpresa, _dateInv, _qrCode, _wallet, _secEqus):
+def render_InvMail(_nameEmpresa, _dateInv, _qrCode, _wallet, _secEqus, typeInv):
     _confirmLink = linkConfirmAppointment + _qrCode + "/True/"
     html_message = render_to_string('email.html',
                                     {'empresa': _nameEmpresa,
@@ -75,7 +75,8 @@ def render_InvMail(_nameEmpresa, _dateInv, _qrCode, _wallet, _secEqus):
                                      'codigo': _qrCode,
                                      'downloadFile': _wallet,
                                      'secEqus': _secEqus,
-                                     'linkConfirm': _confirmLink})
+                                     'linkConfirm': _confirmLink,
+                                     'typeInv':typeInv})
     return html_message
 
 
@@ -152,7 +153,7 @@ def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _da
             _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
             _wallet = linkWallet + _specialQR
             _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
-                                          _nwInByUSER.qr_code, _wallet, _securityEquipments)
+                                          _nwInByUSER.qr_code, _wallet, _securityEquipments, inv.typeInv)
             if len(_userDevices) > 0:
                 _userDevices.send_message(title="Intrare",
                                           body="Se te ha enviado una invitación. Anfitrion: " + host_name,
