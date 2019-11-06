@@ -58,7 +58,7 @@ class AccessCreate(generics.CreateAPIView):
             ## <<Verificandop si la invitacion ha sido confirmada>>
             if not _invByUsers.confirmed:
                 return Response(status=status.HTTP_401_UNAUTHORIZED,
-                                data={"error": "!ACCESO NEGADO¡. Este invitado ha declinado para esta invitación"})
+                                data={"error": "!ACCESO NEGADO¡. Este invitado no ha confirmado la invitación"})
 
             ## << Cargando datos Invitacion>>
             _typeInv = _invByUsers.idInvitation.typeInv
