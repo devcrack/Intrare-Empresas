@@ -572,7 +572,7 @@ class DeleteInvitation(generics.DestroyAPIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
-class SetConfirmAppointment(generics.UpdateAPIView):
+class SetConfirmAppointment(generics.ListCreateAPIView):
     """
     Confirmacion para concertar invitacion. Esto ocurre, por parte del invitado.
     Notificar  anfitrion.
@@ -582,7 +582,7 @@ class SetConfirmAppointment(generics.UpdateAPIView):
     serializer_class = InvitationByUsersSerializer
     lookup_field = 'qr_code'
 
-    def update(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         _appointmentAccepted = self.kwargs["flag"]
 
         instance = self.get_object()
