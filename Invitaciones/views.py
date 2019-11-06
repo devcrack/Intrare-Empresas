@@ -6,6 +6,7 @@ from django.db.utils import Error
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.response import Response
+from django.http import HttpResponse
 from .serializers import *
 from Usuarios.permissions import *
 from rest_framework.permissions import IsAuthenticated
@@ -588,8 +589,7 @@ class SetConfirmAppointment(generics.ListCreateAPIView):
         instance = self.get_object()
 
         if instance.confirmed:
-            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error:": "Este usuario ya ha confirmado la invitacion"})
-
+            return HttpResponse("Ya ha aceptado!", content_type='text/plain', status=status.HTTP_404_NOT_FOUND)
         # << Obtener datos de cita>>
         _host = instance.host
         _hostFullName = _host.first_name + " " + _host.last_name
@@ -624,4 +624,4 @@ class SetConfirmAppointment(generics.ListCreateAPIView):
             _hostDevices.send_message(title="Intrare", body=msg, sound="Default")
         send_IntrareEmail(html_message, _hostMail)
 
-        return Response(status=status.HTTP_200_OK)
+        return HttpResponse("Confirmacion OK!", content_type='text/plain', status=status.HTTP_200_OK)
