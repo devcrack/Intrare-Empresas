@@ -24,7 +24,7 @@ class Invitacion(models.Model):
     id_empresa = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE, related_name='id_company_inv')
     id_area = models.ForeignKey('Empresas.Area', on_delete=models.CASCADE, blank=False, null=False)
     fecha_hora_envio = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)
-    typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1=Recurrente 2= Referidos
+    typeInv = models.IntegerField(default=0, null=False)  # 0=Inv Normal, 1= Referidos, 2=Recurrente
     dateInv = models.DateField(null=False) #
     timeInv = models.TimeField(null=False) #
     expiration = models.DateField(null=False)

@@ -26,7 +26,8 @@ _regexMail = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 linkWallet = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'  # Production V1
 #linkPreregisterUser = 'https://web-intrare.herokuapp.com/preregistro/'  # Development
 linkPreregisterUser = 'https://first-project-vuejs.herokuapp.com/preregistro/'  # Production V1
-linkConfirmAppointment = "https://api-intrare-empresarial.herokuapp.com/setConfirmed_Appointment/" #Production V1
+linkConfirmAppointment = "https://api-intrare-empresarial.herokuapp.com/setConfirmed_AppointmentFromMail/" #Production V1
+
 
 
 linkPreregisterEmployee = "URL"
@@ -576,7 +577,61 @@ class DeleteInvitation(generics.DestroyAPIView):
         return Response(status=status.HTTP_202_ACCEPTED)
 
 
-class SetConfirmAppointment(generics.ListCreateAPIView):
+class SetConfirmAppointment(generics.UpdateAPIView):
+    """
+    Confirmacion para concertar invitacion. Esto ocurre, por parte del invitado.
+    Notificar  anfitrion.
+    """
+    # permission_classes = [IsAuthenticated]
+    queryset = InvitationByUsers.objects.all()
+    serializer_class = InvitationByUsersSerializer
+    lookup_field = 'qr_code'
+
+    def update(self, request, *args, **kwargs):
+        _appointmentAccepted = self.kwargs["flag"]
+
+        instance = self.get_object()
+
+        if instance.confirmed:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        # << Obtener datos de cita>>
+        _host = instance.host
+        _hostFullName = _host.first_name + " " + _host.last_name
+        _hostMail = _host.email
+        _guest = instance.idGuest
+        _guestFullName = _guest.first_name + " " + _guest.last_name
+        _dateInv = instance.idInvitation.dateInv
+
+        # <<Determinar el tipo de respuestas que el host recibira >>
+        _msgHeader = "Hola " + _hostFullName
+
+        _msgMail = "Tu invitado " + _guestFullName
+        _status = None
+
+        if _appointmentAccepted == "True":
+            _msgMail = _msgMail + " " + "Ha Aceptado la Invitacion "
+            _msgPush = " Un invitado ha Aceptado la Invitacion"
+            instance.confirmed = True
+        else:
+            _msgMail = _msgMail + " " + "Ha Declinado la Invitacion "
+            _msgPush = " Un invitado ha Declinado la Invitacion"
+            instance.confirmed = False
+        _msgMail = _msgMail + "con fecha de: " + str(_dateInv)
+        html_message = render_to_string("genericEmail.html", {"messageHeader": _msgHeader,
+                                                               "msg": _msgMail})
+        instance.save()
+
+        # << Enviar notificacion a host de que el usuario a aceptado o declinado >>.
+        _hostDevices = FCMDevice.objects.filter(user=_host)
+        if len(_hostDevices):
+            msg = _msgHeader + _msgPush
+            _hostDevices.send_message(title="Intrare", body=msg, sound="Default")
+        send_IntrareEmail(html_message, _hostMail)
+
+        return Response(status=status.HTTP_200_OK)
+
+
+class SetConfirmAppointmentFromMail(generics.ListCreateAPIView):
     """
     Confirmacion para concertar invitacion. Esto ocurre, por parte del invitado.
     Notificar  anfitrion.

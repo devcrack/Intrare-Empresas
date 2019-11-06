@@ -21,7 +21,7 @@ from django.db.models import Q
 # Create your views here.
 walletLink = 'https://api-intrare-development.herokuapp.com/wallet/create/'  # Development
 # walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'  # Production V1
-linkConfirmAppointment = "https://api-intrare-empresarial.herokuapp.com/setConfirmed_Appointment/" #Production V1
+linkConfirmAppointment = "https://api-intrare-empresarial.herokuapp.com/setConfirmed_AppointmentFromMail/" #Production V1
 
 
 def sendPushNotifies(idUser, msg):
