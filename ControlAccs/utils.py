@@ -5,7 +5,7 @@ from django.conf import settings
 import random
 
 
-CLIENT = nexmo.Client(key='532e50a4', secret='7Rh1PbAbDRApW2jw')
+CLIENTNEXMO = nexmo.Client(key='e61cdd65', secret='eNn7ZmzMIQjQ3Kpr')
 subject = 'Intrare Industrial - Invitación'
 email_from = settings.EMAIL_HOST_USER
 
@@ -23,14 +23,14 @@ def send_sms(number, message):
     else:
         to_number = '52' + strNumber
 
-    responseData = CLIENT.send_message(
+    responseData = CLIENTNEXMO.send_message(
         {
             "from": "Intrare Empresarial",
             "to": to_number,
             "text": message,
             }
         )
-    print(CLIENT.get_balance())
+    print(CLIENTNEXMO.get_balance())
     return responseData
 
 def send_IntrareEmail(html_message, email):
