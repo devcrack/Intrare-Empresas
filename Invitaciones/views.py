@@ -359,7 +359,7 @@ class MassiveInvitationCreate(generics.CreateAPIView):
 
 class InvitationbyQRCode(generics.ListAPIView):
     serializer_class = InvitationToGuardSerializer
-
+    # Agujero de seguridad. Deberia de tener permisos.
     def get_queryset(self):
         queryset = InvitationByUsers.objects.all()
         # queryset = Invitacion.objects.all()
