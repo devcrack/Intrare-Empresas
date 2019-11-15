@@ -15,8 +15,6 @@ import enum
 import nexmo
 
 
-import django_heroku
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -32,7 +30,7 @@ SECRET_KEY = 'q1!a)g2djh=pw^v$()_!cf0m1ijwbk&(y*yd8kqzxe0enne-y!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.0.2.2', '127.0.0.1', 'localhost', '*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'ec2-18-189-17-80.us-east-2.compute.amazonaws.com']
 
 # Aquí le decimos a django que utilice nuestra clase de user tuneada xD
 AUTH_USER_MODEL = 'Usuarios.CustomUser'
@@ -176,8 +174,12 @@ WSGI_APPLICATION = 'ControlAccs.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'IntrareEmpresa',
+        'USER': 'blame711019',
+        'PASSWORD': 'HIPIcc711019',
+        'HOST': 'intrare-freetierdb.c8dwggxf5yjq.us-east-2.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
@@ -218,7 +220,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-# STATIC_URL = '/static/'
+STATIC_URL = '/static/'
 #
 # MEDIA_URL = '/media/'
 
@@ -232,9 +234,4 @@ AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-
-
-
-
-django_heroku.settings(locals())
 
