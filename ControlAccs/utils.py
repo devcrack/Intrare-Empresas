@@ -6,7 +6,7 @@ import random
 
 
 CLIENTNEXMO = nexmo.Client(key='e61cdd65', secret='eNn7ZmzMIQjQ3Kpr')
-subject = 'Intrare Industrial - Invitación'
+subject = 'Intrare Empresas - Invitación'
 email_from = settings.EMAIL_HOST_USER
 
 def send_sms(number, message):
@@ -22,14 +22,15 @@ def send_sms(number, message):
         to_number = strNumber
     else:
         to_number = '52' + strNumber
-
+    print('Enviando SMS a ' + to_number +'\n')
     responseData = CLIENTNEXMO.send_message(
         {
-            "from": "Intrare Empresarial",
+            "from": "Intrare Empresas",
             "to": to_number,
             "text": message,
             }
         )
+    print('Saldo NEXMO\n')
     print(CLIENTNEXMO.get_balance())
     return responseData
 
