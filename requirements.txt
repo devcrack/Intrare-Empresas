@@ -28,3 +28,4 @@ whitenoise
 boto3
 wallet-py3k
 psycopg2
+setproctitle
