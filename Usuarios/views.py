@@ -19,10 +19,11 @@ from Empresas.models import SecurityEquipment, Administrador, Empleado
 from django.db.models import Q
 
 # Create your views here.
-walletLink = 'https://api-intrare-development.herokuapp.com/wallet/create/'  # Development
+#walletLink = 'https://api-intrare-development.herokuapp.com/wallet/create/'  # Development
 # walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'  # Production V1
-linkConfirmAppointment = "https://api-intrare-empresarial.herokuapp.com/setConfirmed_AppointmentFromMail/" #Production V1
-
+#linkConfirmAppointment = "https://api-intrare-empresarial.herokuapp.com/setConfirmed_AppointmentFromMail/" #Production V1
+walletLink = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
+linkConfirmAppointment = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
 
 def sendPushNotifies(idUser, msg):
     _userDevices = FCMDevice.objects.filter(user=idUser)
