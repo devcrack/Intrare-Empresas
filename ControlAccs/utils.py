@@ -35,6 +35,7 @@ def send_sms(number, message):
     return responseData
 
 def send_IntrareEmail(html_message, email):
+    print("Enviando Mail a " + email)
     recipient_list = [email, ]
     _subject = 'Intrare Industrial'
     msg = ''
