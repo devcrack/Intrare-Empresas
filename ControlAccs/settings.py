@@ -114,6 +114,7 @@ INSTALLED_APPS = [
     # https://djoser.readthedocs.io/en/latest/
     'djoser',
     'fcm_django',
+    'rest_framerwork_swagger',
 
     'Usuarios',
     'Empresas.apps.EmpresasConfig',

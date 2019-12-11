@@ -28,3 +28,5 @@ django-storages
 whitenoise
 boto3
 wallet-py3k
+django-rest-swagger
+
