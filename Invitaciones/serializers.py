@@ -11,8 +11,8 @@ from Empresas.models import Administrador, Empresa, Area
 from Empresas.models import Empleado, SecurityEquipment
 
 
-linkInvitationData = "https://web-intrare.herokuapp.com/form_invitation_data/"  # Link Development
-# linkInvitationData = "https://first-project-vuejs.herokuapp.com/form_invitation_data/"  # Link Production V1
+linkInvitationData = "https://empresas.intrare.app/form_invitation_data/"  # Link Development
+
 
 _date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
              day=timezone.datetime.now().day)  # Fecha actual
