@@ -16,7 +16,7 @@ class Empresa(models.Model):
     longitude = models.FloatField(null=False, blank=False, name='longitude')
     url_map = models.CharField(max_length=200, null=False, blank=False, name='url_map')
     validity = models.DateField(null=False, blank=False, name='validity')
-
+    # enabled = models.BooleanField(null=False, blank=False)  
     def __str__(self):
         """
         Método que devuelve el nombre de la Empresa

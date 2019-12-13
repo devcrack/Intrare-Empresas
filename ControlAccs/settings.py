@@ -28,7 +28,7 @@ TEMPLATES_DIR = BASE_DIR.join('templates')
 SECRET_KEY = 'q1!a)g2djh=pw^v$()_!cf0m1ijwbk&(y*yd8kqzxe0enne-y!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'intrare-services.com'] 
 # ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
@@ -69,12 +69,19 @@ ADMIN = 5
 
 #Config Email
 
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'rstestmx@gmail.com'
+# EMAIL_HOST_PASSWORD = 'mientras123'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'rstestmx@gmail.com'
-EMAIL_HOST_PASSWORD = 'mientras123'
+EMAIL_HOST_USER = 'no-reply@intrare.app'
+EMAIL_HOST_PASSWORD = 'HIPIcc2019'
 
 
 FCM_DJANGO_SETTINGS = {
