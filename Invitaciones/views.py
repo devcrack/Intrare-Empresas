@@ -23,7 +23,7 @@ import re
 _regexMail = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 
 linkWallet = 'https://intrare-services.com/wallet/create/'  # AWS
-linkPreregisterUser =  'https://empresas.intrare.app/Preregistro/'  # AWS
+linkPreregisterUser =  'https://empresas.intrare.app/preregistro/'  # AWS
 linkConfirmAppointment = "https://intrare-services.com/setConfirmed_AppointmentFromMail/" #  AWS
 
 
