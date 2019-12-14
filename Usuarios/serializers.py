@@ -14,7 +14,6 @@ from rest_framework.validators import UniqueValidator
 
 linkConfirmIdentity = "https://empresas.intrare.app/confirmar_identidad/"
 
-
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
         fields = (
