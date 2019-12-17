@@ -403,7 +403,7 @@ class UserSerilizerAPP(serializers.ModelSerializer):
             'celular',
         ]
 
-    def create(self, instance, validated_data):
+    def create(self, validated_data):
         _token = token_hex(6)
         _token = _token.replace('f', '')
         _pass = token_hex(3)
