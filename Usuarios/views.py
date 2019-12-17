@@ -456,6 +456,7 @@ class CreateProvider(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         self.serializer_class = UserSerilizerAPP
         _pass = token_hex(3)
+        print("password Provedor " + _pass)
         _serializer = self.serializer_class(data=request.data, context={'password': _pass})
         if _serializer.is_valid():
             _serializer.save()
