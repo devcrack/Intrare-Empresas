@@ -408,7 +408,6 @@ class UserSerilizerAPP(serializers.ModelSerializer):
         _token = _token.replace('f', '')
         _pass = token_hex(3)
         user = CustomUser.objects.create(**validated_data)
-        user.username=validated_data['celular']
         user.set_password(_pass)
         user.temporalToken = _token
         user.save()
