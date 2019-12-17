@@ -404,14 +404,14 @@ class UserSerilizerAPP(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
+        password = self.context['password']
         _token = token_hex(6)
         _token = _token.replace('f', '')
-        _pass = token_hex(3)
         user = CustomUser.objects.create(**validated_data)
-        user.set_password(_pass)
+        user.set_password(password)
         user.temporalToken = _token
         user.save()
-        return {'rawPassword':_pass, 'tmpToken':_token}
+        return user
 
 
     def update(self, instance, validated_data):
