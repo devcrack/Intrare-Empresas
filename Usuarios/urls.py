@@ -28,4 +28,6 @@ urlpatterns = [
     path('deleteEmployee/<int:idEmployee>/', DeleteEmployee.as_view()),
     # Hace un upgrade de un usuario normal a un empleado.
     path('upgradeUserEmployee/', UpgradeUserToEmployee.as_view()),
+    # Crear UN PROVEEDOR
+    path('createProvider/', CreateProvider.as_view()),
 ]

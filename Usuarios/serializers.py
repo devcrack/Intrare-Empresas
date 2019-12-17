@@ -4,7 +4,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework.exceptions import ValidationError
 from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
 from fcm_django.models import FCMDevice
-
+from secrets import token_hex
 
 from django.utils import translation
 from django.template.loader import render_to_string
@@ -383,7 +383,13 @@ class UpdateUserByTempToken(serializers.Serializer):
 class UserSerilizerAPP(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     last_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+    """ Validamos que el email sea unico, es decir que algun otro usuario no sea propietario del email que se deasea
+    usar.
+    """
     email = serializers.EmailField(allow_blank=False, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    """ Validamos que el # de celular sea unico, es decir que algun otro usuario no sea propietario del email que se deasea
+        usar.
+        """
     celular = serializers.IntegerField(required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
 
     class Meta:
@@ -394,6 +400,16 @@ class UserSerilizerAPP(serializers.ModelSerializer):
             'email',
             'celular',
         ]
+
+    def create(self, validated_data):
+        _token = token_hex(6)
+        _token = _token.replace('f', '')
+        _pass = token_hex(3)
+        user = CustomUser.objects.create(**validated_data)
+        user.set_password(_pass)
+        user.temporalToken = _token
+        user.save()
+        return user
 
 
     def update(self, instance, validated_data):

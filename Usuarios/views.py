@@ -20,6 +20,7 @@ from django.db.models import Q
 
 walletLink = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
 linkConfirmAppointment = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
+linkProvider = "A_LINK/"
 
 def sendPushNotifies(idUser, msg):
     _userDevices = FCMDevice.objects.filter(user=idUser)
@@ -446,7 +447,33 @@ class UpgradeUserToEmployee(generics.UpdateAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
+class CreateProvider(generics.CreateAPIView):
+    """Crea un provedor no Existente"""
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = UserSerilizerAPP
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save()
+            # Enviar Mail a nuevo usuario para notifcar que ha sido de alta como proveedor
+            # self.sendMailNewProvider(_serializer.data['temporalToken'], _serializer.data['password'],
+            #                          _serializer.data['email'])
+            return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
 
 
+    @classmethod
+    def sendMailNewProvider(cls, tk, _password, mail):
+        _link = linkProvider + tk
+        htmlMsg = render_to_string(
+            "providerMail.html", {
+                "link": _link,
+                "password":_password
+            })
+        send_IntrareEmail(htmlMsg, mail)
 
+    # queryset = CustomUser.objects.all()
+    # serializer_class =
 
