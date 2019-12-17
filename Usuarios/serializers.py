@@ -411,7 +411,7 @@ class UserSerilizerAPP(serializers.ModelSerializer):
         user.set_password(_pass)
         user.temporalToken = _token
         user.save()
-        return user
+        return {'rawPassword':_pass, 'tmpToken':_token}
 
 
     def update(self, instance, validated_data):
