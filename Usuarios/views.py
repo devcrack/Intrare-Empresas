@@ -19,10 +19,10 @@ from Empresas.models import SecurityEquipment, Administrador, Empleado
 from django.db.models import Q
 
 # Create your views here.
-walletLink = 'https://api-intrare-development.herokuapp.com/wallet/create/'  # Development
-# walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'  # Production V1
+#walletLink = 'https://api-intrare-development.herokuapp.com/wallet/create/'  # Development
+walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'  # Production V1
 linkConfirmAppointment = "https://api-intrare-empresarial.herokuapp.com/setConfirmed_AppointmentFromMail/" #Production V1
-
+linkProvider = "A_LINK/"
 
 def sendPushNotifies(idUser, msg):
     _userDevices = FCMDevice.objects.filter(user=idUser)
@@ -458,9 +458,24 @@ class CreateProvider(generics.CreateAPIView):
         _serializer = self.serializer_class(data=request.data)
         if _serializer.is_valid():
             _serializer.save()
+            # Enviar Mail a nuevo usuario para notifcar que ha sido de alta como proveedor
+            # self.sendMailNewProvider(_serializer.data['temporalToken'], _serializer.data['password'],
+            #                          _serializer.data['email'])
             return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
 
         return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+
+
+    @classmethod
+    def sendMailNewProvider(cls, tk, _password, mail):
+        _link = linkProvider + tk
+        htmlMsg = render_to_string(
+            "providerMail.html", {
+                "link": _link,
+                "password":_password
+            })
+        send_IntrareEmail(htmlMsg, mail)
+
     # queryset = CustomUser.objects.all()
     # serializer_class =
 
