@@ -449,7 +449,16 @@ class UpgradeUserToEmployee(generics.UpdateAPIView):
         return Response(status=status.HTTP_200_OK)
 
 
+class CreateProvider(generics.CreateAPIView):
+    """Crea un provedor no Existente"""
+    permission_classes = [IsAuthenticated, IsAdmin]
 
-
-
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = UserSerilizerAPP
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+    # queryset = CustomUser.objects.all()
+    # serializer_class =
 
