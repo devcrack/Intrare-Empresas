@@ -77,6 +77,23 @@ Si no se tiene idea de que extension poner, ingrese 00000 o cualquier numero sin
 **search_fields:**  = ['^celular', '^email']
 
 
+### Dar de alta un Proveedor
+Se da de alta un proveedor preregistrado. Se le enviara un email con un accesos con caracterisiticas limitadas a la plataforma para que el mismo de de alta su  empresa y a su empleado. 
+
+**request** POST
+
+**url:** https://api-intrare-empresarial.herokuapp.com/createProvider/ 
+
+**Authorization:** Token >TokenAdmin<
+  
+  ```json{
+  "first_name": "Jose",
+  "last_name":"Mendez",
+	"email":"cinco@mail.com",
+  "celular":2342215  
+}
+```
+
 
 ## **Invitaciones**
 
