@@ -458,7 +458,9 @@ class CreateProvider(generics.CreateAPIView):
         _serializer = self.serializer_class(data=request.data)
         if _serializer.is_valid():
             _serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
     # queryset = CustomUser.objects.all()
     # serializer_class =
 
