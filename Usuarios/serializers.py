@@ -42,7 +42,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'celular',
             'ine_frente',
             'ine_atras',
-            'avatar'
+            'avat1ar'
         ]
 
     ###### Deshabilitado SMS
@@ -403,6 +403,9 @@ class UserSerilizerAPP(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = self.context['password']
+        usrHost = self.context['user']
+        print('USER HOST ')
+        print(usrHost)
         _token = token_hex(6)
         _token = _token.replace('f', '')
         user = CustomUser.objects.create(**validated_data)
