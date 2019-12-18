@@ -405,6 +405,9 @@ class UserSerilizerAPP(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = self.context['password']
+        usrHost = self.context['user']
+        print("Usuario Anfitrion ")
+        print(usrHost)
         _token = token_hex(6)
         _token = _token.replace('f', '')
         user = CustomUser.objects.create(**validated_data)

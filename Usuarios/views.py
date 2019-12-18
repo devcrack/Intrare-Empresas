@@ -457,7 +457,7 @@ class CreateProvider(generics.CreateAPIView):
         self.serializer_class = UserSerilizerAPP
         _pass = token_hex(3)
         print("password Provedor " + _pass)
-        _serializer = self.serializer_class(data=request.data, context={'password': _pass})
+        _serializer = self.serializer_class(data=request.data, context={'password': _pass, 'user':request.user})
         if _serializer.is_valid():
             _serializer.save()
             # Enviar Mail a nuevo usuario para notifcar que ha sido de alta como proveedor
