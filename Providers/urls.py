@@ -5,4 +5,5 @@ from .views import *
 
 urlpatterns = [
     path('getProvider/<temporalToken>/', getProviderByToken.as_view()),
+    path('updateProvider/<temporalToken>/', updatePartialProvider.as_view()),
     ]
