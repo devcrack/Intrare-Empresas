@@ -121,6 +121,7 @@ INSTALLED_APPS = [
     'Parques.apps.ParquesConfig',
     'Bitacoras.apps.BitacorasConfig',
     'Grupos.apps.GruposConfig',
+    'Providers.apps.ProvidersConfig',
     'storages',
 ]
 
