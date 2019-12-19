@@ -46,7 +46,7 @@ class UpdateProviderSerializer(serializers.ModelSerializer):
 
 
 class CreateCompanyProviderSerializer(serializers.Serializer):
-    idAdminProvider = serializers.IntegerField(required=True)
+    idUserAdminProvider = serializers.IntegerField(required=True)
     host = serializers.IntegerField(required=True)
     companyName = serializers.CharField(required=True)
     companyAddress = serializers.CharField(required=True)
@@ -64,8 +64,8 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         pass
-        _idProvider = validated_data['idAdminProvider']
-        _idHost = validated_data['idAdminProvider']
+        _idProvider = validated_data['idUserAdminProvider']
+        _idHost = validated_data['host']
         try:
             usrProvider = CustomUser.objects.get(id=_idProvider)
             usrHost = CustomUser.objects.get(id=_idHost)
