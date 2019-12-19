@@ -64,20 +64,29 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         pass
-        # _idProvider = validated_data['idAdminProvider']
-        # _idHost = validated_data['idAdminProvider']
-        # try:
-        #     usrProvider = CustomUser.objects.get(id=_idProvider)
-        #     usrHost = CustomUser.objects.get(id=_idHost)
-        # except ObjectDoesNotExist:
-        #     return None
-        # nameCompany = validated_data['companyName']
-        # companyAddress = validated_data['companyAddress']
-        #
-        #
-        # nwCompany = Empresa(name=
-        #
-        # )
+        _idProvider = validated_data['idAdminProvider']
+        _idHost = validated_data['idAdminProvider']
+        try:
+            usrProvider = CustomUser.objects.get(id=_idProvider)
+            usrHost = CustomUser.objects.get(id=_idHost)
+        except ObjectDoesNotExist:
+            return None
+        _cName = validated_data['companyName']
+        _cyAddress = validated_data['companyAddress']
+        _cPhone = validated_data['companyTelephone']
+        _cEmail = validated_data['companyEmail']
+        _cLogo = validated_data['companyLogo']
+        _cWebPage = validated_data['companyWebPage']
+        _cScian = validated_data['companyScian']
+        _cClassifiaction = validated_data['companyClassification']
+        _cLat = validated_data['companyLatitude']
+        _cLon = validated_data['companyLongitude']
+        _cUrlMap = validated_data['companyURLMap']
+        _cValidity = validated_data['companyValidity']
+
+        nwCompany = Empresa(name=_cName,
+
+        )
         # Actualizar Token Proveedor(borrarlo)
         # Crear Empresa
         # Crear admin de la empresa con datos proveedor
