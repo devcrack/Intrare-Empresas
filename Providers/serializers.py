@@ -63,7 +63,6 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
 
 
     def create(self, validated_data):
-        pass
         _idProvider = validated_data['idUserAdminProvider']
         _idHost = validated_data['host']
         try:
