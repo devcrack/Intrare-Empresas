@@ -1,9 +1,12 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from django.core.exceptions import ObjectDoesNotExist
+
 
 from .models import Providers
 from Usuarios.models import CustomUser
 from Usuarios.serializers import CustomFindSerializer
+from Empresas.models import Empresa
 
 class ProviderSerializer(serializers.ModelSerializer):
 
@@ -43,21 +46,44 @@ class UpdateProviderSerializer(serializers.ModelSerializer):
 
 
 class CreateCompanyProviderSerializer(serializers.Serializer):
-    pass
-    # idAdminProvider = serializers.IntegerField(required=True)
-    # host = serializers.IntegerField(required=True)
-    # companyName = serializers.CharField(required=True)
-    # companyAddress = serializers.CharField(required=True)
-    # companyTelephone = serializers.CharField(required=True)
-    # companyEmail = serializers.EmailField(required=True)
-    # companyLogo =  serializers.ImageField(required=True)
-    #
-    # def create(self, validated_data):
-    #     # Actualizar Token Proveedor(borrarlo)
-    #     # Crear Empresa
-    #     # Crear admin de la empresa con datos proveedor
-    #     # Crear registro provedor con host - proveedor
-    #     # Notifcar al Host que ha sido exitosa la alta.
+    idAdminProvider = serializers.IntegerField(required=True)
+    host = serializers.IntegerField(required=True)
+    companyName = serializers.CharField(required=True)
+    companyAddress = serializers.CharField(required=True)
+    companyTelephone = serializers.CharField(required=True)
+    companyEmail = serializers.EmailField(required=True)
+    companyLogo =  serializers.ImageField(required=True)
+    companyWebPage = serializers.CharField(required=True)
+    companyScian = serializers.IntegerField(required=True)
+    companyClassification = serializers.CharField(required=True)
+    companyLatitude = serializers.FloatField(required=True)
+    companyLongitude = serializers.FloatField(required=True)
+    companyURLMap = serializers.CharField(required=True)
+    companyValidity = serializers.DateField(required=True)
+
+
+    def create(self, validated_data):
+        pass
+        # _idProvider = validated_data['idAdminProvider']
+        # _idHost = validated_data['idAdminProvider']
+        # try:
+        #     usrProvider = CustomUser.objects.get(id=_idProvider)
+        #     usrHost = CustomUser.objects.get(id=_idHost)
+        # except ObjectDoesNotExist:
+        #     return None
+        # nameCompany = validated_data['companyName']
+        # companyAddress = validated_data['companyAddress']
+        #
+        #
+        # nwCompany = Empresa(name=
+        #
+        # )
+        # Actualizar Token Proveedor(borrarlo)
+        # Crear Empresa
+        # Crear admin de la empresa con datos proveedor
+        # Crear registro provedor con host - proveedor
+        # Notifcar al Host que ha sido exitosa la alta.
+
 
 
 

@@ -18,6 +18,7 @@ class Empresa(models.Model):
     validity = models.DateField(null=False, blank=False, name='validity')
     enabled = models.BooleanField(default=True)
 
+
     def __str__(self):
         """
         Método que devuelve el nombre de la Empresa
