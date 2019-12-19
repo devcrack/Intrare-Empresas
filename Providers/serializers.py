@@ -6,7 +6,7 @@ from Usuarios.serializers import CustomFindSerializer
 
 class GetProviderSerializer(serializers.ModelSerializer):
 
-    host = CustomFindSerializer(many=True)
+    host = CustomFindSerializer()
 
     class Meta:
         model = CustomUser
