@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 
-class Providers:
+class Providers(models.Model):
     companyHost = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE, related_name='iDCompanyHost')
     companyProvider = models.ForeignKey('Empresas.Empresa', on_delete=models.CASCADE, related_name='iDProvider')
 
