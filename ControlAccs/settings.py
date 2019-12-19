@@ -119,7 +119,6 @@ INSTALLED_APPS = [
     # https://djoser.readthedocs.io/en/latest/
     'djoser',
     'fcm_django',
-    'rest_framework_swagger',
 
     'Usuarios',
     'Empresas.apps.EmpresasConfig',
@@ -127,6 +126,7 @@ INSTALLED_APPS = [
     'Parques.apps.ParquesConfig',
     'Bitacoras.apps.BitacorasConfig',
     'Grupos.apps.GruposConfig',
+    'Providers.apps.ProvidersConfig',
     'storages',
 ]
 

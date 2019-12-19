@@ -404,11 +404,13 @@ class UserSerilizerAPP(serializers.ModelSerializer):
     def create(self, validated_data):
         password = self.context['password']
         usrHost = self.context['user']
-        print('USER HOST ')
+        print("Usuario Anfitrion ")
         print(usrHost)
         _token = token_hex(6)
         _token = _token.replace('f', '')
-        user = CustomUser.objects.create(**validated_data)
+        user = CustomUser(first_name=validated_data['first_name'], last_name=validated_data['last_name'],
+                          email=validated_data['email'], celular=validated_data['celular'], host=usrHost,
+                          temporalToken=_token, roll=15)
         user.set_password(password)
         user.temporalToken = _token
         user.save()
