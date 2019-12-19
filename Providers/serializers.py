@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from .models import Providers
 from Usuarios.models import CustomUser
 from Usuarios.serializers import CustomFindSerializer
-from Empresas.models import Empresa
+from Empresas.models import Empresa , Administrador
 
 class ProviderSerializer(serializers.ModelSerializer):
 
@@ -64,20 +64,44 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         pass
-        # _idProvider = validated_data['idAdminProvider']
-        # _idHost = validated_data['idAdminProvider']
-        # try:
-        #     usrProvider = CustomUser.objects.get(id=_idProvider)
-        #     usrHost = CustomUser.objects.get(id=_idHost)
-        # except ObjectDoesNotExist:
-        #     return None
-        # nameCompany = validated_data['companyName']
-        # companyAddress = validated_data['companyAddress']
-        #
-        #
-        # nwCompany = Empresa(name=
-        #
-        # )
+        _idProvider = validated_data['idAdminProvider']
+        _idHost = validated_data['idAdminProvider']
+        try:
+            usrProvider = CustomUser.objects.get(id=_idProvider)
+            usrHost = CustomUser.objects.get(id=_idHost)
+        except ObjectDoesNotExist:
+            return None
+        _cName = validated_data['companyName']
+        _cAddress = validated_data['companyAddress']
+        _cPhone = validated_data['companyTelephone']
+        _cEmail = validated_data['companyEmail']
+        _cLogo = validated_data['companyLogo']
+        _cWebPage = validated_data['companyWebPage']
+        _cScian = validated_data['companyScian']
+        _cClassifiaction = validated_data['companyClassification']
+        _cLat = validated_data['companyLatitude']
+        _cLon = validated_data['companyLongitude']
+        _cUrlMap = validated_data['companyURLMap']
+        _cValidity = validated_data['companyValidity']
+
+
+        nwCompany = Empresa(enabled=False, name=_cName,address=_cAddress, telephone=_cPhone, email=_cEmail, logo=_cLogo,
+                            web_page=_cEmail, scian=_cScian, classification=_cClassifiaction, latitude=_cLat,
+                            longitude=_cLon, url_map=_cUrlMap, validity=_cValidity)
+        nwCompany.save()
+
+        newAdmin = Administrador(id_empresa=nwCompany, id_usuario=usrProvider)
+        newAdmin.save()
+        try:
+            adminHost = Administrador.objects.get(id_usuario=usrHost)
+        except ObjectDoesNotExist:
+            return None
+        newProvider = Providers(companyHost=adminHost.id_empresa, companyProvider=nwCompany)
+        usrProvider.temporalToken = None
+        usrProvider.save()
+        newProvider.save()
+        return newProvider
+
         # Actualizar Token Proveedor(borrarlo)
         # Crear Empresa
         # Crear admin de la empresa con datos proveedor

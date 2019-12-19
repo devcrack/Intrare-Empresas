@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import status
+
 from .serializers import *
 
 # Create your views here.
@@ -21,4 +24,11 @@ class updatePartialProvider(generics.UpdateAPIView):
 
 class AddCompanyProvider(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
-        pass
+        self.serializer_class = CreateCompanyProviderSerializer
+        _serializer = self.serializer_class(data=request.data)
+        if _serializer.is_valid():
+            _serializer.save()
+            return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+        return Response(status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
+            #Notificar HOST que el proveedor se ha dado de alta exitosamente.
+
