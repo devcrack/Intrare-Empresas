@@ -11,7 +11,7 @@ class ProviderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'celular', 'host']
+        fields = ['id','first_name', 'last_name', 'celular', 'host']
 
 
 class UpdateProviderSerializer(serializers.ModelSerializer):
@@ -40,5 +40,26 @@ class UpdateProviderSerializer(serializers.ModelSerializer):
         instance.avatar = validated_data.pop('avatar')
         instance.save()
         return instance
+
+
+class CreateCompanyProviderSerializer(serializers.Serializer):
+    pass
+    # idAdminProvider = serializers.IntegerField(required=True)
+    # host = serializers.IntegerField(required=True)
+    # companyName = serializers.CharField(required=True)
+    # companyAddress = serializers.CharField(required=True)
+    # companyTelephone = serializers.CharField(required=True)
+    # companyEmail = serializers.EmailField(required=True)
+    # companyLogo =  serializers.ImageField(required=True)
+    #
+    # def create(self, validated_data):
+    #     # Actualizar Token Proveedor(borrarlo)
+    #     # Crear Empresa
+    #     # Crear admin de la empresa con datos proveedor
+    #     # Crear registro provedor con host - proveedor
+    #     # Notifcar al Host que ha sido exitosa la alta.
+
+
+
 
 

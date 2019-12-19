@@ -19,3 +19,6 @@ class updatePartialProvider(generics.UpdateAPIView):
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
 
+class AddCompanyProvider(generics.CreateAPIView):
+    def create(self, request, *args, **kwargs):
+        pass
