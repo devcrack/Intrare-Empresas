@@ -47,15 +47,15 @@ class UpdateProviderSerializer(serializers.ModelSerializer):
 
 
 class FullProvider():
-    def __init__(self,idUserAdminProvider, host, companyName, companyAddress, companyTelephone, companyEmail,
-                 companyLogo, companyWebPage, companyScian, companyClassification, companyLatitude, companyLongitude,
+    def __init__(self,idUserAdminProvider, host, name, companyAddress, telephone, email, companyLogo,
+                 companyWebPage, companyScian, companyClassification, companyLatitude, companyLongitude,
                  companyURLMap, companyValidity):
         self.idUserAdminProvider = idUserAdminProvider
         self.host = host
-        self.companyName = companyName
+        self.name = name
         self.companyAddress = companyAddress
-        self.companyTelephone = companyTelephone
-        self.companyEmail = companyEmail
+        self.telephone = telephone
+        self.email = email
         self.companyLogo = companyLogo
         self.companyWebPage = companyWebPage
         self.companyScian = companyScian
@@ -68,10 +68,10 @@ class FullProvider():
 class CreateCompanyProviderSerializer(serializers.Serializer):
     idUserAdminProvider = serializers.IntegerField(required=True)
     host = serializers.IntegerField(required=True)
-    companyName = serializers.CharField(required=True)
+    name = serializers.CharField(required=True, validators=[UniqueValidator(queryset=Empresa.objects.all())])
     companyAddress = serializers.CharField(required=True)
-    companyTelephone = serializers.CharField(required=True)
-    companyEmail = serializers.EmailField(required=True)
+    telephone = serializers.CharField(required=True, validators=[UniqueValidator(queryset=Empresa.objects.all())])
+    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=Empresa.objects.all())])
     companyLogo =  serializers.ImageField(required=True)
     companyWebPage = serializers.CharField(required=True)
     companyScian = serializers.IntegerField(required=True)

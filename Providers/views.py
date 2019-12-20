@@ -29,7 +29,14 @@ class AddCompanyProvider(generics.CreateAPIView):
         _serializer = self.serializer_class(data=request.data)
         if _serializer.is_valid():
             _serializer.save()
+            _hostId = _serializer.data['host']
             return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
         return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
             #Notificar HOST que el proveedor se ha dado de alta exitosamente.
 
+    @classmethod
+    def createCompany(cls,nc, addr, phone, email, logo, wp, _sc, _csf, lat, lng , urlMp, _vly):
+        nwCompany = Empresa(enabled=False, name=nc, address=addr, telephone=phone, email=email,
+                            logo=logo, web_page=wp, scian=_sc, classification=_csf, latitude=lat,
+                            longitude=lng, url_map=urlMp, validity=_vly)
+        nwCompany.save()
