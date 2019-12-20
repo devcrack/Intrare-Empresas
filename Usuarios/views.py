@@ -477,7 +477,3 @@ class CreateProvider(generics.CreateAPIView):
                 "password":_password
             })
         send_IntrareEmail(htmlMsg, mail)
-
-    # queryset = CustomUser.objects.all()
-    # serializer_class =
-

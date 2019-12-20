@@ -23,6 +23,7 @@ class updatePartialProvider(generics.UpdateAPIView):
         return self.partial_update(request, *args, **kwargs)
 
 class AddCompanyProvider(generics.CreateAPIView):
+
     def create(self, request, *args, **kwargs):
         self.serializer_class = CreateCompanyProviderSerializer
         _serializer = self.serializer_class(data=request.data)

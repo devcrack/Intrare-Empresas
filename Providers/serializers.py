@@ -45,6 +45,7 @@ class UpdateProviderSerializer(serializers.ModelSerializer):
         return instance
 
 
+
 class CreateCompanyProviderSerializer(serializers.Serializer):
     idUserAdminProvider = serializers.IntegerField(required=True)
     host = serializers.IntegerField(required=True)
@@ -65,11 +66,16 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
     def create(self, validated_data):
         _idProvider = validated_data['idUserAdminProvider']
         _idHost = validated_data['host']
+
         try:
             usrProvider = CustomUser.objects.get(id=_idProvider)
+        except ObjectDoesNotExist:
+            return None
+        try:
             usrHost = CustomUser.objects.get(id=_idHost)
         except ObjectDoesNotExist:
             return None
+
         _cName = validated_data['companyName']
         _cAddress = validated_data['companyAddress']
         _cPhone = validated_data['companyTelephone']
@@ -99,7 +105,7 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
         usrProvider.temporalToken = None
         usrProvider.save()
         newProvider.save()
-        return newProvider
+        return True
 
         # Actualizar Token Proveedor(borrarlo)
         # Crear Empresa
