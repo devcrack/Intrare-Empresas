@@ -105,7 +105,7 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
         usrProvider.temporalToken = None
         usrProvider.save()
         newProvider.save()
-        return True
+        
 
         # Actualizar Token Proveedor(borrarlo)
         # Crear Empresa
