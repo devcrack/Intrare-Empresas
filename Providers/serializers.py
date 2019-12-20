@@ -45,13 +45,33 @@ class UpdateProviderSerializer(serializers.ModelSerializer):
         return instance
 
 
+
+class FullProvider():
+    def __init__(self,idUserAdminProvider, host, name, companyAddress, telephone, email, companyLogo,
+                 companyWebPage, companyScian, companyClassification, companyLatitude, companyLongitude,
+                 companyURLMap, companyValidity):
+        self.idUserAdminProvider = idUserAdminProvider
+        self.host = host
+        self.name = name
+        self.companyAddress = companyAddress
+        self.telephone = telephone
+        self.email = email
+        self.companyLogo = companyLogo
+        self.companyWebPage = companyWebPage
+        self.companyScian = companyScian
+        self.companyClassification = companyClassification
+        self.companyLatitude = companyLatitude
+        self.companyLongitude = companyLongitude
+        self.companyURLMap = companyURLMap
+        self.companyValidity = companyValidity
+
 class CreateCompanyProviderSerializer(serializers.Serializer):
     idUserAdminProvider = serializers.IntegerField(required=True)
     host = serializers.IntegerField(required=True)
-    companyName = serializers.CharField(required=True)
+    name = serializers.CharField(required=True, validators=[UniqueValidator(queryset=Empresa.objects.all())])
     companyAddress = serializers.CharField(required=True)
-    companyTelephone = serializers.CharField(required=True)
-    companyEmail = serializers.EmailField(required=True)
+    telephone = serializers.CharField(required=True, validators=[UniqueValidator(queryset=Empresa.objects.all())])
+    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=Empresa.objects.all())])
     companyLogo =  serializers.ImageField(required=True)
     companyWebPage = serializers.CharField(required=True)
     companyScian = serializers.IntegerField(required=True)
@@ -63,43 +83,7 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
 
 
     def create(self, validated_data):
-        _idProvider = validated_data['idUserAdminProvider']
-        _idHost = validated_data['host']
-        try:
-            usrProvider = CustomUser.objects.get(id=_idProvider)
-            usrHost = CustomUser.objects.get(id=_idHost)
-        except ObjectDoesNotExist:
-            return None
-        _cName = validated_data['companyName']
-        _cAddress = validated_data['companyAddress']
-        _cPhone = validated_data['companyTelephone']
-        _cEmail = validated_data['companyEmail']
-        _cLogo = validated_data['companyLogo']
-        _cWebPage = validated_data['companyWebPage']
-        _cScian = validated_data['companyScian']
-        _cClassifiaction = validated_data['companyClassification']
-        _cLat = validated_data['companyLatitude']
-        _cLon = validated_data['companyLongitude']
-        _cUrlMap = validated_data['companyURLMap']
-        _cValidity = validated_data['companyValidity']
-
-
-        nwCompany = Empresa(enabled=False, name=_cName,address=_cAddress, telephone=_cPhone, email=_cEmail, logo=_cLogo,
-                            web_page=_cEmail, scian=_cScian, classification=_cClassifiaction, latitude=_cLat,
-                            longitude=_cLon, url_map=_cUrlMap, validity=_cValidity)
-        nwCompany.save()
-
-        newAdmin = Administrador(id_empresa=nwCompany, id_usuario=usrProvider)
-        newAdmin.save()
-        try:
-            adminHost = Administrador.objects.get(id_usuario=usrHost)
-        except ObjectDoesNotExist:
-            return None
-        newProvider = Providers(companyHost=adminHost.id_empresa, companyProvider=nwCompany)
-        usrProvider.temporalToken = None
-        usrProvider.save()
-        newProvider.save()
-        return newProvider
+        return FullProvider(**validated_data)
 
         # Actualizar Token Proveedor(borrarlo)
         # Crear Empresa

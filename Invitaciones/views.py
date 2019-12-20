@@ -422,7 +422,7 @@ class ResendReferralInvitation(generics.UpdateAPIView):
         if re.search(_regexMail, _newReferralMail):
             try:
                 _referralInvitation = ReferredInvitation.objects.get(qrCode=_token)
-            except ObjectDoesNotExistObjectDoesNotExist:
+            except ObjectDoesNotExist:
                 return Response(status=status.HTTP_204_NO_CONTENT, data={"Error": "Token corrompido"})
             _numForwarding = _referralInvitation.maxForwarding
             _referralExpiration = _referralInvitation.referredExpiration
