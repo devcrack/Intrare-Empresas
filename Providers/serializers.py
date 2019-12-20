@@ -84,48 +84,6 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return FullProvider(**validated_data)
-        # _idProvider = validated_data['idUserAdminProvider']
-        # _idHost = validated_data['host']
-        #
-        # try:
-        #     usrProvider = CustomUser.objects.get(id=_idProvider)
-        # except ObjectDoesNotExist:
-        #     return None
-        # try:
-        #     usrHost = CustomUser.objects.get(id=_idHost)
-        # except ObjectDoesNotExist:
-        #     return None
-        #
-        # _cName = validated_data['companyName']
-        # _cAddress = validated_data['companyAddress']
-        # _cPhone = validated_data['companyTelephone']
-        # _cEmail = validated_data['companyEmail']
-        # _cLogo = validated_data['companyLogo']
-        # _cWebPage = validated_data['companyWebPage']
-        # _cScian = validated_data['companyScian']
-        # _cClassifiaction = validated_data['companyClassification']
-        # _cLat = validated_data['companyLatitude']
-        # _cLon = validated_data['companyLongitude']
-        # _cUrlMap = validated_data['companyURLMap']
-        # _cValidity = validated_data['companyValidity']
-        #
-        #
-        # nwCompany = Empresa(enabled=False, name=_cName,address=_cAddress, telephone=_cPhone, email=_cEmail, logo=_cLogo,
-        #                     web_page=_cEmail, scian=_cScian, classification=_cClassifiaction, latitude=_cLat,
-        #                     longitude=_cLon, url_map=_cUrlMap, validity=_cValidity)
-        # nwCompany.save()
-        #
-        # newAdmin = Administrador(id_empresa=nwCompany, id_usuario=usrProvider)
-        # newAdmin.save()
-        # try:
-        #     adminHost = Administrador.objects.get(id_usuario=usrHost)
-        # except ObjectDoesNotExist:
-        #     return None
-        # newProvider = Providers(companyHost=adminHost.id_empresa, companyProvider=nwCompany)
-        usrProvider.temporalToken = None
-        usrProvider.save()
-        newProvider.save()
-
 
         # Actualizar Token Proveedor(borrarlo)
         # Crear Empresa
