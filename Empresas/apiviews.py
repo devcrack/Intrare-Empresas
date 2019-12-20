@@ -246,7 +246,7 @@ class EmpleadoListAll(generics.ListCreateAPIView):
     """List all avaiable employees of the administrator company.
     This only list all employees that belongs to the company wich the adm
     """
-    permission_classes = (isAdmin | isGuard,)  # Validates if this user is and Admin of some company
+    permission_classes = (IsAuthenticated, isAdmin | isGuard | isAdminProvider,)  # Validates if this user is and Admin of some company
     serializer_class = EmpleadoSerializers
 
     def get_queryset(self):
@@ -254,7 +254,7 @@ class EmpleadoListAll(generics.ListCreateAPIView):
         if user.is_staff:
             queryset = Empleado.objects.all()
         else:
-            if user.roll == settings.ADMIN:
+            if user.roll == settings.ADMIN or user.roll==settings.PROVIDER_ADMIN:
                 admin_company = Administrador.objects.filter(id_usuario=user)[0]
                 id_company = admin_company.id_empresa
                 queryset = Empleado.objects.filter(id_empresa=id_company)
