@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
+from django.template.loader import render_to_string
+from ControlAccs.utils import send_IntrareEmail
 
 from .serializers import *
 
@@ -57,6 +59,7 @@ class AddCompanyProvider(generics.CreateAPIView):
             if admin is None:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'Host Admin Inexistente'})
             self.createProviderCompany(admin.id_empresa, newCompany)
+            self.sendMailRegisteredProvider(newCompany.name, newCompany.address, hostAdminUser.email)
             return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
 
         return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
@@ -97,3 +100,11 @@ class AddCompanyProvider(generics.CreateAPIView):
         newCompanyProvider = Providers(companyHost=_companyHost, companyProvider=_companyProvider)
         newCompanyProvider.save()
         return newCompanyProvider
+
+    @classmethod
+    def sendMailRegisteredProvider(cls, providerCompany, address, email):
+        htmlMsg = render_to_string("registeredProvider.html", {
+            "company":providerCompany,
+            "address": address
+        })
+        send_IntrareEmail(htmlMsg, email)
