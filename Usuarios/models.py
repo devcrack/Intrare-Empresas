@@ -34,6 +34,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ["celular", "username", "first_name", "last_name"]
     USERNAME_FIELD = "email"
     def save(self, *args, **kwargs):
+        self.username = self.celular
         super(CustomUser, self).save(*args, **kwargs)
         _sts = UserSettings.objects.filter(user=self)
         if len(_sts) == 0:

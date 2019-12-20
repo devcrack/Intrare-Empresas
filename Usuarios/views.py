@@ -453,13 +453,15 @@ class CreateProvider(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         self.serializer_class = UserSerilizerAPP
-        _serializer = self.serializer_class(data=request.data)
+        _pass = token_hex(3)
+        print("password Provedor " + _pass)
+        _serializer = self.serializer_class(data=request.data, context={'password': _pass, 'user':request.user})
         if _serializer.is_valid():
             _serializer.save()
             # Enviar Mail a nuevo usuario para notifcar que ha sido de alta como proveedor
             # self.sendMailNewProvider(_serializer.data['temporalToken'], _serializer.data['password'],
             #                          _serializer.data['email'])
-            return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+            return Response(status=status.HTTP_201_CREATED)
 
         return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
 
@@ -473,7 +475,3 @@ class CreateProvider(generics.CreateAPIView):
                 "password":_password
             })
         send_IntrareEmail(htmlMsg, mail)
-
-    # queryset = CustomUser.objects.all()
-    # serializer_class =
-
