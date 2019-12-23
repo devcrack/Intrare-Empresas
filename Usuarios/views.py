@@ -462,7 +462,7 @@ class CreateProvider(generics.CreateAPIView):
             _serializer.save()
             # print('QUE VERGAS', _serializer.instance.temporalToken)
             # Enviar Mail a nuevo usuario para notifcar que ha sido de alta como proveedor
-            self.sendMailNewProvider(_serializer.instance.temporalToken, _serializer.data['password'],
+            self.sendMailNewProvider(_serializer.instance.temporalToken, _pass,
                                      _serializer.data['email'])
             print('FIN')
             return Response(status=status.HTTP_201_CREATED)
