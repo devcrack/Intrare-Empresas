@@ -276,7 +276,7 @@ class InvitationListToManagerAndEmployee(viewsets.ModelViewSet):
     """
         Vista para mostrar la Información de la Invitación por ID_INVITACION
     """
-    permission_classes = (isEmployee | isAdmin,)
+    permission_classes = [IsAuthenticated, isEmployee | isAdmin | isAdminProvider | isProviderEmployee,]
 
     def list(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
