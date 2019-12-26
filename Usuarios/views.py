@@ -391,7 +391,7 @@ class DeleteEmployee(generics.DestroyAPIView):
     Downgrade Empleado -> Usuario Normal.
     Elimina un empleado de una determinada compañia, dejandolo solamente como un usuario normal.
     """
-    permission_classes = [IsAuthenticated, isAdmin]
+    permission_classes = [IsAuthenticated, isAdmin|isAdminProvider]
 
     def delete(self, request, *args, **kwargs):
         _currentUser = self.request.user
