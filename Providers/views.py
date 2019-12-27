@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from ControlAccs.utils import send_IntrareEmail
 from secrets import token_hex
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import viewsets
+from rest_framework import generics
 from Usuarios.permissions import *
 
 from .serializers import *
@@ -127,7 +127,7 @@ class AddCompanyProvider(generics.CreateAPIView):
         send_IntrareEmail(htmlMsg, providerUserMail)
 
 
-class GetProvidersByHost(viewsets.ModelViewSet):
+class GetProvidersByHost(generics.ListAPIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
     serializer_class = ProvidersCompanySerializer
