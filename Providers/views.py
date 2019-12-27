@@ -5,7 +5,9 @@ from rest_framework import status
 from django.template.loader import render_to_string
 from ControlAccs.utils import send_IntrareEmail
 from secrets import token_hex
-
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets
+from Usuarios.permissions import *
 
 from .serializers import *
 
@@ -123,3 +125,20 @@ class AddCompanyProvider(generics.CreateAPIView):
             "password": password
         })
         send_IntrareEmail(htmlMsg, providerUserMail)
+
+
+class GetProvidersByHost(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    serializer_class = ProvidersCompanySerializer
+    def get_queryset(self):
+        user = self.request.user
+        try:
+            admin = Administrador.objects.get(id_usuario=user)
+        except ObjectDoesNotExist:
+            return None
+        companyId = admin.id_empresa
+        querySet = Providers.objects.filter(companyHost=companyId)
+        return querySet
+
+    # def list(self, request, *args, **kwargs):
