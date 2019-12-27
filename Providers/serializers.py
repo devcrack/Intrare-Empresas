@@ -19,7 +19,7 @@ class ProviderSerializer(serializers.ModelSerializer):
 
 
 class ProvidersCompanySerializer(serializers.ModelSerializer):
-    companyProvider = EmpresaSerializers(many=True)
+    companyProvider = EmpresaSerializers()
 
     class Meta:
         model = Providers
