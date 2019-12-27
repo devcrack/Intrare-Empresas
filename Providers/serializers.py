@@ -1,12 +1,19 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.core.exceptions import ObjectDoesNotExist
-
+from Empresas.serializers import EmpresaSerializers
 
 from .models import Providers
 from Usuarios.models import CustomUser
 from Usuarios.serializers import CustomFindSerializer
 from Empresas.models import Empresa , Administrador
+
+class ProvidersCompanySerializer(serializers.ModelSerializer):
+    companyProvider = EmpresaSerializers(many=True)
+
+    class Meta:
+        model = Providers
+        fields = '__all__'
 
 class ProviderSerializer(serializers.ModelSerializer):
 
