@@ -107,7 +107,7 @@ def justCreateInvitation(id_company, id_area, _typeInv, _dateInv, _timeInv, expD
     return nw_invitation
 
 
-####DESHABILITADO ENVIO DE MENSAJES
+
 def createOneMoreInvitaitons(id_company, id_area, _host, listGuest, typeInv, _dateInv, _timeInv, expDate,
                              subject, vehicle, notes, from_company, diary):
     error_response = None
