@@ -510,7 +510,7 @@ def justCreateEnterpriseInv(serializer, _host):
         _dateTime = str(inv.dateInv) + " " + str(inv.timeInv)
         _wallet = linkWallet + _specialQR
         _htmlMessage = render_InvMail(inv.id_empresa.name, _dateTime,
-                                      _nwInByUSER.qr_code, _wallet, _securityEquipments)
+                                      _nwInByUSER.qr_code, _wallet, _securityEquipments, 1)
         if len(_userDevices) > 0:
             _userDevices.send_message(title="Intrare",
                                       body="Se te ha enviado una invitación Empresarial. Anfitrion: " + host_name,
