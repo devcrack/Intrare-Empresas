@@ -69,19 +69,19 @@ ADMIN = 5
 
 #Config Email
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_USE_TLS = True
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'rstestmx@gmail.com'
-# EMAIL_HOST_PASSWORD = 'mientras123'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'no-reply@intrare.app'
-EMAIL_HOST_PASSWORD = 'HIPIcc2019'
+EMAIL_HOST_USER = 'rstestmx@gmail.com'
+EMAIL_HOST_PASSWORD = 'mientras123'
+
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_USE_TLS = True
+#EMAIL_PORT = 587
+#EMAIL_HOST_USER = 'no-reply@intrare.app'
+#EMAIL_HOST_PASSWORD = 'HIPIcc2019'
 
 
 FCM_DJANGO_SETTINGS = {
