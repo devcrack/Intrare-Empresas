@@ -126,7 +126,7 @@ class AreaListAll(generics.ListCreateAPIView):
         if user.is_staff:
             queryset = Area.objects.all()
         else:
-            if user.roll == settings.ADMIN:
+            if user.roll == settings.ADMIN or settings.PROVIDER_ADMIN:
                 try:
                     admin_company = Administrador.objects.get(id_usuario=user)
                 except ObjectDoesNotExist:
@@ -157,7 +157,7 @@ class AreaListAll(generics.ListCreateAPIView):
 
 
 class AreaDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = (isAdmin, )
+    permission_classes = [IsAuthenticated, isAdmin|isAdminProvider]
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -172,7 +172,7 @@ class AreaDetail(generics.RetrieveDestroyAPIView):
 
 
 class AreaUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdmin, )
+    permission_classes = [IsAuthenticated, isAdmin|isAdminProvider]
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -246,7 +246,7 @@ class EmpleadoListAll(generics.ListCreateAPIView):
     """List all avaiable employees of the administrator company.
     This only list all employees that belongs to the company wich the adm
     """
-    permission_classes = (isAdmin | isGuard,)  # Validates if this user is and Admin of some company
+    permission_classes = (IsAuthenticated, isAdmin | isGuard | isAdminProvider,)  # Validates if this user is and Admin of some company
     serializer_class = EmpleadoSerializers
 
     def get_queryset(self):
@@ -254,7 +254,7 @@ class EmpleadoListAll(generics.ListCreateAPIView):
         if user.is_staff:
             queryset = Empleado.objects.all()
         else:
-            if user.roll == settings.ADMIN:
+            if user.roll == settings.ADMIN or user.roll==settings.PROVIDER_ADMIN:
                 admin_company = Administrador.objects.filter(id_usuario=user)[0]
                 id_company = admin_company.id_empresa
                 queryset = Empleado.objects.filter(id_empresa=id_company)
@@ -300,7 +300,7 @@ class EmpleadoDetailUser(generics.ListCreateAPIView):
 
 
 class EmpleadoUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdmin, )
+    permission_classes =  [IsAuthenticated, IsAdmin|isAdminProvider]
 
     def get_queryset(self):
         user = self.request.user

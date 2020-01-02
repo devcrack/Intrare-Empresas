@@ -116,6 +116,14 @@ class isGuard(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user.roll == settings.VIGILANTE
 
+class isAdminProvider(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.roll is settings.PROVIDER_ADMIN
+
+
+class isProviderEmployee(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.roll is settings.PROVIDER_EMPLOYEE
 
 class IsEmployee(permissions.BasePermission):
     message = 'No es un empleado.'

@@ -4,7 +4,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from rest_framework.exceptions import ValidationError
 from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
 from fcm_django.models import FCMDevice
-
+from secrets import token_hex
 
 from django.utils import translation
 from django.template.loader import render_to_string
@@ -13,7 +13,6 @@ from .models import *
 from rest_framework.validators import UniqueValidator
 
 linkConfirmIdentity = "https://empresas.intrare.app/confirmar_identidad/"
-
 
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
@@ -43,7 +42,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'celular',
             'ine_frente',
             'ine_atras',
-            'avatar'
+            'avat1ar'
         ]
 
     ###### Deshabilitado SMS
@@ -384,7 +383,13 @@ class UpdateUserByTempToken(serializers.Serializer):
 class UserSerilizerAPP(serializers.ModelSerializer):
     first_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
     last_name = serializers.CharField(required=True, allow_null=False, allow_blank=False)
+    """ Validamos que el email sea unico, es decir que algun otro usuario no sea propietario del email que se deasea
+    usar.
+    """
     email = serializers.EmailField(allow_blank=False, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    """ Validamos que el # de celular sea unico, es decir que algun otro usuario no sea propietario del email que se deasea
+        usar.
+        """
     celular = serializers.IntegerField(required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
 
     class Meta:
@@ -395,6 +400,19 @@ class UserSerilizerAPP(serializers.ModelSerializer):
             'email',
             'celular',
         ]
+
+    def create(self, validated_data):
+        usrHost = self.context['user']
+        print("Usuario Anfitrion ")
+        print(usrHost)
+        _token = token_hex(6)
+        _token = _token.replace('f', '')
+        user = CustomUser(first_name=validated_data['first_name'], last_name=validated_data['last_name'],
+                          email=validated_data['email'], celular=validated_data['celular'], host=usrHost,
+                          temporalToken=_token, roll=15)
+        user.temporalToken = _token
+        user.save()
+        return user
 
 
     def update(self, instance, validated_data):

@@ -78,6 +78,8 @@ Si no se tiene idea de que extension poner, ingrese 00000 o cualquier numero sin
 
 
 
+
+
 ## **Invitaciones**
 
 ### Crear Invitacion Normal o Grupales
@@ -618,6 +620,49 @@ http://127.0.0.1:8000/deleteEmployee/1/
 
 Aqui se esta eliminado el empleado con el Id 1.
 
+
+
+## Proveedores
+
+
+### Dar de alta un Proveedor
+Se da de alta un proveedor preregistrado. Se le enviara un email con un accesos con caracterisiticas limitadas a la plataforma para que el mismo de de alta su  empresa y a su empleado. 
+
+**request** POST
+
+**url:** https://api-intrare-empresarial.herokuapp.com/createProvider/ 
+
+**Authorization:** Token >TokenAdmin<
+  
+  ```json{
+  "first_name": "Jose",
+  "last_name":"Mendez",
+	"email":"cinco@mail.com",
+  "celular":2342215  
+}
+```
+
+### Obtener un Proveedor medinate su Token 
+
+**request** GET
+
+**URL** URL_HOST/getProvider/>TOKEN</
+
+
+### Actualizar la informacion de un Proveedor Parcialmente
+
+**request** PATCH
+
+**URL** URL_HOST/updateProvider/>TOKEN</
+
+**content-type:** multipart/form-data
+  
+  - form celular=465789354 
+  - form first_name=Ignacio 
+  - form 'last_name =fernandez
+  - form ine_frente=  \PicFILE
+  - form ine_atras= \PicFILE
+  - form avatar= \PicFILE
 
 
 

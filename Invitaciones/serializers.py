@@ -13,7 +13,6 @@ from Empresas.models import Empleado, SecurityEquipment
 
 linkInvitationData = "https://empresas.intrare.app/form_invitation_data/"  # Link Development
 
-
 _date = date(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
              day=timezone.datetime.now().day)  # Fecha actual
 

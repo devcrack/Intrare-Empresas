@@ -20,7 +20,9 @@ from django.conf.urls.static import static
 from django.conf import settings
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
+
 admin.site.site_header = 'Administración de Intrare Industrial'
+
 
 urlpatterns = [
 
@@ -34,6 +36,7 @@ urlpatterns = [
     path('', include('Usuarios.urls')),
     path('', include('Grupos.urls')),
     path('', include('Bitacoras.urls')),
+    path('',include('Providers.urls')),
     path('wallet/', include('Wallet.urls')),
 
     re_path(r'^devices?$', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}),
