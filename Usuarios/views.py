@@ -20,7 +20,7 @@ from django.db.models import Q
 
 walletLink = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
 linkConfirmAppointment = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
-linkProvider = "A_LINK/"
+linkProvider = "https://empresas.intrare.app/form_proveedor/"
 #linkProvider = "https://first-project-vuejs.herokuapp.com/form_proveedor/"
 
 
