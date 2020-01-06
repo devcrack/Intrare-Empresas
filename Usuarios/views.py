@@ -15,7 +15,7 @@ from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
 from Invitaciones.models import Invitacion, InvitationByUsers
-from Empresas.models import SecurityEquipment, Administrador, Empleado
+from Empresas.models import SecurityEquipment, Administrador, Empleado, Empresa
 from django.db.models import Q
 
 # Create your views here.
@@ -448,6 +448,20 @@ class UpgradeUserToEmployee(generics.UpdateAPIView):
         
         return Response(status=status.HTTP_200_OK)
 
+class UpgradeUserToAdmin(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, isSuperAdmin]
+
+    def update(self, request, *args, **kwargs):
+        _idUser = int(request.data.get("idUsuario"))
+        _idCompany = int(request.data.get("idEmpresa"))
+        try:
+            _user = CustomUser.objects.get(id=_idUser)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "El usuario especificado no se existe"})
+        try:
+            _company = Empresa.objects.get(id=_idCompany)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "La empresa especificada no se existe"})
 
 class CreateProvider(generics.CreateAPIView):
     """Crea un provedor no Existente"""
