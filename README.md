@@ -1,5 +1,7 @@
 # EndPoints
 
+- Usuarios
+ - [Upgrade User To Admin](./README#UpgradeUserToAdmin)
 
 ## **Usuarios**
 
@@ -78,6 +80,20 @@ Si no se tiene idea de que extension poner, ingrese 00000 o cualquier numero sin
 
 
 
+### UpgradeUserToAdmin
+Convierte a un usuario en en Administrador de una Empresa
+
+- **Request**:PATCH
+- **URL**: >HOSTURL</upgradeUserToAdmin/
+- **HEADER**: Authorization: **Token isSuperAdmin**
+- **DATA**:
+
+```json
+{
+	"idUsuario": 350,
+	"idEmpresa": 5
+}
+```
 
 
 ## **Invitaciones**

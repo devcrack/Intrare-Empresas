@@ -462,6 +462,12 @@ class UpgradeUserToAdmin(generics.UpdateAPIView):
             _company = Empresa.objects.get(id=_idCompany)
         except ObjectDoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "La empresa especificada no se existe"})
+        _user.roll = settings.ADMIN
+        _user.save()
+        _newCompanyAdmin = Administrador(id_empresa=_company, id_usuario=_user)
+        _newCompanyAdmin.save()
+        return Response(status=status.HTTP_200_OK)
+
 
 class CreateProvider(generics.CreateAPIView):
     """Crea un provedor no Existente"""
