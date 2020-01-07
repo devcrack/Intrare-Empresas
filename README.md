@@ -1,7 +1,7 @@
 # EndPoints
 
 - Usuarios
-  - [Upgrade User To Admin](./README#UpgradeUserToAdmin)
+  - [Upgrade User To Admin](./README.md#UpgradeUserToAdmin)
 
 ## **Usuarios**
 
