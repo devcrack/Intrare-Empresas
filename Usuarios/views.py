@@ -44,7 +44,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class SimpleUserFilter(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, isAdmin]
+    permission_classes = [IsAuthenticated, isAdmin|isSuperAdmin]
     serializer_class = CustomFindSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['^celular', '^email']
