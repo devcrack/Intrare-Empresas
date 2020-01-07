@@ -7,6 +7,7 @@ from .models import Providers
 from Usuarios.models import CustomUser
 from Usuarios.serializers import CustomFindSerializer
 from Empresas.models import Empresa , Administrador
+from Empresas.serializers import EmpresaSerializers
 
 class ProviderSerializer(serializers.ModelSerializer):
 
@@ -15,6 +16,15 @@ class ProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id','first_name', 'last_name', 'celular', 'host']
+
+
+class ProvidersCompanySerializer(serializers.ModelSerializer):
+    companyProvider = EmpresaSerializers()
+
+    class Meta:
+        model = Providers
+        fields = '__all__'
+
 
 
 class UpdateProviderSerializer(serializers.ModelSerializer):

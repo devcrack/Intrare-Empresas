@@ -276,7 +276,7 @@ class InvitationListToManagerAndEmployee(viewsets.ModelViewSet):
     """
         Vista para mostrar la Información de la Invitación por ID_INVITACION
     """
-    permission_classes = (isEmployee | isAdmin,)
+    permission_classes = [IsAuthenticated, isEmployee | isAdmin | isAdminProvider | isProviderEmployee,]
 
     def list(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
@@ -541,10 +541,10 @@ def justCreateEnterpriseInv(serializer, _host):
 
 
 class CreateEnterpriseInvitation(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated, IsAdmin|isAdminProvider]
 
     def create(self, request, *args, **kwargs):
-        # usr = self.request.user # REFERENCIADO. Persona encargada de cerrar la Invitacion.
+        # usr = self.request.user # REFERENCIADO. Pesona encargada de cerrar la Invitacion.
         self.serializer_class = EnterpriseSerializer
         _serializer = self.serializer_class(data=request.data)
         if _serializer.is_valid():

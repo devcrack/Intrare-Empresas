@@ -126,7 +126,7 @@ class AreaListAll(generics.ListCreateAPIView):
         if user.is_staff:
             queryset = Area.objects.all()
         else:
-            if user.roll == settings.ADMIN:
+            if user.roll == settings.ADMIN or settings.PROVIDER_ADMIN:
                 try:
                     admin_company = Administrador.objects.get(id_usuario=user)
                 except ObjectDoesNotExist:
@@ -157,7 +157,7 @@ class AreaListAll(generics.ListCreateAPIView):
 
 
 class AreaDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = (isAdmin, )
+    permission_classes = [IsAuthenticated, isAdmin|isAdminProvider]
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -172,7 +172,7 @@ class AreaDetail(generics.RetrieveDestroyAPIView):
 
 
 class AreaUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdmin, )
+    permission_classes = [IsAuthenticated, isAdmin|isAdminProvider]
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -300,7 +300,7 @@ class EmpleadoDetailUser(generics.ListCreateAPIView):
 
 
 class EmpleadoUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdmin, )
+    permission_classes =  [IsAuthenticated, IsAdmin|isAdminProvider]
 
     def get_queryset(self):
         user = self.request.user

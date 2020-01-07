@@ -4,6 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.template.loader import render_to_string
 from ControlAccs.utils import send_IntrareEmail
+from secrets import token_hex
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import generics
+from Usuarios.permissions import *
 
 from .serializers import *
 
@@ -36,8 +40,12 @@ class AddCompanyProvider(generics.CreateAPIView):
             hostAdminUser = self.getUser(_hostId)
             if hostAdminUser is None:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'Host Admin Inexistente'})
-            providerAdmin = self.getUser(_idProviderAdmin)
-            if providerAdmin is None:
+            providerAdminUser = self.getUser(_idProviderAdmin)
+            _pass = token_hex(3)
+            providerUserMail = providerAdminUser.email
+            providerAdminUser.set_password(_pass)
+            providerAdminUser.save()
+            if providerAdminUser is None:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'Admin Provider Inexistente'})
 
             _companyName = _serializer.data['name']
@@ -54,11 +62,12 @@ class AddCompanyProvider(generics.CreateAPIView):
             _validity = _serializer.data['companyValidity']
             newCompany = self.createCompany(_companyName, _address, _telephone, _email, _logo, _webPage, _scian,
                                             _classification, _lat, _long, _urlMap, _validity)
-            self.createAdmin(newCompany, providerAdmin)
+            self.createAdmin(newCompany, providerAdminUser)
             admin = self.getAdmin(hostAdminUser)
             if admin is None:
                 return Response(status=status.HTTP_400_BAD_REQUEST, data={'error': 'Host Admin Inexistente'})
             self.createProviderCompany(admin.id_empresa, newCompany)
+            self.sendMailProviderPassword(providerUserMail, _pass)
             self.sendMailRegisteredProvider(newCompany.name, newCompany.address, hostAdminUser.email)
             return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
 
@@ -101,6 +110,7 @@ class AddCompanyProvider(generics.CreateAPIView):
         newCompanyProvider.save()
         return newCompanyProvider
 
+
     @classmethod
     def sendMailRegisteredProvider(cls, providerCompany, address, email):
         htmlMsg = render_to_string("registeredProvider.html", {
@@ -108,3 +118,27 @@ class AddCompanyProvider(generics.CreateAPIView):
             "address": address
         })
         send_IntrareEmail(htmlMsg, email)
+
+    @classmethod
+    def sendMailProviderPassword(cls, providerUserMail, password):
+        htmlMsg = render_to_string("providerAccess.html", {
+            "password": password
+        })
+        send_IntrareEmail(htmlMsg, providerUserMail)
+
+
+class GetProvidersByHost(generics.ListAPIView):
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+    serializer_class = ProvidersCompanySerializer
+    def get_queryset(self):
+        user = self.request.user
+        try:
+            admin = Administrador.objects.get(id_usuario=user)
+        except ObjectDoesNotExist:
+            return None
+        companyId = admin.id_empresa
+        querySet = Providers.objects.filter(companyHost=companyId)
+        return querySet
+
+    # def list(self, request, *args, **kwargs):
