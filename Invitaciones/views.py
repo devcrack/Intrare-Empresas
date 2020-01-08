@@ -683,3 +683,21 @@ class SetConfirmAppointmentFromMail(generics.ListCreateAPIView):
         send_IntrareEmail(html_message, _hostMail)
 
         return HttpResponse("Confirmacion OK!", content_type='text/plain', status=status.HTTP_200_OK)
+
+
+class UpdateTimeInv(generics.UpdateAPIView):
+    queryset = InvitationByUsers.objects.all()
+    serializer_class = InvitationByUsersSerializer
+    lookup_field = 'qr_code'
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        metaDataInvitation = instance.idInvitation
+        print("Es esta la invitacion?")
+        print(metaDataInvitation)
+        return Response(status=status.HTTP_200_OK)
+
+
+
+
+
