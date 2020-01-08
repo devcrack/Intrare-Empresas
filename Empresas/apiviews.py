@@ -130,7 +130,8 @@ class AreaListAll(generics.ListCreateAPIView):
         if user.is_staff:
             queryset = Area.objects.all()
         else:
-            if user.roll == settings.ADMIN or settings.PROVIDER_ADMIN:
+            # if user.roll == settings.ADMIN or settings.PROVIDER_ADMIN:
+            if user.roll == settings.ADMIN:
                 try:
                     admin_company = Administrador.objects.get(id_usuario=user)
                 except ObjectDoesNotExist:
