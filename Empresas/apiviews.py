@@ -121,7 +121,9 @@ class AreaListAll(generics.ListCreateAPIView):
     """
     permission_classes = (IsAuthenticated, )
     def get_queryset(self):
+        print("ROLLLL!!!!!!!!!")
         user = self.request.user
+        print(user.roll)
         queryset = None
         if user.is_staff:
             queryset = Area.objects.all()
