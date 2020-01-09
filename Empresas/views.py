@@ -372,8 +372,8 @@ class GetSecEquByArea(viewsets.ModelViewSet):
 class DeleteVigilant(generics.DestroyAPIView):
     permissions = [IsAuthenticated, IsAdmin]
 
-    queryset = SecurityEquipment.objects.all()
-    serializer_class = SecurityEquipmentSerializer
+    queryset = Vigilante.objects.all()
+    serializer_class = VigilanteSerializers
     lookup_field = 'pk'
 
     def delete(self, request, *args, **kwargs):
