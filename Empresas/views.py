@@ -378,9 +378,11 @@ class DeleteVigilant(generics.DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
-        user = CustomUser.objects.get(id=instance.id_usuario)
-        user.delete()
-        instance.delete()
+        print("QUE COJONES")
+        print(type(instance))
+        # user = CustomUser.objects.get(id=instance.id_usuario)
+        # user.delete()
+        # instance.delete()
         return Response(status=status.HTTP_200_OK)
 
 
