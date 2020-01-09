@@ -694,7 +694,9 @@ class UpdateTimeInv(generics.UpdateAPIView):
         instance = self.get_object()
         metaDataInvitation = instance.idInvitation
         print("Es esta la invitacion?")
-        print(metaDataInvitation)
+        # print(metaDataInvitation)
+        inv = Invitacion.objects.get(id=metaDataInvitation)
+        print(inv)
         return Response(status=status.HTTP_200_OK)
 
 
