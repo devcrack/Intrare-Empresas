@@ -14,7 +14,7 @@ from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from secrets import token_hex
-from ControlAccs.utils import send_sms, send_IntrareEmail
+from ControlAccs.utils import send_sms, send_IntrareEmail, sendPushNotificationIntrare
 from fcm_django.models import FCMDevice
 from django.db.models import Q
 from django.core.files.storage import default_storage
@@ -696,6 +696,11 @@ class UpdateTimeInv(generics.UpdateAPIView):
         metaDataInvitation = instance.idInvitation
         metaDataInvitation.timeInv = newTime
         metaDataInvitation.save()
+        fNameHost = instance.host.first_name
+        lNameHost = instance.host.last_name
+        msg =f"El anfitrion {fNameHost} {lNameHost} ha cambiado la hora de la invitacion: {newTime}"
+        sendPushNotificationIntrare(instance.idGuest, msg)
+
         return Response(status=status.HTTP_200_OK)
 
 

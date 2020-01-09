@@ -2,7 +2,8 @@
 
 - Usuarios
   - [Upgrade User To Admin](./README.md#UpgradeUserToAdmin)
-
+- Invitaciones
+  - [Modificar Hora Invitacion](./README.md#modificar-hora-invitacion)
 ## **Usuarios**
 
 
@@ -477,6 +478,20 @@ http://127.0.0.1:8000/setConfirmed_Appointment/dae7316d72b9a7fe32/true/
 ```
 Aqui se esta señalando que la invitacion con el qrCode ```dae7316d72b9a7fe32``` es una invitacion confirmada.
 
+### Modificar Hora Invitacion
+
+**Request**: PATCH
+
+**URL**: URL_HOST/updateTimeInvitation/>QRCODE</
+
+**HEADER** Authorization: Token **logintoken**.......
+
+**Data**
+```json
+{
+	"newTime": "23:05"
+}
+```
 
 ## Wallet
 Solo cosuman GET /wallet/create/>qrCODE< 
@@ -600,7 +615,7 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
     "id": 4,
     "nameEquipment": "Lo que sea #1",
     "idArea": 2
-  },
+  }, Modificar Hora Invitacion
   {
     "id": 5,
     "nameEquipment": "Lo que sea #2",
