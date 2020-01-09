@@ -66,6 +66,7 @@ urlpatterns = [
     path('deleteSecurityEquipment/<int:pk>/', DeleteSecurityEquipment.as_view()),
     ##<<Obtener equipo de seguridad por ID de Area>>##
     path('get_SecurityEquipment/ByArea/<idArea>/',GetSecEquByArea.as_view({'get': 'list'})),
+    path('deleteVigilant/<int:pk>/', DeleteVigilant.as_view()),
 ]
 
 urlpatterns += router.urls

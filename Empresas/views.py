@@ -369,6 +369,20 @@ class GetSecEquByArea(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class DeleteVigilant(generics.DestroyAPIView):
+    permissions = [IsAuthenticated, IsAdmin]
+
+    queryset = SecurityEquipment.objects.all()
+    serializer_class = SecurityEquipmentSerializer
+    lookup_field = 'pk'
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = CustomUser.objects.get(id=instance.id_usuario)
+        user.delete()
+        instance.delete()
+        return Response(status=status.HTTP_200_OK)
+
 
 
 
