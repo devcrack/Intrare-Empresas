@@ -700,6 +700,7 @@ class UpdateTimeInv(generics.UpdateAPIView):
         metaDataInvitation.timeInv = "12:50"
         print("tipo")
         print(type(metaDataInvitation))
+        metaDataInvitation.save()
         return Response(status=status.HTTP_200_OK)
 
 
