@@ -691,15 +691,10 @@ class UpdateTimeInv(generics.UpdateAPIView):
     lookup_field = 'qr_code'
 
     def update(self, request, *args, **kwargs):
+        newTime = request.data.get("newTime")
         instance = self.get_object()
         metaDataInvitation = instance.idInvitation
-        print("Es esta la invitacion?")
-        # print(metaDataInvitation)
-        # inv = Invitacion.objects.get(id=metaDataInvitation)
-        print(metaDataInvitation.timeInv)
-        metaDataInvitation.timeInv = "12:50"
-        print("tipo")
-        print(type(metaDataInvitation))
+        metaDataInvitation.timeInv = newTime
         metaDataInvitation.save()
         return Response(status=status.HTTP_200_OK)
 
