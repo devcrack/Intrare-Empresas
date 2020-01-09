@@ -4,6 +4,8 @@
   - [Upgrade User To Admin](./README.md#UpgradeUserToAdmin)
 - Invitaciones
   - [Modificar Hora Invitacion](./README.md#modificar-hora-invitacion)
+- Empresas 
+  - [Eliminar Vigilante](./README.md#eliminar-vigilante)
 ## **Usuarios**
 
 
@@ -650,6 +652,15 @@ http://127.0.0.1:8000/deleteEmployee/1/
 ```
 
 Aqui se esta eliminado el empleado con el Id 1.
+
+### Eliminar Vigilante
+
+**Request**DELETE
+
+**URL**: URL_HOST//deleteVigilant/>int:pk</ 
+
+**HEADER**: Authorization: Token Admin
+
 
 
 
