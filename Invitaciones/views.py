@@ -254,6 +254,29 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet):  ####
         return Response(serializer.data)
 
 
+class InvitationListAdminEmployeeByRangeDate(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsAdmin | IsEmployee]
+
+    def list(self, request, *args, **kwargs):
+        y1 = self.kwargs['year1']
+        m1 = self.kwargs['month1']
+        d1 = self.kwargs['day1']
+        y2 = self.kwargs['year2']
+        m2 = self.kwargs['month2']
+        d2 = self.kwargs['day2']
+
+        iniDate = y1 + "-" + m1 + "-" + d1
+        finalDate = y2 + "-" + m2 + "-" + d2
+
+        usr = self.request.user
+
+        self.queryset = InvitationByUsers.objects.filter(host=usr, idInvitation__fecha_hora_envio__range=[iniDate,
+                                                                                                          finalDate])
+        queryset = self.queryset
+        serializer = InvitationToGuardSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 class InvitationListToGuard(viewsets.ModelViewSet):  ####
     permission_classes = (isGuard,)
 
@@ -685,7 +708,7 @@ class SetConfirmAppointmentFromMail(generics.ListCreateAPIView):
         return HttpResponse("Confirmacion OK!", content_type='text/plain', status=status.HTTP_200_OK)
 
 
-class UpdateTimeInv(generics.UpdateAPIView):
+class UpdateTimeInvitation(generics.UpdateAPIView):
     queryset = InvitationByUsers.objects.all()
     serializer_class = InvitationByUsersSerializer
     lookup_field = 'qr_code'

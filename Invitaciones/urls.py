@@ -40,5 +40,7 @@ urlpatterns = [
     # Concertar Invitacion(Invitado confirma que asistirá a la cita)
     path('setConfirmed_Appointment/<str:qr_code>/<flag>/', SetConfirmAppointment.as_view()),
     path('setConfirmed_AppointmentFromMail/<str:qr_code>/<flag>/', SetConfirmAppointmentFromMail.as_view()),
-    path ('updateTimeInvitation/<str:qr_code>/', UpdateTimeInv.as_view()),
+    path ('updateTimeInvitation/<str:qr_code>/', UpdateTimeInvitation.as_view()),
+    path('get_invByDateRange/<year1>/<month1>/<day1>/<year2>/<month2>/<day2>/',
+         InvitationListAdminEmployeeByRangeDate.as_view({'get': 'list'})),
 ]
