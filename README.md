@@ -7,7 +7,8 @@
 - Empresas 
   - [Eliminar Vigilante](./README.md#eliminar-vigilante)
 - Invitaciones
-  - [Fitlrado de Invitaciones](./README.md#filtrado-invitaciones-por-rango-de-fecha)
+  - [Fitlrado de Invitaciones Enviadas](./README.md#filtrado-invitaciones-enviadas-por-rango-de-fecha)
+  - [Fitlrado de Invitaciones Recibidas](./README.md#filtrado-invitaciones-recibidas-por-rango-de-fecha)
 
 ## **Usuarios**
 
@@ -498,13 +499,22 @@ Aqui se esta señalando que la invitacion con el qrCode ```dae7316d72b9a7fe32```
 }
 ```
 
-### Filtrado Invitaciones por rango de Fecha
+### Filtrado Invitaciones ENVIADAS por rango de Fecha
 
 **Request:** GET
 
 **URL:** URL_HOST/get_invByDateRange/año_1/mes_1/dia_1/año_2/mes_2/dia_2/
 
 **HEADER** Authorization Token AdminToken/EmpleadoToken
+
+
+### Filtrado Invitaciones RECIBIDAS por rango de Fecha
+
+**Request:** GET
+
+**URL:** URL_HOST/get_inv/userByDateRange/mes_1/dia_1/año_2/mes_2/dia_2/
+
+**HEADER** Authorization Token LOGINTOKEN
 
 
 ## Wallet

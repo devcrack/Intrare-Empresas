@@ -254,6 +254,9 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet):  ####
         return Response(serializer.data)
 
 
+"""
+Aqui se obtiene un listado de las INVITACIONES ENVIADAS
+"""
 class InvitationListAdminEmployeeByRangeDate(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsAdmin | IsEmployee]
 
@@ -326,6 +329,28 @@ class InvitationListToSimpleUser(viewsets.ModelViewSet):  ####
         _nReg = len(_query)
         if _nReg > 0:
             print('nReg=', _nReg)
+            _serializer = InvitationToSimpleUserSerializer(_query, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class InvitationListToSimpleUserByDateRange(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        y1 = self.kwargs['year1']
+        m1 = self.kwargs['month1']
+        d1 = self.kwargs['day1']
+        y2 = self.kwargs['year2']
+        m2 = self.kwargs['month2']
+        d2 = self.kwargs['day2']
+
+        iniDate = y1 + "-" + m1 + "-" + d1
+        finalDate = y2 + "-" + m2 + "-" + d2
+        _query = InvitationByUsers.objects.filter(idGuest=self.request.user.id)
+        _query = _query.filter(idInvitation__dateInv__range=[iniDate, finalDate])
+        if len(_query) > 0:
             _serializer = InvitationToSimpleUserSerializer(_query, many=True)
             return Response(_serializer.data)
         else:

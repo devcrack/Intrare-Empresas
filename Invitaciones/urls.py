@@ -43,4 +43,6 @@ urlpatterns = [
     path ('updateTimeInvitation/<str:qr_code>/', UpdateTimeInvitation.as_view()),
     path('get_invByDateRange/<year1>/<month1>/<day1>/<year2>/<month2>/<day2>/',
          InvitationListAdminEmployeeByRangeDate.as_view({'get': 'list'})),
+    path('get_inv/userByDateRange/<year1>/<month1>/<day1>/<year2>/<month2>/<day2>/',
+         InvitationListToSimpleUserByDateRange.as_view({'get': 'list'}), name='get_inv_user'),
 ]
