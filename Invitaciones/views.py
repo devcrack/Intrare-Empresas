@@ -270,8 +270,9 @@ class InvitationListAdminEmployeeByRangeDate(viewsets.ModelViewSet):
 
         usr = self.request.user
 
-        self.queryset = InvitationByUsers.objects.filter(host=usr, idInvitation__fecha_hora_envio__range=[iniDate,
-                                                                                                          finalDate])
+        # self.queryset = InvitationByUsers.objects.filter(host=usr, idInvitation__fecha_hora_envio__range=[iniDate,
+        #                                                                                                   finalDate])
+        self.queryset = InvitationByUsers.objects.filter(idInvitation__fecha_hora_envio__range=[iniDate, finalDate])
         queryset = self.queryset
         serializer = InvitationToGuardSerializer(queryset, many=True)
         return Response(serializer.data)
