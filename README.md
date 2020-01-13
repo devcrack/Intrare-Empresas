@@ -6,6 +6,9 @@
   - [Modificar Hora Invitacion](./README.md#modificar-hora-invitacion)
 - Empresas 
   - [Eliminar Vigilante](./README.md#eliminar-vigilante)
+- Invitaciones
+  - [Fitlrado de Invitaciones](./README.md#eliminar-vigilante)
+
 ## **Usuarios**
 
 
@@ -413,7 +416,7 @@ Retorna un JSON, como el siguiente:
     "diary": "0246",
     "secEqu": [
       {
-        "nameEquipment": "Botas Antiderrapantes"
+        "nameEquipment": "Botas Antiderrainvitacionespantes"
       },
       {
         "nameEquipment": "Lentes de Proteccion"
@@ -495,6 +498,8 @@ Aqui se esta señalando que la invitacion con el qrCode ```dae7316d72b9a7fe32```
 }
 ```
 
+### Filtrado Invitaciones por rango de Fecha
+
 ## Wallet
 Solo cosuman GET /wallet/create/>qrCODE< 
 
@@ -504,6 +509,14 @@ regresa un pkpass.pkpass
 ## Empresa
 
 ### Dar de Alta Equipo de Seguridad 
+
+**Request:** GET
+
+**URL:** URL_HOST/get_invByDateRange/año_1/mes_1/dia_1/año_2/mes_2/dia_2/
+
+**HEADER** Authorization Token AdminToken/EmpleadoToken
+
+
 
 Para esto es necesario, el Id del Area a la que se asignara este equipo de Seguridad, y el nombre del equipo de seguridad que desea dar de alta.
 
