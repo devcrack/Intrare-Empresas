@@ -7,8 +7,10 @@
 - Empresas 
   - [Eliminar Vigilante](./README.md#eliminar-vigilante)
 - Invitaciones
-  - [Fitlrado de Invitaciones Enviadas](./README.md#filtrado-invitaciones-enviadas-por-rango-de-fecha)
-  - [Fitlrado de Invitaciones Recibidas](./README.md#filtrado-invitaciones-recibidas-por-rango-de-fecha)
+  - [Obtener Invitaciones Enviadas por rango Fecha ](./README.md#filtrado-invitaciones-enviadas-por-rango-de-fecha)
+  - [Obtener Invitaciones Recibidas por rango fecha](./README.md#filtrado-invitaciones-recibidas-por-rango-de-fecha)
+- Accesos
+  - [Obtener Accesos por rango de fecha](./README.md#obtener-accesos-por-rango-de-fecha)
 
 ## **Usuarios**
 
@@ -615,6 +617,16 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
   }
 ]
 ```
+
+### Obtener accesos por rango de fecha
+
+**request:** GET
+
+**url:** HOST_URL/getAccessByDateRange/<year1>/<month1>/<day1>/<year2>/<month2>/<day2>/
+
+**header:** Authorization TOKEN Admin/Employe/Vigilant
+
+
 
 ### **Enviar Alerta** (Boton de Panico)
 
