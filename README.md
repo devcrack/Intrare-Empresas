@@ -10,7 +10,7 @@
   - [Obtener Invitaciones Enviadas por rango Fecha ](./README.md#filtrado-invitaciones-enviadas-por-rango-de-fecha)
   - [Obtener Invitaciones Recibidas por rango fecha](./README.md#filtrado-invitaciones-recibidas-por-rango-de-fecha)
 - Accesos
-  - [Obtener Accesos por rango de fecha](./README.md#obtener-accesos-por-rango-de-fecha)
+  - [Obtener Accesos por rango de fecha](./README.md#obtener-accesos-sin-invitacion-por-rango-de-fechas)
 
 ## **Usuarios**
 
@@ -534,7 +534,7 @@ Para esto es necesario, el Id del Area a la que se asignara este equipo de Segur
 
 **Request:** POST
 
-**url:** http://127.0.0.1:8000/addSecurityEquipment 
+**url:** http://127.0.0.1:8000/addSecurityEquipmEmpresa
 
 **header:** 'authorization: Token cfbced0fc65d1a3d2ba8044dc3035d146603c874' Este token tiene que ser de un administrador.
 
@@ -546,6 +546,17 @@ Para esto es necesario, el Id del Area a la que se asignara este equipo de Segur
 	"idArea":2
 }
 ```
+
+
+### Obtener Accesos sin Invitacion por Rango de Fechas
+
+**request:**GET
+
+**url:**URL_HOST/get_bitacoraByDateRange/<year1>/<month1>/<day1>/<year2>/<month2>/<day2>/
+
+**header:** Authorization TOKEN_isAdmin/isGuard
+
+
 
 ### Actualizar Equipo de Seguridad
 
