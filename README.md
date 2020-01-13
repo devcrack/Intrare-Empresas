@@ -7,7 +7,7 @@
 - Empresas 
   - [Eliminar Vigilante](./README.md#eliminar-vigilante)
 - Invitaciones
-  - [Fitlrado de Invitaciones](./README.md#eliminar-vigilante)
+  - [Fitlrado de Invitaciones](./README.md#filtrado-invitaciones-por-rango-de-fecha)
 
 ## **Usuarios**
 
