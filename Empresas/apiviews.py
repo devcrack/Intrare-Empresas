@@ -126,7 +126,7 @@ class AreaListAll(generics.ListCreateAPIView):
         if user.is_staff:
             queryset = Area.objects.all()
         else:
-            if user.roll == settings.ADMIN or settings.PROVIDER_ADMIN:
+            if user.roll == settings.ADMIN or user.roll == settings.PROVIDER_ADMIN:
                 try:
                     admin_company = Administrador.objects.get(id_usuario=user)
                 except ObjectDoesNotExist:
@@ -134,8 +134,7 @@ class AreaListAll(generics.ListCreateAPIView):
                 # admin_company = Administrador.objects.filter(id_usuario=user)[0]
                 id_company = admin_company.id_empresa
                 queryset = Area.objects.filter(id_empresa=id_company)
-            else:
-                if user.roll == settings.EMPLEADO:
+            elif user.roll == settings.EMPLEADO:
                     try:
                         admin_company = Empleado.objects.get(id_usuario=user)
                     except ObjectDoesNotExist:
@@ -144,8 +143,7 @@ class AreaListAll(generics.ListCreateAPIView):
                     id_company = admin_company.id_empresa
                     print("id Company = " + str(id_company))
                     queryset = Area.objects.filter(id_empresa=id_company)
-                else:
-                    if user.roll == settings.VIGILANTE:
+            elif user.roll == settings.VIGILANTE:
                         try:
                             guard_company = Vigilante.objects.get(id_usuario=user)
                         except ObjectDoesNotExist:
