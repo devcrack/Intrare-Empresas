@@ -42,7 +42,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             'celular',
             'ine_frente',
             'ine_atras',
-            'avat1ar'
+            'avatar'
         ]
 
     ###### Deshabilitado SMS
