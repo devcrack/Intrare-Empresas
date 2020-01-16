@@ -337,12 +337,14 @@ class UserPlatformSerializer(BaseUserRegistrationSerializer):
 
 class validatorImg():
 
-    def __init__(self, imgFront):
+    def __init__(self, imgFront, imgBack):
         self.imgFront = imgFront
+        self.imgFront = imgBack
 
 
 class UpdateIneSerializser(serializers.Serializer):
     imgFront = serializers.ImageField(allow_null=False, allow_empty_file=False)
+    imgBack = serializers.ImageField(allow_null=False, allow_empty_file=False)
 
     def create(self, validated_data):
         return validatorImg(**validated_data)

@@ -114,7 +114,9 @@ class UserImgUpdate(generics.UpdateAPIView):
             _serializer.save()
             instance = self.request.user
             _imageFieldFront = _serializer.validated_data['imgFront']
+            _imgFieldBack = _serializer.validated_data['imgBack']
             instance.ine_frente = _imageFieldFront
+            instance.ine_atras = _imageFieldBack
             instance.save()
             return Response(status=status.HTTP_202_ACCEPTED)
         else:
