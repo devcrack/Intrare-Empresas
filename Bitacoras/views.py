@@ -94,6 +94,6 @@ class BitacoraListToGuardByDateRange(viewsets.ModelViewSet):
         queryset = queryset.filter(f_acceso__range=[iniDate, finalDate])
         if len(queryset) > 0 :
             serializer = BitacoraListGuardSerializers(queryset, many=True, context={"request": request})
-            return Response(serializer.data)
+            return Response(status=status.HTTP_200_OK, data=serializer.data)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
