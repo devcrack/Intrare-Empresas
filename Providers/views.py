@@ -140,5 +140,3 @@ class GetProvidersByHost(generics.ListAPIView):
         companyId = admin.id_empresa
         querySet = Providers.objects.filter(companyHost=companyId)
         return querySet
-
-    # def list(self, request, *args, **kwargs):

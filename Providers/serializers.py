@@ -1,11 +1,17 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-
 from .models import Providers
 from Usuarios.models import CustomUser
 from Empresas.models import Empresa
 from Empresas.serializers import EmpresaSerializers
+
+class ProvidersCompanySerializer(serializers.ModelSerializer):
+    companyProvider = EmpresaSerializers(many=True)
+
+    class Meta:
+        model = Providers
+        fields = '__all__'
 
 class ProviderSerializer(serializers.ModelSerializer):
 

@@ -29,7 +29,6 @@ linkProvider = "https://empresas.intrare.app/form_proveedor/"
 # linkProvider = "https://first-project-vuejs.herokuapp.com/form_proveedor/" # Development
 
 
-
 def sendPushNotifies(idUser, msg):
     _userDevices = FCMDevice.objects.filter(user=idUser)
     if len(_userDevices) > 0:
