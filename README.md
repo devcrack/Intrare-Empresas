@@ -1,5 +1,16 @@
 # EndPoints
 
+- Usuarios
+  - [Upgrade User To Admin](./README.md#UpgradeUserToAdmin)
+- Invitaciones
+  - [Modificar Hora Invitacion](./README.md#modificar-hora-invitacion)
+- Empresas 
+  - [Eliminar Vigilante](./README.md#eliminar-vigilante)
+- Invitaciones
+  - [Obtener Invitaciones Enviadas por rango Fecha ](./README.md#filtrado-invitaciones-enviadas-por-rango-de-fecha)
+  - [Obtener Invitaciones Recibidas por rango fecha](./README.md#filtrado-invitaciones-recibidas-por-rango-de-fecha)
+- Accesos
+  - [Obtener Accesos por rango de fecha](./README.md#obtener-accesos-sin-invitacion-por-rango-de-fechas)
 
 ## **Usuarios**
 
@@ -78,6 +89,20 @@ Si no se tiene idea de que extension poner, ingrese 00000 o cualquier numero sin
 
 
 
+### UpgradeUserToAdmin
+Convierte a un usuario en en Administrador de una Empresa
+
+- **Request**:PATCH
+- **URL**: >HOSTURL</upgradeUserToAdmin/
+- **HEADER**: Authorization: **Token isSuperAdmin**
+- **DATA**:
+
+```json
+{
+	"idUsuario": 350,
+	"idEmpresa": 5
+}
+```
 
 
 ## **Invitaciones**
@@ -394,7 +419,7 @@ Retorna un JSON, como el siguiente:
     "diary": "0246",
     "secEqu": [
       {
-        "nameEquipment": "Botas Antiderrapantes"
+        "nameEquipment": "Botas Antiderrainvitacionespantes"
       },
       {
         "nameEquipment": "Lentes de Proteccion"
@@ -461,6 +486,38 @@ http://127.0.0.1:8000/setConfirmed_Appointment/dae7316d72b9a7fe32/true/
 ```
 Aqui se esta señalando que la invitacion con el qrCode ```dae7316d72b9a7fe32``` es una invitacion confirmada.
 
+### Modificar Hora Invitacion
+
+**Request**: PATCH
+
+**URL**: URL_HOST/updateTimeInvitation/>QRCODE</
+
+**HEADER** Authorization: Token **logintoken**.......
+
+**Data**
+```json
+{
+	"newTime": "23:05"
+}
+```
+
+### Filtrado Invitaciones ENVIADAS por rango de Fecha
+
+**Request:** GET
+
+**URL:** URL_HOST/get_invByDateRange/año_1/mes_1/dia_1/año_2/mes_2/dia_2/
+
+**HEADER** Authorization Token AdminToken/EmpleadoToken
+
+
+### Filtrado Invitaciones RECIBIDAS por rango de Fecha
+
+**Request:** GET
+
+**URL:** URL_HOST/get_inv/userByDateRange/mes_1/dia_1/año_2/mes_2/dia_2/
+
+**HEADER** Authorization Token LOGINTOKEN
+
 
 ## Wallet
 Solo cosuman GET /wallet/create/>qrCODE< 
@@ -477,7 +534,7 @@ Para esto es necesario, el Id del Area a la que se asignara este equipo de Segur
 
 **Request:** POST
 
-**url:** http://127.0.0.1:8000/addSecurityEquipment 
+**url:** http://127.0.0.1:8000/addSecurityEquipmEmpresa
 
 **header:** 'authorization: Token cfbced0fc65d1a3d2ba8044dc3035d146603c874' Este token tiene que ser de un administrador.
 
@@ -489,6 +546,17 @@ Para esto es necesario, el Id del Area a la que se asignara este equipo de Segur
 	"idArea":2
 }
 ```
+
+
+### Obtener Accesos sin Invitacion por Rango de Fechas
+
+**request:**GET
+
+**url:**URL_HOST/get_bitacoraByDateRange/<year1>/<month1>/<day1>/<year2>/<month2>/<day2>/
+
+**header:** Authorization TOKEN_isAdmin/isGuard
+
+
 
 ### Actualizar Equipo de Seguridad
 
@@ -561,6 +629,16 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
 ]
 ```
 
+### Obtener accesos por rango de fecha
+
+**request:** GET
+
+**url:** HOST_URL/getAccessByDateRange/<year1>/<month1>/<day1>/<year2>/<month2>/<day2>/
+
+**header:** Authorization TOKEN Admin/Employe/Vigilant
+
+
+
 ### **Enviar Alerta** (Boton de Panico)
 
 **request GET**
@@ -584,7 +662,7 @@ http://127.0.0.1:8000/get_inv/qr/>qrcode</
     "id": 4,
     "nameEquipment": "Lo que sea #1",
     "idArea": 2
-  },
+  }, Modificar Hora Invitacion
   {
     "id": 5,
     "nameEquipment": "Lo que sea #2",
@@ -619,6 +697,15 @@ http://127.0.0.1:8000/deleteEmployee/1/
 ```
 
 Aqui se esta eliminado el empleado con el Id 1.
+
+### Eliminar Vigilante
+
+**Request**DELETE
+
+**URL**: URL_HOST//deleteVigilant/>int:pk</ 
+
+**HEADER**: Authorization: Token Admin
+
 
 
 

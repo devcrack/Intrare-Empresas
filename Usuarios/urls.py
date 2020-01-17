@@ -30,4 +30,6 @@ urlpatterns = [
     path('upgradeUserEmployee/', UpgradeUserToEmployee.as_view()),
     # Crear UN PROVEEDOR
     path('createProvider/', CreateProvider.as_view()),
+    path('upgradeUserToAdmin/',UpgradeUserToAdmin.as_view())
+
 ]

@@ -120,8 +120,12 @@ class AreaListAll(generics.ListCreateAPIView):
     Nota: Solo usuarios com permiso Staff pueden consumirla.
     """
     permission_classes = (IsAuthenticated, )
+    serializer_class = AreaSerializers
+
     def get_queryset(self):
+        print("ROLLLL!!!!!!!!!")
         user = self.request.user
+        print(user.roll)
         queryset = None
         if user.is_staff:
             queryset = Area.objects.all()
@@ -131,7 +135,6 @@ class AreaListAll(generics.ListCreateAPIView):
                     admin_company = Administrador.objects.get(id_usuario=user)
                 except ObjectDoesNotExist:
                     return None
-                # admin_company = Administrador.objects.filter(id_usuario=user)[0]
                 id_company = admin_company.id_empresa
                 queryset = Area.objects.filter(id_empresa=id_company)
             elif user.roll == settings.EMPLEADO:
@@ -139,7 +142,6 @@ class AreaListAll(generics.ListCreateAPIView):
                         admin_company = Empleado.objects.get(id_usuario=user)
                     except ObjectDoesNotExist:
                         return None
-                    # admin_company = Empleado.objects.filter(id_usuario=user)[0]
                     id_company = admin_company.id_empresa
                     print("id Company = " + str(id_company))
                     queryset = Area.objects.filter(id_empresa=id_company)
@@ -151,7 +153,6 @@ class AreaListAll(generics.ListCreateAPIView):
                         id_company = guard_company.id_empresa
                         queryset = Area.objects.filter(id_empresa=id_company)
         return queryset
-    serializer_class = AreaSerializers
 
 
 class AreaDetail(generics.RetrieveDestroyAPIView):

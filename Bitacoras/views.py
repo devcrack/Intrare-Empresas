@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import generics, status, viewsets
+from rest_framework.permissions import IsAuthenticated
 from Usuarios.permissions import *
 from .serializers import *
 from Empresas.models import Vigilante, Administrador
@@ -63,3 +64,36 @@ class BitacoraListGuard(viewsets.ModelViewSet):
         queryset = self.queryset = registros
         serializer = BitacoraListGuardSerializers(queryset, many=True, context={"request": request})
         return Response(serializer.data)
+
+
+
+class BitacoraListToGuardByDateRange(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated,  isAdmin | isGuard,]
+
+    def list(self, request, *args, **kwargs):
+        y1 = self.kwargs['year1']
+        m1 = self.kwargs['month1']
+        d1 = self.kwargs['day1']
+        y2 = self.kwargs['year2']
+        m2 = self.kwargs['month2']
+        d2 = self.kwargs['day2']
+        iniDate = y1 + "-" + m1 + "-" + d1
+        finalDate = y2 + "-" + m2 + "-" + d2
+
+        usr = self.request.user
+
+        if usr.roll == settings.ADMIN:  # Admin must be show all records of the Company.
+            print('IS an ADMIN')
+            admin_company = Administrador.objects.filter(id_usuario=usr)[0]
+            id_company = admin_company.id_empresa
+        else:  # Guard must be show all records of the Company.
+            print('IS an GUARD')
+            guard_company = Vigilante.objects.filter(id_usuario=usr)[0]
+            id_company = guard_company.id_empresa
+        queryset = Bitacora.objects.filter(id_empresa=id_company)
+        queryset = queryset.filter(f_acceso__range=[iniDate, finalDate])
+        if len(queryset) > 0 :
+            serializer = BitacoraListGuardSerializers(queryset, many=True, context={"request": request})
+            return Response(status=status.HTTP_200_OK, data=serializer.data)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+

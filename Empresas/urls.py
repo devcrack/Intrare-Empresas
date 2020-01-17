@@ -56,7 +56,7 @@ urlpatterns = [
     path('empresas/access/getAccs/<year>/<month>/<day>/', get_accestoEnterByDate.as_view({'get': 'list'}), name='getAccSession'),
     # Notificar firmar pase de salida
     path('notifySignExitPass/<int:idAcc>/', NotifyHostSignPass.as_view()),
-    # Obtiene todos los accesos que ha realizado un Administrador o un Empleado. Determina quien es por la sesion.
+    # Obtiene todos los accesos que ha realizado un   Administrador o un Empleado. Determina quien es por la sesion.
     path('getAccessBySession/', GetAccessBySession.as_view({'get':'list'})),
     # Agrega equipo de seguridad por Area.
     path('addSecurityEquipment', AddSecurityEquipment.as_view()),
@@ -66,6 +66,9 @@ urlpatterns = [
     path('deleteSecurityEquipment/<int:pk>/', DeleteSecurityEquipment.as_view()),
     ##<<Obtener equipo de seguridad por ID de Area>>##
     path('get_SecurityEquipment/ByArea/<idArea>/',GetSecEquByArea.as_view({'get': 'list'})),
+    path('deleteVigilant/<int:pk>/', DeleteVigilant.as_view()),
+    path('getAccessByDateRange/<year1>/<month1>/<day1>/<year2>/<month2>/<day2>/',
+         GetAccessEnterByDateRange.as_view({'get': 'list'})),
 ]
 
 urlpatterns += router.urls

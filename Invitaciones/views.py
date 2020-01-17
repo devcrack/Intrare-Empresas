@@ -14,7 +14,7 @@ from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from secrets import token_hex
-from ControlAccs.utils import send_sms, send_IntrareEmail
+from ControlAccs.utils import send_sms, send_IntrareEmail, sendPushNotificationIntrare
 from fcm_django.models import FCMDevice
 from django.db.models import Q
 from django.core.files.storage import default_storage
@@ -250,6 +250,34 @@ class InvitationListAdminEmployee(viewsets.ModelViewSet):  ####
         return Response(serializer.data)
 
 
+"""
+Aqui se obtiene un listado de las INVITACIONES ENVIADAS
+"""
+class InvitationListAdminEmployeeByRangeDate(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsAdmin | IsEmployee]
+
+    def list(self, request, *args, **kwargs):
+        y1 = self.kwargs['year1']
+        m1 = self.kwargs['month1']
+        d1 = self.kwargs['day1']
+        y2 = self.kwargs['year2']
+        m2 = self.kwargs['month2']
+        d2 = self.kwargs['day2']
+
+        iniDate = y1 + "-" + m1 + "-" + d1
+        finalDate = y2 + "-" + m2 + "-" + d2
+
+        usr = self.request.user
+
+        self.queryset = InvitationByUsers.objects.filter(host=usr, idInvitation__fecha_hora_envio__range=[iniDate,
+                                                                                                          finalDate])
+        #Filtro rango de Fechas prescindiendo del Usuario
+        # self.queryset = InvitationByUsers.objects.filter(idInvitation__fecha_hora_envio__range=[iniDate, finalDate])
+        queryset = self.queryset
+        serializer = InvitationToGuardSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
 class InvitationListToGuard(viewsets.ModelViewSet):  ####
     permission_classes = (isGuard,)
 
@@ -297,6 +325,28 @@ class InvitationListToSimpleUser(viewsets.ModelViewSet):  ####
         _nReg = len(_query)
         if _nReg > 0:
             print('nReg=', _nReg)
+            _serializer = InvitationToSimpleUserSerializer(_query, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class InvitationListToSimpleUserByDateRange(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        y1 = self.kwargs['year1']
+        m1 = self.kwargs['month1']
+        d1 = self.kwargs['day1']
+        y2 = self.kwargs['year2']
+        m2 = self.kwargs['month2']
+        d2 = self.kwargs['day2']
+
+        iniDate = y1 + "-" + m1 + "-" + d1
+        finalDate = y2 + "-" + m2 + "-" + d2
+        _query = InvitationByUsers.objects.filter(idGuest=self.request.user.id)
+        _query = _query.filter(idInvitation__dateInv__range=[iniDate, finalDate])
+        if len(_query) > 0:
             _serializer = InvitationToSimpleUserSerializer(_query, many=True)
             return Response(_serializer.data)
         else:
@@ -679,3 +729,27 @@ class SetConfirmAppointmentFromMail(generics.ListCreateAPIView):
         send_IntrareEmail(html_message, _hostMail)
 
         return HttpResponse("Confirmacion OK!", content_type='text/plain', status=status.HTTP_200_OK)
+
+
+class UpdateTimeInvitation(generics.UpdateAPIView):
+    queryset = InvitationByUsers.objects.all()
+    serializer_class = InvitationByUsersSerializer
+    lookup_field = 'qr_code'
+
+    def update(self, request, *args, **kwargs):
+        newTime = request.data.get("newTime")
+        instance = self.get_object()
+        metaDataInvitation = instance.idInvitation
+        metaDataInvitation.timeInv = newTime
+        metaDataInvitation.save()
+        fNameHost = instance.host.first_name
+        lNameHost = instance.host.last_name
+        msg =f"El anfitrion {fNameHost} {lNameHost} ha cambiado la hora de la invitacion: {newTime}"
+        sendPushNotificationIntrare(instance.idGuest, msg)
+
+        return Response(status=status.HTTP_200_OK)
+
+
+
+
+

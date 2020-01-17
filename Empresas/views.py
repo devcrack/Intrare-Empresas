@@ -224,6 +224,53 @@ class get_accestoEnterByDate(viewsets.ModelViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class GetAccessEnterByDateRange(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated, IsAdmin | IsEmployee | isGuard,)
+
+    def get_queryset(self):
+        usr = self.request.user
+        _idCompany = None
+
+        if usr.roll == settings.ADMIN:
+            _admCompany = Administrador.objects.filter(id_usuario=usr)[0]
+            _idCompany = _admCompany.id_empresa
+            queryset=Acceso.objects.filter(invitationByUsers__idInvitation__id_empresa=_idCompany)
+        if usr.roll == settings.EMPLEADO:
+            _employee = Empleado.objects.filter(id_usuario=usr)[0]
+            _idCompany = _employee.id_empresa
+            queryset = Acceso.objects.filter(invitationByUsers__idInvitation__id_empresa=_idCompany,
+                                             invitationByUsers__host=usr)
+        if usr.roll == settings.VIGILANTE:
+            _guard = Vigilante.objects.filter(id_usuario=usr)[0]
+            _idCompany = _guard.id_empresa
+            queryset = Acceso.objects.filter(invitationByUsers__idInvitation__id_empresa=_idCompany)
+
+        y1 = self.kwargs['year1']
+        m1 = self.kwargs['month1']
+        d1 = self.kwargs['day1']
+        y2 = self.kwargs['year2']
+        m2 = self.kwargs['month2']
+        d2 = self.kwargs['day2']
+
+        iniDate = y1 + "-" + m1 + "-" + d1
+        finalDate = y2 + "-" + m2 + "-" + d2
+
+        queryset = queryset.filter(fecha_hora_acceso__range=[iniDate, finalDate])
+
+        return queryset
+
+
+    def list(self, request, *args, **kwargs):
+        _queryset = self.get_queryset()
+        _nReg = len(_queryset)
+
+        if _nReg > 0:
+            _serializer = AccessDetail(_queryset, many=True)
+            return Response(_serializer.data)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class AccessListToGuard(viewsets.ModelViewSet):
     """
     Lista los Accesos por Codigo QR
@@ -368,6 +415,20 @@ class GetSecEquByArea(viewsets.ModelViewSet):
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class DeleteVigilant(generics.DestroyAPIView):
+    permissions = [IsAuthenticated, IsAdmin]
+
+    queryset = Vigilante.objects.all()
+    serializer_class = VigilanteSerializers
+    lookup_field = 'pk'
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        user = CustomUser.objects.get(id=instance.id_usuario.id)
+        instance.delete()
+        user.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 

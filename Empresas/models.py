@@ -166,8 +166,9 @@ class Veto(models.Model):
 
 class Acceso(models.Model):
     invitationByUsers = models.ForeignKey('Invitaciones.InvitationByUsers', on_delete=models.CASCADE)
-    id_vigilante_ent = models.ForeignKey('Vigilante', on_delete=models.CASCADE, related_name='entrada')
-    id_vigilante_sal = models.ForeignKey('Vigilante', on_delete=models.CASCADE, related_name='salida',
+    id_vigilante_ent = models.ForeignKey('Vigilante', on_delete=models.SET_NULL, null=True,related_name='Ventrada',
+                                         default=None)
+    id_vigilante_sal = models.ForeignKey('Vigilante', on_delete=models.SET_NULL, related_name='Viglantesalida',
                                          blank=True, null=True, default=None)
     fecha_hora_acceso = models.DateTimeField(default=timezone.datetime.now, null=False, blank=False)  # Automaticamente se genera al crear el registro
     fecha_hora_salida = models.DateTimeField(default=None, null=True, blank=True)  # Temporalmente esta vacio, posteriormente se actualizara el terminar la visita.

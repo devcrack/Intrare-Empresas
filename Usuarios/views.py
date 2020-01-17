@@ -15,13 +15,18 @@ from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
 from Invitaciones.models import Invitacion, InvitationByUsers
-from Empresas.models import SecurityEquipment, Administrador, Empleado
+from Empresas.models import SecurityEquipment, Administrador, Empleado, Empresa
 from django.db.models import Q
+
+# Create your views here.
 
 walletLink = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
 linkConfirmAppointment = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
 linkProvider = "https://empresas.intrare.app/form_proveedor/"
-#linkProvider = "https://first-project-vuejs.herokuapp.com/form_proveedor/"
+
+# walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'  # Development
+# linkConfirmAppointment = "https://api-intrare-empresarial.herokuapp.com/setConfirmed_AppointmentFromMail/" # Development
+# linkProvider = "https://first-project-vuejs.herokuapp.com/form_proveedor/" # Development
 
 
 def sendPushNotifies(idUser, msg):
@@ -44,7 +49,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class SimpleUserFilter(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, isAdmin]
+    permission_classes = [IsAuthenticated, isAdmin|isSuperAdmin]
     serializer_class = CustomFindSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['^celular', '^email']
@@ -110,7 +115,8 @@ class UserImgUpdate(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         self.serializer_class = UpdateIneSerializser
         _serializer = self.serializer_class(data=request.data)
-        if _serializer.is_valid():
+        if _serializer.is_valid():#walletLink = 'https://api-intrare-development.herokuapp.com/wallet/create/'  # Development
+
             _serializer.save()
             instance = self.request.user
             _imageFieldFront = _serializer.validated_data['imgFront']
@@ -448,6 +454,26 @@ class UpgradeUserToEmployee(generics.UpdateAPIView):
         _nwEmployee = Empleado(id_empresa=_Company, id_usuario=_user, id_area=_area, extension=_extension)
         _nwEmployee.save()
         
+        return Response(status=status.HTTP_200_OK)
+
+class UpgradeUserToAdmin(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, isSuperAdmin]
+
+    def update(self, request, *args, **kwargs):
+        _idUser = int(request.data.get("idUsuario"))
+        _idCompany = int(request.data.get("idEmpresa"))
+        try:
+            _user = CustomUser.objects.get(id=_idUser)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "El usuario especificado no se existe"})
+        try:
+            _company = Empresa.objects.get(id=_idCompany)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "La empresa especificada no se existe"})
+        _user.roll = settings.ADMIN
+        _user.save()
+        _newCompanyAdmin = Administrador(id_empresa=_company, id_usuario=_user)
+        _newCompanyAdmin.save()
         return Response(status=status.HTTP_200_OK)
 
 
