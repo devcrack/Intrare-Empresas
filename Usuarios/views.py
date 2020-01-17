@@ -15,12 +15,20 @@ from ControlAccs.utils import send_sms
 from .serializers import *
 from .permissions import *
 from Invitaciones.models import Invitacion, InvitationByUsers
-from Empresas.models import SecurityEquipment, Administrador, Empleado
+from Empresas.models import SecurityEquipment, Administrador, Empleado, Empresa
 from django.db.models import Q
+
+# Create your views here.
 
 walletLink = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
 linkConfirmAppointment = "https://intrare-services.com/setConfirmed_AppointmentFromMail/"  # AWS
-linkProvider = "A_LINK/"
+linkProvider = "https://empresas.intrare.app/form_proveedor/"
+
+# walletLink = 'https://api-intrare-empresarial.herokuapp.com/wallet/create/'  # Development V1
+# linkConfirmAppointment = "https://api-intrare-empresarial.herokuapp.com/setConfirmed_AppointmentFromMail/" # Development
+# linkProvider = "https://first-project-vuejs.herokuapp.com/form_proveedor/" # Development
+
+
 
 def sendPushNotifies(idUser, msg):
     _userDevices = FCMDevice.objects.filter(user=idUser)
@@ -42,7 +50,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class SimpleUserFilter(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, isAdmin]
+    permission_classes = [IsAuthenticated, isAdmin|isSuperAdmin]
     serializer_class = CustomFindSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['^celular', '^email']
@@ -108,7 +116,8 @@ class UserImgUpdate(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         self.serializer_class = UpdateIneSerializser
         _serializer = self.serializer_class(data=request.data)
-        if _serializer.is_valid():
+        if _serializer.is_valid():#walletLink = 'https://api-intrare-development.herokuapp.com/wallet/create/'  # Development
+
             _serializer.save()
             instance = self.request.user
             _imageFieldFront = _serializer.validated_data['imgFront']
@@ -389,7 +398,7 @@ class DeleteEmployee(generics.DestroyAPIView):
     Downgrade Empleado -> Usuario Normal.
     Elimina un empleado de una determinada compañia, dejandolo solamente como un usuario normal.
     """
-    permission_classes = [IsAuthenticated, isAdmin]
+    permission_classes = [IsAuthenticated, isAdmin|isAdminProvider]
 
     def delete(self, request, *args, **kwargs):
         _currentUser = self.request.user
@@ -446,6 +455,26 @@ class UpgradeUserToEmployee(generics.UpdateAPIView):
         
         return Response(status=status.HTTP_200_OK)
 
+class UpgradeUserToAdmin(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated, isSuperAdmin]
+
+    def update(self, request, *args, **kwargs):
+        _idUser = int(request.data.get("idUsuario"))
+        _idCompany = int(request.data.get("idEmpresa"))
+        try:
+            _user = CustomUser.objects.get(id=_idUser)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "El usuario especificado no se existe"})
+        try:
+            _company = Empresa.objects.get(id=_idCompany)
+        except ObjectDoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "La empresa especificada no se existe"})
+        _user.roll = settings.ADMIN
+        _user.save()
+        _newCompanyAdmin = Administrador(id_empresa=_company, id_usuario=_user)
+        _newCompanyAdmin.save()
+        return Response(status=status.HTTP_200_OK)
+
 
 class CreateProvider(generics.CreateAPIView):
     """Crea un provedor no Existente"""
@@ -453,29 +482,24 @@ class CreateProvider(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         self.serializer_class = UserSerilizerAPP
-        _pass = token_hex(3)
-        print("password Provedor " + _pass)
-        _serializer = self.serializer_class(data=request.data, context={'password': _pass, 'user':request.user})
+        # _pass = token_hex(3)
+        # print("password Provedor " + _pass)
+        _serializer = self.serializer_class(data=request.data, context={'user':request.user})
         if _serializer.is_valid():
             _serializer.save()
-            # Enviar Mail a nuevo usuario para notifcar que ha sido de alta como proveedor
-            # self.sendMailNewProvider(_serializer.data['temporalToken'], _serializer.data['password'],
-            #                          _serializer.data['email'])
-            return Response(status=status.HTTP_201_CREATED, data=_serializer.data)
+            self.sendMailNewProvider(_serializer.instance.temporalToken,
+                                     _serializer.data['email'])
+            print('FIN')
+            return Response(status=status.HTTP_201_CREATED)
 
         return Response(status=status.HTTP_400_BAD_REQUEST, data=_serializer.errors)
 
 
     @classmethod
-    def sendMailNewProvider(cls, tk, _password, mail):
+    def sendMailNewProvider(cls, tk, mail):
         _link = linkProvider + tk
         htmlMsg = render_to_string(
             "providerMail.html", {
-                "link": _link,
-                "password":_password
+                "link": _link
             })
         send_IntrareEmail(htmlMsg, mail)
-
-    # queryset = CustomUser.objects.all()
-    # serializer_class =
-

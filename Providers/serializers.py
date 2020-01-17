@@ -1,12 +1,11 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from django.core.exceptions import ObjectDoesNotExist
 
 
 from .models import Providers
 from Usuarios.models import CustomUser
-from Usuarios.serializers import CustomFindSerializer
 from Empresas.models import Empresa
+from Empresas.serializers import EmpresaSerializers
 
 class ProviderSerializer(serializers.ModelSerializer):
 
@@ -15,6 +14,15 @@ class ProviderSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id','first_name', 'last_name', 'celular', 'host']
+
+
+class ProvidersCompanySerializer(serializers.ModelSerializer):
+    companyProvider = EmpresaSerializers()
+
+    class Meta:
+        model = Providers
+        fields = '__all__'
+
 
 
 class UpdateProviderSerializer(serializers.ModelSerializer):
@@ -45,13 +53,33 @@ class UpdateProviderSerializer(serializers.ModelSerializer):
         return instance
 
 
+
+class FullProvider():
+    def __init__(self,idUserAdminProvider, host, name, companyAddress, telephone, email, companyLogo,
+                 companyWebPage, companyScian, companyClassification, companyLatitude, companyLongitude,
+                 companyURLMap, companyValidity):
+        self.idUserAdminProvider = idUserAdminProvider
+        self.host = host
+        self.name = name
+        self.companyAddress = companyAddress
+        self.telephone = telephone
+        self.email = email
+        self.companyLogo = companyLogo
+        self.companyWebPage = companyWebPage
+        self.companyScian = companyScian
+        self.companyClassification = companyClassification
+        self.companyLatitude = companyLatitude
+        self.companyLongitude = companyLongitude
+        self.companyURLMap = companyURLMap
+        self.companyValidity = companyValidity
+
 class CreateCompanyProviderSerializer(serializers.Serializer):
-    idAdminProvider = serializers.IntegerField(required=True)
+    idUserAdminProvider = serializers.IntegerField(required=True)
     host = serializers.IntegerField(required=True)
-    companyName = serializers.CharField(required=True)
+    name = serializers.CharField(required=True, validators=[UniqueValidator(queryset=Empresa.objects.all())])
     companyAddress = serializers.CharField(required=True)
-    companyTelephone = serializers.CharField(required=True)
-    companyEmail = serializers.EmailField(required=True)
+    telephone = serializers.CharField(required=True, validators=[UniqueValidator(queryset=Empresa.objects.all())])
+    email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=Empresa.objects.all())])
     companyLogo =  serializers.ImageField(required=True)
     companyWebPage = serializers.CharField(required=True)
     companyScian = serializers.IntegerField(required=True)
@@ -63,38 +91,4 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
 
 
     def create(self, validated_data):
-        pass
-        _idProvider = validated_data['idAdminProvider']
-        _idHost = validated_data['idAdminProvider']
-        try:
-            usrProvider = CustomUser.objects.get(id=_idProvider)
-            usrHost = CustomUser.objects.get(id=_idHost)
-        except ObjectDoesNotExist:
-            return None
-        _cName = validated_data['companyName']
-        _cyAddress = validated_data['companyAddress']
-        _cPhone = validated_data['companyTelephone']
-        _cEmail = validated_data['companyEmail']
-        _cLogo = validated_data['companyLogo']
-        _cWebPage = validated_data['companyWebPage']
-        _cScian = validated_data['companyScian']
-        _cClassifiaction = validated_data['companyClassification']
-        _cLat = validated_data['companyLatitude']
-        _cLon = validated_data['companyLongitude']
-        _cUrlMap = validated_data['companyURLMap']
-        _cValidity = validated_data['companyValidity']
-
-        nwCompany = Empresa(name=_cName,
-
-        )
-        # Actualizar Token Proveedor(borrarlo)
-        # Crear Empresa
-        # Crear admin de la empresa con datos proveedor
-        # Crear registro provedor con host - proveedor
-        # Notifcar al Host que ha sido exitosa la alta.
-
-
-
-
-
-
+        return FullProvider(**validated_data)

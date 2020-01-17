@@ -147,6 +147,8 @@ class EmpleadoSerializers(serializers.ModelSerializer):
             usuario.ine_frente = id_usuario_data['ine_frente']
         if id_usuario_data['ine_atras'] != None:
             usuario.ine_atras = id_usuario_data['ine_atras']
+        if id_usuario_data['avatar'] != None:
+            usuario.avatar = id_usuario_data['avatar']
         if id_usuario_data['password'] != '':
             usuario.set_password(id_usuario_data['password'])
         usuario.is_active = id_usuario_data['is_active']

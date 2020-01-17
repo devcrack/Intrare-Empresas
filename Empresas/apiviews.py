@@ -120,13 +120,17 @@ class AreaListAll(generics.ListCreateAPIView):
     Nota: Solo usuarios com permiso Staff pueden consumirla.
     """
     permission_classes = (IsAuthenticated, )
+    serializer_class = AreaSerializers
+
     def get_queryset(self):
+        print("ROLLLL!!!!!!!!!")
         user = self.request.user
+        print(user.roll)
         queryset = None
         if user.is_staff:
             queryset = Area.objects.all()
         else:
-            if user.roll == settings.ADMIN:
+            if user.roll == settings.ADMIN or user.roll==settings.PROVIDER_ADMIN:
                 try:
                     admin_company = Administrador.objects.get(id_usuario=user)
                 except ObjectDoesNotExist:
@@ -134,30 +138,24 @@ class AreaListAll(generics.ListCreateAPIView):
                 # admin_company = Administrador.objects.filter(id_usuario=user)[0]
                 id_company = admin_company.id_empresa
                 queryset = Area.objects.filter(id_empresa=id_company)
-            else:
-                if user.roll == settings.EMPLEADO:
-                    try:
-                        admin_company = Empleado.objects.get(id_usuario=user)
-                    except ObjectDoesNotExist:
-                        return None
-                    # admin_company = Empleado.objects.filter(id_usuario=user)[0]
-                    id_company = admin_company.id_empresa
-                    print("id Company = " + str(id_company))
-                    queryset = Area.objects.filter(id_empresa=id_company)
-                else:
-                    if user.roll == settings.VIGILANTE:
-                        try:
-                            guard_company = Vigilante.objects.get(id_usuario=user)
-                        except ObjectDoesNotExist:
-                            return None
-                        id_company = guard_company.id_empresa
-                        queryset = Area.objects.filter(id_empresa=id_company)
+            elif user.roll == settings.EMPLEADO:
+                employeCompany = Empleado.objects.get(id_usuario=user)
+                # admin_company = Empleado.objects.filter(id_usuario=user)[0]
+                id_company = employeCompany.id_empresa
+                print("id Company = " + str(id_company))
+                queryset = Area.objects.filter(id_empresa=id_company)
+            elif user.roll == settings.VIGILANTE:
+                try:
+                    guard_company = Vigilante.objects.get(id_usuario=user)
+                except ObjectDoesNotExist:
+                    return None
+                id_company = guard_company.id_empresa
+                queryset = Area.objects.filter(id_empresa=id_company)
         return queryset
-    serializer_class = AreaSerializers
 
 
 class AreaDetail(generics.RetrieveDestroyAPIView):
-    permission_classes = (isAdmin, )
+    permission_classes = [IsAuthenticated, isAdmin|isAdminProvider]
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -172,7 +170,7 @@ class AreaDetail(generics.RetrieveDestroyAPIView):
 
 
 class AreaUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdmin, )
+    permission_classes = [IsAuthenticated, isAdmin|isAdminProvider]
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
@@ -246,7 +244,7 @@ class EmpleadoListAll(generics.ListCreateAPIView):
     """List all avaiable employees of the administrator company.
     This only list all employees that belongs to the company wich the adm
     """
-    permission_classes = (isAdmin | isGuard,)  # Validates if this user is and Admin of some company
+    permission_classes = (IsAuthenticated, isAdmin | isGuard | isAdminProvider,)  # Validates if this user is and Admin of some company
     serializer_class = EmpleadoSerializers
 
     def get_queryset(self):
@@ -254,7 +252,7 @@ class EmpleadoListAll(generics.ListCreateAPIView):
         if user.is_staff:
             queryset = Empleado.objects.all()
         else:
-            if user.roll == settings.ADMIN:
+            if user.roll == settings.ADMIN or user.roll==settings.PROVIDER_ADMIN:
                 admin_company = Administrador.objects.filter(id_usuario=user)[0]
                 id_company = admin_company.id_empresa
                 queryset = Empleado.objects.filter(id_empresa=id_company)
@@ -300,7 +298,7 @@ class EmpleadoDetailUser(generics.ListCreateAPIView):
 
 
 class EmpleadoUpdate(generics.UpdateAPIView):
-    permission_classes = (isAdmin, )
+    permission_classes =  [IsAuthenticated, IsAdmin|isAdminProvider]
 
     def get_queryset(self):
         user = self.request.user

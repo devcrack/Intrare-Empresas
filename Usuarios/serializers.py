@@ -172,6 +172,7 @@ class UserEmployeeSerializer(serializers.ModelSerializer):
             'roll',
             'ine_frente',
             'ine_atras',
+            'avatar',
             'groups',
             'user_permissions',
             'password'
@@ -195,6 +196,9 @@ class UserEmployeeSerializer(serializers.ModelSerializer):
         self.fields['username'] = serializers.CharField(required=False, allow_null=False, allow_blank=False)
         self.fields['password'] = serializers.CharField(required=False, allow_null=True, allow_blank=True)
         self.fields['email'] = serializers.EmailField(required=True, allow_null=False, allow_blank=False)
+        self.fields['ine_frente'] = serializers.ImageField(required=False, allow_null=False)
+        self.fields['ine_atras'] = serializers.ImageField(required=False, allow_null=False)
+        self.fields['avatar'] = serializers.ImageField(required=False, allow_null=False)
         return super(UserEmployeeSerializer, self).__init__(*args, **kwargs)
 
     def validate_celular(self, value):
@@ -402,7 +406,6 @@ class UserSerilizerAPP(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        password = self.context['password']
         usrHost = self.context['user']
         print("Usuario Anfitrion ")
         print(usrHost)
@@ -411,7 +414,6 @@ class UserSerilizerAPP(serializers.ModelSerializer):
         user = CustomUser(first_name=validated_data['first_name'], last_name=validated_data['last_name'],
                           email=validated_data['email'], celular=validated_data['celular'], host=usrHost,
                           temporalToken=_token, roll=15)
-        user.set_password(password)
         user.temporalToken = _token
         user.save()
         return user
