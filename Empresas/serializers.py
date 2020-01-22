@@ -162,6 +162,8 @@ class EmpleadoSerializers(serializers.ModelSerializer):
             instance.id_usuario.ine_frente = id_usuario_data['ine_frente']
         if id_usuario_data['ine_atras'] != '':
             instance.id_usuario.ine_atras = id_usuario_data['ine_atras']
+        if id_usuario_data['avatar'] != '':
+            instance.id_usuario.avatar = id_usuario_data['avatar']
         instance.id_usuario.is_active = id_usuario_data['is_active']
         instance.id_usuario.password = usuario.password
         instance.extension = validated_data['extension']
