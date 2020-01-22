@@ -1,12 +1,9 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from django.core.exceptions import ObjectDoesNotExist
-from Empresas.serializers import EmpresaSerializers
 
 from .models import Providers
 from Usuarios.models import CustomUser
-from Usuarios.serializers import CustomFindSerializer
-from Empresas.models import Empresa , Administrador
+from Empresas.models import Empresa
 from Empresas.serializers import EmpresaSerializers
 
 class ProvidersCompanySerializer(serializers.ModelSerializer):
@@ -101,15 +98,3 @@ class CreateCompanyProviderSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         return FullProvider(**validated_data)
-
-        # Actualizar Token Proveedor(borrarlo)
-        # Crear Empresa
-        # Crear admin de la empresa con datos proveedor
-        # Crear registro provedor con host - proveedor
-        # Notifcar al Host que ha sido exitosa la alta.
-
-
-
-
-
-

@@ -3,6 +3,7 @@ import nexmo
 from django.core.mail import send_mail
 from django.conf import settings
 import random
+from fcm_django.models import FCMDevice
 
 
 CLIENTNEXMO = nexmo.Client(key='e61cdd65', secret='eNn7ZmzMIQjQ3Kpr')
@@ -41,6 +42,11 @@ def send_IntrareEmail(html_message, email):
     msg = ''
     send_mail(subject=_subject, from_email=email_from, message= msg, recipient_list=recipient_list,
               html_message=html_message)
+
+def sendPushNotificationIntrare(_user, msg):
+    hostDevices = FCMDevice.objects.filter(user = _user)
+    if len(hostDevices):
+        hostDevices.send_message(title="Intrare", body=msg, sound="Default")
 
 def phn():
     n = '0000000000'
