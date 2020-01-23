@@ -196,9 +196,9 @@ class UserEmployeeSerializer(serializers.ModelSerializer):
         self.fields['username'] = serializers.CharField(required=False, allow_null=False, allow_blank=False)
         self.fields['password'] = serializers.CharField(required=False, allow_null=True, allow_blank=True)
         self.fields['email'] = serializers.EmailField(required=True, allow_null=False, allow_blank=False)
-        self.fields['ine_frente'] = serializers.ImageField(required=False, allow_null=False)
-        self.fields['ine_atras'] = serializers.ImageField(required=False, allow_null=False)
-        self.fields['avatar'] = serializers.ImageField(required=False, allow_null=False)
+        # self.fields['ine_frente'] = serializers.ImageField(required=False, allow_null=False)
+        # self.fields['ine_atras'] = serializers.ImageField(required=False, allow_null=False)
+        # self.fields['avatar'] = serializers.ImageField(required=False, allow_null=False)
         return super(UserEmployeeSerializer, self).__init__(*args, **kwargs)
 
     def validate_celular(self, value):
