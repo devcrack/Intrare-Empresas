@@ -242,7 +242,6 @@ class activateUser(generics.UpdateAPIView):
                     log = f"Error: {_smsResponse['messages'][0]['error-text']} al enviar SMS"
                 print('LOGs SMS!! ')
                 print(log)
-            print('Destinatario ', addressee)
             send_IntrareEmail(html_message, addressee)  # MAIL
             index += 1
         return Response(status=status.HTTP_200_OK)

@@ -15,7 +15,7 @@ from django.utils import timezone
 from Invitaciones.models import Invitacion, InvitationByUsers
 from Empresas.models import Vigilante
 from django.template.loader import render_to_string
-from ControlAccs.utils import send_sms, send_IntrareEmail
+from ControlAccs.utils import send_sms, send_IntrareEmail, sendPushNotificationIntrare
 
 
 
@@ -56,7 +56,7 @@ class AccessCreate(generics.CreateAPIView):
                                 day=timezone.datetime.now().day)
             ## << Cargando datos Invitacion>>
             _typeInv = _invByUsers.idInvitation.typeInv
-
+            _guest = _invByUsers.idGuest
             _companyHost = _invByUsers.idInvitation.id_empresa # Empresa que invita a esta persona.
             if _currentCompany.id is not _companyHost.id:
                 return Response(status=status.HTTP_401_UNAUTHORIZED,
@@ -84,13 +84,23 @@ class AccessCreate(generics.CreateAPIView):
             _currentHour = timezone.datetime.now().hour
             _currentMinute = timezone.datetime.now().minute
             _currentTime = datetime.time(_currentHour, _currentMinute)
+
+            _host = _invByUsers.host
+
             if _currentTime > _timeInv:
+                _nameGuest = _guest.first_name + " " + _guest.last_name
+                msgHeader = f"Tu invitado {_nameGuest} ha llegado tarde."
+                msgMail = "Ponte en contacto con tu invitado  y/o modifica la hora de acceso"
+                sendPushNotificationIntrare(_host, msgHeader)
+                html_message = render_to_string("genericEmail.html", {"messageHeader": msgHeader,
+                                                                      "msg": msgMail})
+                send_IntrareEmail(html_message, _host.email)
                 return Response(status=status.HTTP_401_UNAUTHORIZED,
                                 data={"error": "El invitado ha llegado tarde. Acceso Negado"})
 
             self.createAcces(_guard_ent, _invByUsers, _datos_coche, _qr_code)
             ## <<Enviar Correo y SMS>> ##
-            _host = _invByUsers.host
+            # _host = _invByUsers.host  # Modifiacion 27 -01
             _guestFullName = _invByUsers.idGuest.first_name + " " + _invByUsers.idGuest.last_name
             _emailHost = _host.email
             _cellphoneHost = _host.celular
