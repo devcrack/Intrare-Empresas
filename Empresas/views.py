@@ -85,7 +85,7 @@ class AccessCreate(generics.CreateAPIView):
             _currentMinute = timezone.datetime.now().minute
             _currentTime = datetime.time(_currentHour, _currentMinute)
 
-            _host = _invByUsers.host
+            _host = _invByUsers.host # Modifiacion 27 -01
 
             if _currentTime > _timeInv:
                 _nameGuest = _guest.first_name + " " + _guest.last_name

@@ -737,6 +737,8 @@ class UpdateTimeInvitation(generics.UpdateAPIView):
     lookup_field = 'qr_code'
 
     def update(self, request, *args, **kwargs):
+        host = self.request.user
+
         newTime = request.data.get("newTime")
         instance = self.get_object()
         metaDataInvitation = instance.idInvitation
@@ -746,6 +748,11 @@ class UpdateTimeInvitation(generics.UpdateAPIView):
         lNameHost = instance.host.last_name
         msg =f"El anfitrion {fNameHost} {lNameHost} ha cambiado la hora de la invitacion: {newTime}"
         sendPushNotificationIntrare(instance.idGuest, msg)
+        msgHeader = "Intrare"
+        msgMail = f"El anfitrion{host.first_name} {host.last_name} ha cambiado la hora del acceso de tu invitación"
+        html_message = render_to_string("genericEmail.html", {"messageHeader": msgHeader,
+                                                              "msg": msgMail})
+        send_IntrareEmail(html_message, instance.email)
 
         return Response(status=status.HTTP_200_OK)
 
