@@ -82,8 +82,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'no-reply@intrare.app'
-EMAIL_HOST_PASSWORD = 'HIPIcc2019'
+EMAIL_HOST_USER = '*********'
+EMAIL_HOST_PASSWORD = '********'
 
 
 FCM_DJANGO_SETTINGS = {
@@ -185,11 +185,11 @@ WSGI_APPLICATION = 'ControlAccs.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'IntrareEmpresa',
-        'USER': 'blame711019',
-        'PASSWORD': 'HIPIcc711019',
-        'HOST': 'intrare-freetierdb.c8dwggxf5yjq.us-east-2.rds.amazonaws.com',
-        'PORT': '5432',
+        'NAME': '************',
+        'USER': '**********',
+        'PASSWORD': '**********',
+        'HOST': '*********************',
+        'PORT': '****',
     }
 }
 
@@ -237,9 +237,9 @@ USE_TZ = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-AWS_ACCESS_KEY_ID = 'AKIAVZH4SBSY373JN77R'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'bucketeer-576c8228-7737-4878-8397-1c8403d07005'
+AWS_ACCESS_KEY_ID = '*******'
+AWS_SECRET_ACCESS_KEY = '******'
+AWS_STORAGE_BUCKET_NAME = '*******'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
 MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
