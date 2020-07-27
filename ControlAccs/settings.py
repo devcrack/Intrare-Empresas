@@ -30,7 +30,7 @@ SECRET_KEY = 'q1!a)g2djh=pw^v$()_!cf0m1ijwbk&(y*yd8kqzxe0enne-y!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'intrare-services.com'] 
+ALLOWED_HOSTS = ['*'] 
 # ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 # Aquí le decimos a django que utilice nuestra clase de user tuneada xD
 AUTH_USER_MODEL = 'Usuarios.CustomUser'
@@ -45,11 +45,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
-ORGANIZATIONNAME = 'EDISON EFFECT SA DE CV'
-PASSTYPEIDENTIFIER = 'pass.com.daelabs.intrare.mx'
-TEAMIDENTIFIER = '6VAW5LY4HJ'
-WALLETPASS = 'mientras123'
-CRD = os.path.join(BASE_DIR, 'certf')
 
 DJOSER = {
     'SERIALIZERS': {
