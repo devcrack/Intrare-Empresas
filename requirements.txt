@@ -1,5 +1,5 @@
 astroid==2.2.5
-Django==2.2.3
+Django==2.2.24
 nexmo
 django-cors-headers==3.0.2
 django-templated-mail==1.1.1
